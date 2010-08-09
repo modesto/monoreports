@@ -1,0 +1,8 @@
+*.dll
+*.exe
+bin
+*.mdb
+*.obj
+*.resharper
+*.pidb
+*.userprefs
