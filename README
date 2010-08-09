@@ -1,3 +1,10 @@
-Monoreports is a tool to do multipage printings.
-At the moment it's not in usable state
+Monoreports is a reporting engine written in C# (mono). It's similar to JasperReports and other tools like that.
+
+Monoreports consists of two main modules (monodevelop projects):
+	Monoreports - report designer
+	Monoreports.Model - reporting engine
+
+Designer is build on the top of gtk-sharp and cairo graphics library.
+
+At the moment it's not in an usable state !!
 
