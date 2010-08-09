@@ -63,27 +63,27 @@ namespace MonoReports.ControlView
 		
 		#region implemented abstract members of MonoReport.ControlView.ControlViewBase
 
-		public override Size Render (Context c,bool render, bool isDesign)
+		public override Size Render (Context c,RenderState renderState)
 		{
 			Rectangle borderRect;
 			c.Save();
 			borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, textBlock.Height);	 
-			if(!textBlock.CanGrow || isDesign)
+			if(!textBlock.CanGrow || renderState.IsDesign)
 				c.ClipRectangle(borderRect);
 			
-			var rect = c.DrawTextBlock (textBlock,render);
+			var rect = c.DrawTextBlock (textBlock,renderState.Render);
 				
-			if(textBlock.CanGrow & !isDesign){
+			if(textBlock.CanGrow & !renderState.IsDesign){
 				borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, Math.Max( rect.Height, textBlock.Height));				
 			}else{
 				borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, textBlock.Height);								
 			}
-			if(render){
+			if(renderState.Render){
 				c.FillRectangle(borderRect,textBlock.BackgroundColor.ToCairoColor());
-				c.DrawTextBlock (textBlock,render);
-				c.DrawInsideBorder  (borderRect, textBlock.Border,render);	
+				c.DrawTextBlock (textBlock,renderState.Render);
+				c.DrawInsideBorder  (borderRect, textBlock.Border,renderState.Render);	
 			}else{
-				c.DrawTextBlock (textBlock,render);
+				c.DrawTextBlock (textBlock,renderState.Render);
 			}
 			AbsoluteBound = new Rectangle (ParentSection.AbsoluteDrawingStartPoint.X + textBlock.Location.X , 
 			                               ParentSection.AbsoluteDrawingStartPoint.Y + textBlock.Location.Y, borderRect.Width, borderRect.Height);

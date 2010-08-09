@@ -50,7 +50,7 @@ namespace MonoReports.ControlView
 		IControlViewFactory controlViewFactory;
 		Report parentReport;
 		Color sectionHeaderColor = new Color (0.9, 0.9, 0.97);
-		public bool AllowCrossSectionControl {get;private set;}
+		public bool AllowCrossSectionControl { get; private set; }
 
 		List<ControlViewBase> controls;
 		public ReadOnlyCollection<ControlViewBase> Controls {
@@ -82,12 +82,12 @@ namespace MonoReports.ControlView
 			this.controlViewFactory = controlViewFactory;
 			this.parentReport = parentReport;
 			
-			if(section is DetailSection)
+			if (section is DetailSection)
 				AllowCrossSectionControl = false;
 			else
 				AllowCrossSectionControl = true;
 			
-			SectionSpan = sectionSpan;		
+			SectionSpan = sectionSpan;
 			controls = new System.Collections.Generic.List<ControlViewBase> ();
 			AddControls (this.section.Controls);
 			SectionGripperColor = lightGraykColor;
@@ -95,16 +95,23 @@ namespace MonoReports.ControlView
 			
 		}
 
-		public ControlViewBase AddControl (Control controlToAdd){
-			var controlView = controlViewFactory.CreateControlView (controlToAdd, this);
+
+		public void AddControlView (ControlViewBase controlView)
+		{
 			controls.Add (controlView);
+		}
+
+		public ControlViewBase AddControl (Control controlToAdd)
+		{
+			var controlView = controlViewFactory.CreateControlView (controlToAdd, this);
+			AddControlView (controlView);
 			return controlView;
 		}
-			
+
 		public void AddControls (IList<Control> controlsToAdd)
 		{
-			for (int i = 0; i < controlsToAdd.Count; i++) {				
-				AddControl(controlsToAdd[i]);				
+			for (int i = 0; i < controlsToAdd.Count; i++) {
+				AddControl (controlsToAdd[i]);
 			}
 		}
 
@@ -117,20 +124,22 @@ namespace MonoReports.ControlView
 
 		#region implemented abstract members of MonoReport.ControlView.ControlViewBase
 
-		public override Size Render (Cairo.Context c, bool render, bool isDesign)
+		public override Size Render (Cairo.Context c, RenderState renderState)
 		{
+			
+			
 			Size size = new Size (parentReport.Width, section.Height);
-			if (isDesign) {
+			if (renderState.IsDesign) {
 				InvalidateBound ();
 			} else {
 				AbsoluteBound = new Rectangle (section.Location.X, section.Location.Y, section.Width, section.Height);
 			}
-			if (render) {
+			if (renderState.Render) {
 				c.Save ();
 				c.FillRectangle (AbsoluteBound, section.BackgroundColor.ToCairoColor ());
 				
 				
-				if (isDesign) {
+				if (renderState.IsDesign) {
 					Rectangle r = new Rectangle (AbsoluteBound.X, AbsoluteBound.Y, parentReport.Width, SectionheaderHeight);
 					c.FillRectangle (r, sectionHeaderColor);
 					c.DrawText (new Cairo.PointD (r.X + 3, r.Y + 3), "Arial", Cairo.FontSlant.Normal, Cairo.FontWeight.Normal, 12, blackColor, 600, Section.Name);
@@ -138,15 +147,19 @@ namespace MonoReports.ControlView
 					c.Translate (AbsoluteDrawingStartPoint.X, AbsoluteDrawingStartPoint.Y);
 					for (int j = 0; j < Controls.Count; j++) {
 						var ctrl = Controls[j];
-						ctrl.Render (c, render, true);
+						ctrl.Render (c, renderState);
 					}
+					for (int w = 0; w < renderState.CrossSectionControls.Count; w++) {
+						var crossCtrl = renderState.CrossSectionControls[w];
+						crossCtrl.Render (c, renderState);
+					}
+					
 				}
+				
 				
 				
 				c.Restore ();
 			}
-			
-			
 			
 			return size;
 		}
@@ -158,17 +171,20 @@ namespace MonoReports.ControlView
 		}
 
 		#endregion
-		
-		public PointD PointInSectionByAbsolutePoint(PointD absolutePoint){
-			return PointInSectionByAbsolutePoint(absolutePoint.X,absolutePoint.Y);
+
+		public PointD PointInSectionByAbsolutePoint (PointD absolutePoint)
+		{
+			return PointInSectionByAbsolutePoint (absolutePoint.X, absolutePoint.Y);
 		}
-		
-		public PointD PointInSectionByAbsolutePoint(double x, double y){
-			return new PointD(x - AbsoluteDrawingStartPoint.X, y - AbsoluteDrawingStartPoint.Y);
+
+		public PointD PointInSectionByAbsolutePoint (double x, double y)
+		{
+			return new PointD (x - AbsoluteDrawingStartPoint.X, y - AbsoluteDrawingStartPoint.Y);
 		}
-		
-		public PointD AbsolutePointByLocalPoint(double x, double y){
-			return new PointD(x + AbsoluteDrawingStartPoint.X, y + AbsoluteDrawingStartPoint.Y);
+
+		public PointD AbsolutePointByLocalPoint (double x, double y)
+		{
+			return new PointD (x + AbsoluteDrawingStartPoint.X, y + AbsoluteDrawingStartPoint.Y);
 		}
 
 		private bool sectionGripperHighlighted;

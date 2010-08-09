@@ -104,6 +104,7 @@
     <Compile Include="ControlView\ReportView.cs" />
     <Compile Include="ControlView\CrossSectionLineView.cs" />
     <Compile Include="Tools\CrossSectionLineTool.cs" />
+    <Compile Include="Core\RenderState.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\" />

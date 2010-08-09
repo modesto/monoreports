@@ -62,10 +62,10 @@ namespace MonoReports.ControlView
 		#region implemented abstract members of MonoReport.ControlView.ControlViewBase
 	 
 		 
-		public override  Size Render ( Context c,bool render, bool isDesign)
+		public override  Size Render ( Context c,RenderState renderState)
 		{				
 			c.Save();
-			if(render){
+			if(renderState.Render){
 				Cairo.PointD p1 = new Cairo.PointD(line.Location.X ,line.Location.Y);
 				Cairo.PointD p2 = new Cairo.PointD(line.Location.X + line.End.X, line.Location.Y + line.End.Y);
 		 		c.DrawLine(p1,p2,line.BackgroundColor.ToCairoColor(), line.LineWidth);

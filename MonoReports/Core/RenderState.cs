@@ -1,8 +1,8 @@
 // 
-// ControlViewBase.cs
+// RenderState.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki(at)gmail.com>
+//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
 // 
 // Copyright (c) 2010 Tomasz Kubacki 2010
 // 
@@ -23,38 +23,44 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
-using MonoReports.Model.Controls;
-using Cairo;
-using MonoReports.Model;
-using MonoReports.Core;
-
-namespace MonoReports.ControlView
+using System.Collections.Generic;
+using MonoReports.ControlView;
+namespace MonoReports.Core
 {
-
-
-	public abstract class ControlViewBase
+	public class RenderState
 	{
-		public virtual Control ControlModel {get;set;}
-		public Rectangle AbsoluteBound {get;set;}
-		public SectionView ParentSection {get;set;}
+
+		bool render;
 		
+		public SectionView CurrentSection {get;set;}
+		public List<ControlViewBase> CrossSectionControls{get;set;}
 		
-		public ControlViewBase ()
-		{
-			
+		public RenderState(){
+			CrossSectionControls = new List<ControlViewBase>();
 		}
 		
-		public ControlViewBase (MonoReports.Model.Controls.Control controlModel)
-		{
-			ControlModel = controlModel;
+		public bool Render {
+			get {
+				return this.render;
+			}
+			set {
+				render = value;
+			}
 		}
+
+		bool isDesign;
 		
-	
-		public abstract bool ContainsPoint(double x, double y);
+		public bool IsDesign {
+			get {
+				return this.isDesign;
+			}
+			set {
+				isDesign = value;
+			}
+		}
+
 		
-		public abstract Size Render( Context c,RenderState renderState);		
 	}
-	
 }
+

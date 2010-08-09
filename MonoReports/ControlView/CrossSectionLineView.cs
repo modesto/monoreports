@@ -26,39 +26,74 @@
 using System;
 using MonoReports.Model.Controls;
 using MonoReports.Extensions.CairoExtensions;
+using MonoReports.Core;
 
 namespace MonoReports.ControlView
 {
 	public class CrossSectionLineView : LineView
 	{
-		SectionView endSection;
 		
-		public CrossSectionLineView (Line line,SectionView parentSection, SectionView endSection):base(line, parentSection)
-		{
-			endSection = endSection;
-		}
+		SectionView startSection;
 		
-		
-		public override Size Render (Cairo.Context c, bool render, bool isDesign)
-		{
-				c.Save();
-			if(render){
-				Cairo.PointD p1 = new Cairo.PointD(line.Location.X ,line.Location.Y);
-				Cairo.PointD p2 = new Cairo.PointD(line.Location.X , ParentSection.Section.Height);
-		 		c.DrawLine(p1,p2,line.BackgroundColor.ToCairoColor(), line.LineWidth);
+		public SectionView StartSection {
+			get {
+				return this.startSection;
 			}
-			c.Restore();
-			return new MonoReports.Model.Controls.Size(0,0);
+			set {
+				startSection = value;
+			}
 		}
-		
-		
-			public override bool ContainsPoint (double x, double y)
+
+		SectionView endSection;
+
+		public SectionView EndSection {
+			get { return this.endSection; }
+			set { endSection = value; }
+		}
+
+		public CrossSectionLineView (Line line, SectionView startSection, SectionView endSection) : base(line, startSection)
+		{
+			this.startSection = startSection;
+			this.endSection = endSection;
+		}
+
+		bool isActive;
+
+		public override Size Render (Cairo.Context c, RenderState renderState)
+		{
+			c.Save ();
+			if (renderState.IsDesign && renderState.Render) {
+				if(renderState.CurrentSection == StartSection){
+					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, line.Location.Y);
+					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, ParentSection.Section.Height);
+					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth);
+					isActive = true;
+				
+				}else if(renderState.CurrentSection == EndSection){
+					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, line.End.Y);
+					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, 0);
+					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth);
+					isActive = false;
+				}else{
+					if(isActive){
+					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, 0);
+					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, renderState.CurrentSection.Section.Height);
+					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth);
+					}
+				}
+			}
+			c.Restore ();
+			return new MonoReports.Model.Controls.Size (0, 0);
+		}
+
+
+		public override bool ContainsPoint (double x, double y)
 		{
 			double span = 2;
-			Cairo.PointD p1 =  ParentSection.AbsolutePointByLocalPoint(line.Location.X,line.Location.Y);
-			Cairo.PointD p2 = ParentSection.AbsolutePointByLocalPoint(line.Location.X, double.MaxValue);
-			Cairo.PointD hitPoint = new Cairo.PointD(x,y);
- 			if (hitPoint.X >= (Math.Max (p1.X, p2.X) + span) || hitPoint.X <= (Math.Min (p1.X, p2.X) - span) || hitPoint.Y >= (Math.Max (p1.Y, p2.Y) + span) || hitPoint.Y <= (Math.Min (p1.Y, p2.Y) - span))
+			Cairo.PointD p1 = ParentSection.AbsolutePointByLocalPoint (line.Location.X, line.Location.Y);
+			Cairo.PointD p2 = ParentSection.AbsolutePointByLocalPoint (line.Location.X, double.MaxValue);
+			Cairo.PointD hitPoint = new Cairo.PointD (x, y);
+			if (hitPoint.X >= (Math.Max (p1.X, p2.X) + span) || hitPoint.X <= (Math.Min (p1.X, p2.X) - span) || hitPoint.Y >= (Math.Max (p1.Y, p2.Y) + span) || hitPoint.Y <= (Math.Min (p1.Y, p2.Y) - span))
 				return false;
 			
 			if (p1.X == p2.X || p1.Y == p2.Y)

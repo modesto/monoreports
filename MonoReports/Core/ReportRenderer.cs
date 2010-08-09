@@ -46,7 +46,8 @@ namespace MonoReports.Core
 			foreach (var sectionView in designView.ReportView.SectionViews) {
 				controlRenderersDictionary.Add (sectionView.ControlModel, sectionView);
 				foreach (var controlView in sectionView.Controls) {
-					controlRenderersDictionary.Add (controlView.ControlModel, controlView);
+					if(!controlRenderersDictionary.ContainsKey(controlView.ControlModel))
+						controlRenderersDictionary.Add (controlView.ControlModel, controlView);
 				}
 			}
 		}
@@ -62,8 +63,7 @@ namespace MonoReports.Core
 				designView.CurrentContext.Save();	
 				RenderControl (section);
 				designView.CurrentContext.Translate(0,section.Location.Y);
-				
-				
+ 
 				for (int j = 0; j < section.Controls.Count; j++) {
 					RenderControl (section.Controls[j]);
 				}
@@ -76,12 +76,13 @@ namespace MonoReports.Core
 		{
 			ControlViewBase controlView = null;
 			try {
-				controlView = controlRenderersDictionary[control.TemplateControl];
+				controlView = controlRenderersDictionary[control.TemplateControl];			 				
 			} catch (Exception exp) {
 				throw new Exception ("No template control found", exp);
 			}
 			controlView.ControlModel = control;
-			var result = controlView.Render (designView.CurrentContext, false, false);
+			RenderState renderState = new RenderState(){ IsDesign = false, Render = false, CurrentSection = controlView.ParentSection };
+			var result = controlView.Render (designView.CurrentContext, renderState);
 			controlView.ControlModel = control.TemplateControl;
 			return result;
 		}
@@ -89,13 +90,15 @@ namespace MonoReports.Core
 		public void RenderControl (Control control)
 		{
 			ControlViewBase controlView = null;
+			
 			try {
 				controlView = controlRenderersDictionary[control.TemplateControl];
 			} catch (Exception exp) {
 				throw new Exception ("No template control found", exp);
 			}
 			controlView.ControlModel = control;
-			controlView.Render (designView.CurrentContext, true, false);
+			RenderState renderState = new RenderState(){ IsDesign = false, Render = true, CurrentSection = controlView.ParentSection, CrossSectionControls = designView.CrossSectionControls};
+			controlView.Render (designView.CurrentContext, renderState);
 			controlView.ControlModel = control.TemplateControl;
 		}
 

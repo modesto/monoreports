@@ -44,10 +44,13 @@ namespace MonoReports.Tools
 				var endPoint = new MonoReports.Model.Controls.Point(0, 10);
 				var l = new CrossSectionLine { Location = new MonoReports.Model.Controls.Point (startPoint.X, startPoint.Y), End = endPoint };
 				
-				var lineView = sectionView.AddControl (l);
+				var lineView = sectionView.AddControl (l) as CrossSectionLineView;
+			
 				sectionView.Section.Controls.Add (l);
+				lineView.EndSection.AddControlView(lineView);
 				lineView.ParentSection = sectionView;
 				designView.SelectedControl = lineView;
+				designView.CrossSectionControls.Add(lineView);
 			}
 		}
 		

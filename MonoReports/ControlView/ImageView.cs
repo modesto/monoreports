@@ -70,7 +70,7 @@ namespace MonoReports.ControlView
 		#region implemented abstract members of MonoReport.ControlView.ControlViewBase
 
 
-		public override Size Render (Context c, bool render, bool isDesign)
+		public override Size Render (Context c, RenderState renderState)
 		{
 			Rectangle borderRect;
 			c.Save ();
@@ -82,10 +82,10 @@ namespace MonoReports.ControlView
 			
 			borderRect = new Rectangle (image.Location.X, image.Location.Y, image.Width, image.Height);
 			
-			if (render) {
+			if (renderState.Render) {
 				c.FillRectangle (borderRect, image.BackgroundColor.ToCairoColor ());
 				c.DrawPixbuf (pixbuf, image.Location.ToCairoPointD ());
-				c.DrawInsideBorder (borderRect, image.Border, render);
+				c.DrawInsideBorder (borderRect, image.Border, renderState.Render);
 			} else {
 				// c.DrawPixbuf(pixbuf,image.Location.ToCairoPointD());
 			}

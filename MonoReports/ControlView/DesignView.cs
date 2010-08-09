@@ -58,11 +58,10 @@ namespace MonoReports.ControlView
 		public IWorkspaceService WorkspaceService { get; set; }
 		public IToolBoxService ToolBoxService { get; set; }
 		public ReportView ReportView { get; set; }
-		internal Context CurrentContext;
-
-
-
-
+		internal Context CurrentContext;				
+		List<ControlViewBase> crossSectionControls;
+		public List<ControlViewBase> CrossSectionControls {get { return crossSectionControls; }set { crossSectionControls = value; }}
+			
 		public DesignView (ReportView reportView, IWorkspaceService workspaceService, IToolBoxService toolBoxService)
 		{
 			ReportView = reportView;
@@ -72,12 +71,14 @@ namespace MonoReports.ControlView
 			IsDesign = true;
 			Zoom = 1;
 			Render = true;
+			CrossSectionControls = new List<ControlViewBase>();
 		}
 
 		public void RedrawReport (Context c)
 		{
-			
+			RenderState renderState = new RenderState(){ IsDesign = true, Render = true, CrossSectionControls = crossSectionControls};
 			CurrentContext = c;
+		 
 			if (Zoom != 1) {
 				CurrentContext.Scale (Zoom, Zoom);
 				Width = (int)(ReportView.Report.Width * Zoom);
@@ -89,8 +90,9 @@ namespace MonoReports.ControlView
 				SelectedTool.OnBeforeDraw (CurrentContext);
 			}
 			for (int i = 0; i < ReportView.SectionViews.Count; i++) {
-				var b = ReportView.SectionViews[i];
-				b.Render (CurrentContext, Render, IsDesign);
+				var renderedSection = ReportView.SectionViews[i];
+				renderState.CurrentSection = renderedSection;
+				renderedSection.Render (CurrentContext, renderState);								
 			}
 			if (SelectedTool != null) {
 				SelectedTool.OnAfterDraw (CurrentContext);
