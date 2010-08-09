@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>MonoReports</RootNamespace>
+    <AssemblyName>MonoReports</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>glib-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>glade-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+    </Reference>
+    <Reference Include="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Mono.TextEditor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Mono.TextEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\MonoDevelop.Ide.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="MainWindow.cs" />
+    <Compile Include="gtk-gui\MainWindow.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="ControlView\TextBlockView.cs" />
+    <Compile Include="ControlView\ControlViewBase.cs" />
+    <Compile Include="Core\IControlViewFactory.cs" />
+    <Compile Include="Core\ControlViewFactory.cs" />
+    <Compile Include="ControlView\SectionView.cs" />
+    <Compile Include="Tools\SectionTool.cs" />
+    <Compile Include="Core\IWorkspaceService.cs" />
+    <Compile Include="ControlView\LineView.cs" />
+    <Compile Include="ControlView\ImageView.cs" />
+    <Compile Include="Core\ReportRenderer.cs" />
+    <Compile Include="Tools\LineTool.cs" />
+    <Compile Include="Tools\RectTool.cs" />
+    <Compile Include="Extensions\JsonConverters.cs" />
+    <Compile Include="Extensions\GtkExtensions\ToolBarComboBox.cs" />
+    <Compile Include="Extensions\GtkExtensions\ToolBarSlider.cs" />
+    <Compile Include="Extensions\GtkExtensions\ToolBarLabel.cs" />
+    <Compile Include="Extensions\GtkExtensions\ToolBarSpinButton.cs" />
+    <Compile Include="Extensions\CairoExtensions\CairoExtensions.cs" />
+    <Compile Include="ControlView\DesignView.cs" />
+    <Compile Include="Tools\BaseTool.cs" />
+    <Compile Include="Tools\ToolBoxService.cs" />
+    <Compile Include="Tools\IToolBoxService.cs" />
+    <Compile Include="Tools\ZoomTool.cs" />
+    <Compile Include="ControlView\ReportView.cs" />
+    <Compile Include="ControlView\CrossSectionLineView.cs" />
+    <Compile Include="Tools\CrossSectionLineTool.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\" />
+    <Folder Include="ControlView\" />
+    <Folder Include="ControlView\" />
+    <Folder Include="Tools\" />
+    <Folder Include="resources\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Extensions\GtkExtensions\" />
+    <Folder Include="Extensions\CairoExtensions\" />
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="PrefixedHierarchical" ResourceNamePolicy="FileName" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
+  <ItemGroup>
+    <None Include="resources\Alfred_Tarski.jpeg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MonoReports.Model\MonoReports.Model.csproj">
+      <Project>{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}</Project>
+      <Name>MonoReports.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
