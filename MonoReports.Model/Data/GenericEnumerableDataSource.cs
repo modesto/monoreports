@@ -29,47 +29,54 @@ using System.Collections;
 
 namespace MonoReports.Model.Data
 {
-	public class GenericEnumerableDataSource<T>  : IDataSource
+	public class GenericEnumerableDataSource<T> : IDataSource
 	{
-		IEnumerable<T> list;
-		
-		
-		
-		public GenericEnumerableDataSource(IEnumerable<T> list){	
-			this.list = list;
-			Columns = new Dictionary<string, DataColumn>();
-			 
-			foreach (var p in  typeof(T).GetProperties()){				
-				DataColumn dc = new PropertyDataColumn(this,p);
-			 
-				Columns.Add(dc.Name,dc);
-			}
-			 
-		}
-		
-		
-		#region IDataSource implementation
-		 public Dictionary<string,DataColumn> Columns {get;set;}
-		 
-		public IEnumerator GetEnumerator ()
+		IEnumerable<T> data;
+		Dictionary<string,int> columnIndeces;
+
+
+		public GenericEnumerableDataSource (IEnumerable<T> data)
 		{
-			return list.GetEnumerator();
+			this.data = data;
+			Columns = new List<DataColumn> ();
+			columnIndeces = new Dictionary<string, int>();
+			int i = 0;
+			foreach (var p in typeof(T).GetProperties ()) {
+				DataColumn dc = new PropertyDataColumn (p);
+				Columns.Add (dc);
+				columnIndeces.Add(dc.Name,i++);
+			}
+			
 		}
+
+
+		#region IDataSource implementation
 		
+		public List<DataColumn> Columns { get; private set;}
 
-		 
-		public string GetValue (string columnName, object current)
-		{	 if(Columns.ContainsKey(columnName))
-			 	return Columns[columnName].GetValue(current);
-			  else 
-			      return string.Empty;
+		public IList<DataRow> GetRows ()
+		{
+			List<DataRow> rows = new List<DataRow> (100);
+			var enumerator = data.GetEnumerator ();
+			while (enumerator.MoveNext ()) {
+				DataRow row = new DataRow ();
+				row.Values = new string[Columns.Count];
+				for (int i = 0; i < Columns.Count; i++) {
+					row.Values[i] = Columns[i].GetValue (enumerator.Current);
+				}
+				rows.Add (row);
+			}
+			
+			return rows;
 		}
-		 
 
- 
-#endregion
-		 
- 
+
+		public int ColumnIndex (string columnName)
+		{
+			return columnIndeces[columnName];
+		}
+		#endregion
+		
 	}
 }
 

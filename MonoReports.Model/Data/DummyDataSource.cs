@@ -27,7 +27,7 @@ using System;
 using MonoReports.Model;
 using System.Collections;
 using System.Collections.Generic;
- 
+
 namespace MonoReports.Model.Data
 {
 	public class DummyDataSource : IDataSource
@@ -35,25 +35,24 @@ namespace MonoReports.Model.Data
 		public DummyDataSource ()
 		{
 		}
-  
+ 
 		#region IDataSource implementation
-		public Dictionary<string,DataColumn>  Columns {
+		public IList<DataRow> GetRows ()
+		{
+			throw new NotImplementedException ();
+		}
+
+		public int ColumnIndex (string columnName)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public List<DataColumn> Columns {
 			get {
-				return new Dictionary<string,DataColumn>();
+				throw new NotImplementedException ();
 			}
 		}
- 
-		public  IEnumerator GetEnumerator ()
-		{
-			 return new ArrayList().GetEnumerator();
-		}
- 
-		public string GetValue (string fieldName, object current)
-		{
-			 return string.Empty;
-		}
- 
-#endregion 
-}
+		#endregion
+	}
 }
 

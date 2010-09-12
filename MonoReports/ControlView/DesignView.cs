@@ -59,8 +59,7 @@ namespace MonoReports.ControlView
 		public IToolBoxService ToolBoxService { get; set; }
 		public ReportView ReportView { get; set; }
 		internal Context CurrentContext;				
-		List<ControlViewBase> crossSectionControls;
-		public List<ControlViewBase> CrossSectionControls {get { return crossSectionControls; }set { crossSectionControls = value; }}
+		
 			
 		public DesignView (ReportView reportView, IWorkspaceService workspaceService, IToolBoxService toolBoxService)
 		{
@@ -70,13 +69,12 @@ namespace MonoReports.ControlView
 			toolBoxService.DesignView = this;
 			IsDesign = true;
 			Zoom = 1;
-			Render = true;
-			CrossSectionControls = new List<ControlViewBase>();
+			Render = true;			
 		}
 
 		public void RedrawReport (Context c)
 		{
-			RenderState renderState = new RenderState(){ IsDesign = true, Render = true, CrossSectionControls = crossSectionControls};
+			RenderState renderState = new RenderState(){ IsDesign = true, Render = true};
 			CurrentContext = c;
 		 
 			if (Zoom != 1) {
@@ -91,8 +89,14 @@ namespace MonoReports.ControlView
 			}
 			for (int i = 0; i < ReportView.SectionViews.Count; i++) {
 				var renderedSection = ReportView.SectionViews[i];
-				renderState.CurrentSection = renderedSection;
-				renderedSection.Render (CurrentContext, renderState);								
+				renderState.SectionView = renderedSection;
+				renderState.Section = renderedSection.Section;
+				
+				foreach(var crossControlView in renderedSection.DesignCrossSectionControlsToAdd)
+					renderState.CrossSectionControls.Add(crossControlView);
+				renderedSection.Render (CurrentContext, renderState);				
+				foreach(var crossControlView in renderedSection.DesignCrossSectionControlsToRemove)
+					renderState.CrossSectionControls.Remove(crossControlView);
 			}
 			if (SelectedTool != null) {
 				SelectedTool.OnAfterDraw (CurrentContext);

@@ -47,10 +47,12 @@ namespace MonoReports.Tools
 				var lineView = sectionView.AddControl (l) as CrossSectionLineView;
 			
 				sectionView.Section.Controls.Add (l);
+				sectionView.DesignCrossSectionControlsToAdd.Add(lineView);
 				lineView.EndSection.AddControlView(lineView);
+				lineView.EndSection.DesignCrossSectionControlsToRemove.Add(lineView);
 				lineView.ParentSection = sectionView;
 				designView.SelectedControl = lineView;
-				designView.CrossSectionControls.Add(lineView);
+				
 			}
 		}
 		

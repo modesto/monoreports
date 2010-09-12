@@ -26,6 +26,7 @@
 using System;
 using System.Drawing;
 using MonoReports.Model;
+using MonoReports.Model.Data;
 
 namespace MonoReports.Model.Controls
 {
@@ -96,6 +97,9 @@ namespace MonoReports.Model.Controls
 			c.BackgroundColor = Color.FromArgb(BackgroundColor.ToArgb());
 			c.TemplateControl = this;
 			
+		}
+		
+		public virtual void AssignValue(Data.IDataSource source, DataRow row){
 		}
 		
 	}

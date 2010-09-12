@@ -40,6 +40,14 @@ namespace MonoReports.Model.Engine
 		Report Report;
 		IDataSource source;
 		ReportContext ReportContext;
+		List<List<Control>> crossSectionControlsRepository;
+		int crossSectionRepositoryIndex = 0;
+		Page currentPage = null;
+		double spaceLeftOnCurrentPage = 0;
+		double currentY = 0;
+
+		List<int> groupColumnIndeces = null;
+		List<string> groupCurrentKey = null;
 
 		public ReportEngine (Report report, IReportRenderer renderer)
 		{
@@ -87,125 +95,206 @@ namespace MonoReports.Model.Engine
 			//todo exec Report event			
 		}
 
-		Page currentPage = null;
-		double spaceLeftOnCurrentPage = 0;
-		PageHeaderSection rheaderSection = null;
-		List<DetailSection> detailSections = null;
-		PageFooterSection rfooterSection = null;
-		double currentY = 0;
+
+		void init ()
+		{
+			ReportContext = new ReportContext { CurrentPageIndex = 0, DataSource = null, Parameters = new Dictionary<string, string> (), ReportMode = ReportMode.Preview };
+			Report.Pages = new List<Page> ();
+			crossSectionControlsRepository = new List<List<Control>> ();
+			var headerCrossControls = Report.PageHeaderSection.GetCrossSectionControls (Report.PageFooterSection);
+			crossSectionControlsRepository.Add (new List<Control> (headerCrossControls));
+			
+			for (int i = 0; i < Report.GroupHeaderSections.Count; i++) {
+				GroupHeaderSection hs = Report.GroupHeaderSections[i];
+				var groupHeaderCrossControls = hs.GetCrossSectionControls (Report.GroupFooterSections[i]);
+				crossSectionControlsRepository.Add (new List<Control> (groupHeaderCrossControls));
+			}
+			
+		}
 
 		public void Process ()
 		{
 			
-			ReportContext = new ReportContext { CurrentPageIndex = 0, DataSource = null, Parameters = new Dictionary<string, string> (), ReportMode = ReportMode.Preview };
-			//ReportRenderer.ReportContext = ReportContext;
-			rheaderSection = null;
-			detailSections = new List<DetailSection> ();
-			rfooterSection = null;
-			Report.Pages.Clear ();
+			init ();
 			newPage ();
 			
-			for (int i = 0; i < Report.Sections.Count; i++) {
-				var section = Report.Sections[i];
-				
-				switch (section.GetType ().Name) {
-				
-				case "PageHeaderSection":
-					rheaderSection = section as PageHeaderSection;
-					break;
-				case "DetailSection":
-					detailSections.Add (section as DetailSection);
-					break;
-				case "PageFooterSection":
-					rfooterSection = section as PageFooterSection;
-					break;
-				default:
-					throw new Exception ("Unknown section type");
-				}
-				
-			}
-			
-			processHeader ();
-			processFooter ();
 			processDetails ();
 			
 			onAfterReportProcess ();
 		}
 
-		void processHeader ()
+		void processPageHeader ()
 		{
-			
-			var headerSection = rheaderSection.Clone() as PageHeaderSection;
+			var headerSection = Report.PageHeaderSection.Clone () as PageHeaderSection;
 			headerSection.Format ();
 			headerSection.Location = new Point (headerSection.Location.X, currentY);
-			double height = processSection (headerSection, null);
+			double height = processSection (headerSection, new DataRow ());
 			headerSection.Size = new Size (headerSection.Size.Width, height);
 			currentY += height;
-			currentPage.Sections.Add (headerSection);
 			
 			
 			spaceLeftOnCurrentPage -= currentY;
+			
+			
+			currentPage.Sections.Add (headerSection);
 		}
+
+
+
+		void processGroupHeader (int groupIndex)
+		{
+			var groupHeaderSection = Report.GroupHeaderSections[groupIndex].Clone () as Section;
+			double gh = processSection (groupHeaderSection, new DataRow ());
+			processCrossSectionControls(groupHeaderSection);
+			addSection(groupHeaderSection,gh);
+		}
+		
+		
+		void processGroupFooter (int groupIndex)
+		{
+			var groupFooterSection = Report.GroupFooterSections[groupIndex].Clone () as Section;
+			double gh = processSection (groupFooterSection, new DataRow ());		
+			processCrossSectionControls(groupFooterSection);
+			addSection(groupFooterSection,gh);
+		}
+		
+		
+		void processCrossSectionControls(Section section){
+			for (int w = 0; w <= crossSectionRepositoryIndex; w++) {
+					foreach (var crossSectionControl in crossSectionControlsRepository[w]) {
+						section.Controls.Add (crossSectionControl.Clone () as Control);
+					}
+			}
+		}
+
 
 		void processDetails ()
 		{
 			
-			var enumerator = source.GetEnumerator ();
-			while (enumerator.MoveNext ()) {
+			
+			IDataSource dataSource = (source as IDataSource);
+			groupColumnIndeces = new List<int> ();
+			for (int i = 0; i < Report.Groups.Count; i++) {
+				var col = dataSource.Columns.FirstOrDefault (cl => cl.Name == Report.Groups[i].GroupingFieldName);
+				if (col != null)
+					groupColumnIndeces.Add (dataSource.Columns.IndexOf (col));
+				else {
+					groupColumnIndeces.Add (-1);
+				}
+			}
+			
+			
+			var rowsAll = dataSource.GetRows ();
+			
+			if (Report.Groups.Count > 0) {
+				groupCurrentKey = new List<string> ();
 				
-				for (int i = 0; i < detailSections.Count; i++) {
-					var detailSection = detailSections[i].Clone () as DetailSection;
-					detailSection.Format ();
+				bool isFirstOrdering = true;
+				IOrderedEnumerable<DataRow> orderedRows = null;
+				for (int i = 0; i < Report.Groups.Count; i++) {
 					
-					double height = processSection (detailSection, enumerator.Current);
-					
-					if (height > spaceLeftOnCurrentPage) {
+					groupCurrentKey.Add (String.Empty);
+					if (groupColumnIndeces[i] != -1) {
 						
-						newPage ();
-						processHeader ();
+						if (isFirstOrdering) {
+							orderedRows = rowsAll.OrderBy (r => r.Values[groupColumnIndeces[i]]);
+							isFirstOrdering = false;
+						} else {
+							orderedRows = orderedRows.ThenBy (r => r.Values[groupColumnIndeces[i]]);
+						}
 					}
-					detailSection.Location = new Point (detailSection.Location.X, currentY);
-					detailSection.Size = new Size (detailSection.Size.Width, height);
-					currentPage.Sections.Add (detailSection);
-					spaceLeftOnCurrentPage -= height;
-					currentY += height;
+					
+				}
+				
+				if (orderedRows != null) {
+					rowsAll = orderedRows.ToList ();
+				}
+				
+				
+			}
+			
+			var rows = rowsAll;
+			
+			for (int j = 0; j < rows.Count; j++) {
+				
+				var row = rows[j];
+				
+				if (j == 0) {
+					processGroupHeader(0);
+				}
+				
+				for (int g = 0; g < groupColumnIndeces.Count; g++) {
+					if (groupColumnIndeces[g] != -1 && groupCurrentKey[g] != row[groupColumnIndeces[g]]) {
+						processGroupHeader(g);
+					}
+				}
+				
+				var detailSection = Report.DetailSection.Clone () as DetailSection;
+				
+				detailSection.Format ();
+				double height = processSection (detailSection, row);
+				processCrossSectionControls(detailSection);
+				addSection(detailSection,height);
+ 
+			 
+			}
+			
+			
+			
+		}
+		
+	
+		Section previousSection = null;
+		
+		void addSection(Section s, double height){
+			
+				if (height > spaceLeftOnCurrentPage) {
+					if (previousSection != null)
+						previousSection.Size = new Size (s.Size.Width, previousSection.Height + spaceLeftOnCurrentPage);
+					newPage ();
+				}
+				s.Location = new Point (s.Location.X, currentY);
+				s.Size = new Size (s.Size.Width, height);
+				currentPage.Sections.Add (s);
+				previousSection = s;
+				spaceLeftOnCurrentPage -= height;
+				currentY += height;						
+		}
+		 
+
+		void processPageFooter ()
+		{
+			double footerSectionsHeight = 0;
+			var footerSection = Report.PageFooterSection.Clone () as PageFooterSection;
+			footerSection.Format ();
+			
+			double height = processSection (footerSection, new DataRow ());
+			for (int w = 0; w <= crossSectionRepositoryIndex; w++) {
+				foreach (var crossSectionControl in crossSectionControlsRepository[w]) {
+					footerSection.Controls.Add (crossSectionControl.Clone () as Control);
 				}
 				
 			}
-		}
-
-		public Section footerSectionOnCurrentPage = null;
-
-		void processFooter ()
-		{
-			double footerSectionsHeight = 0;
-			footerSectionOnCurrentPage = null;
 			
-			var footerSection = rfooterSection.Clone() as PageFooterSection;
-			footerSection.Format ();
-			double height = processSection (footerSection, null);
 			footerSection.Size = new Size (footerSection.Size.Width, height);
-			footerSectionOnCurrentPage = footerSection;
 			footerSectionsHeight += height;
-			
-			
-			
-			
 			double currentFooterY = 0;
-			
-			footerSectionOnCurrentPage.Location = new Point (footerSectionOnCurrentPage.Location.X, (Report.Height - footerSectionsHeight) + currentFooterY);
+			footerSection.Location = new Point (footerSection.Location.X, (Report.Height - footerSectionsHeight) + currentFooterY);
 			currentFooterY += footerSection.Height;
 			
-			
 			spaceLeftOnCurrentPage -= footerSectionsHeight;
+			
+			
+			currentPage.Sections.Add (footerSection);
 		}
 
 
 
-		double processSection (Section section, object current)
+		double processSection (Section section, DataRow currentRow)
 		{
 			
 			var orderedControls = section.Controls.OrderBy (ctrl => ctrl.Location.Y).ToList ();
+			
 			double span = 0;
 			double y = 0;
 			double maxHeight = 0;
@@ -228,12 +317,8 @@ namespace MonoReports.Model.Engine
 					ungrowedControlBottom = 0;
 					
 					
-					if (current != null && control is TextBlock) {
-						TextBlock tb = control as TextBlock;
-						if (!string.IsNullOrEmpty (tb.FieldName)) {
-							tb.Text = source.GetValue (tb.FieldName, current);
-						}
-					}
+					control.AssignValue (source, currentRow);
+					
 					
 					y = control.Location.Y + span;
 					var controlSize = ReportRenderer.MeasureControl (control);
@@ -268,6 +353,7 @@ namespace MonoReports.Model.Engine
 					
 				}
 				
+				
 			}
 			
 			if (!section.CanGrow)
@@ -280,18 +366,33 @@ namespace MonoReports.Model.Engine
 			
 		}
 
+		void processGroupHeader (GroupHeaderSection gh)
+		{
+			crossSectionRepositoryIndex++;
+			
+		}
+
+
+		void processGroupFooter (GroupFooterSection gf)
+		{
+			crossSectionRepositoryIndex--;
+			
+		}
+
 		void newPage ()
 		{
 			
 			if (ReportContext.CurrentPageIndex > 0) {
 				ReportRenderer.NextPage ();
-				currentPage.Sections.Add(footerSectionOnCurrentPage);
 			}
 			currentY = 0;
 			ReportContext.CurrentPageIndex++;
 			currentPage = new Page { PageNumber = ReportContext.CurrentPageIndex };
 			spaceLeftOnCurrentPage = Report.Height;
 			Report.Pages.Add (currentPage);
+			
+			processPageHeader ();
+			processPageFooter ();
 		}
 
 
@@ -300,12 +401,32 @@ namespace MonoReports.Model.Engine
 			//todo exec Report event
 			
 		}
+		
 	}
 
 	internal struct SpanInfo
 	{
 		internal double Treshold;
 		internal double Span;
+	}
+
+
+
+	static internal class SectionExtensions
+	{
+
+		public static IEnumerable<Control> GetCrossSectionControls (this Section section, Section endSection)
+		{
+			
+			foreach (var c in section.Controls.Where (ctrl => ctrl is ICrossSectionControl)) {
+				
+				ICrossSectionControl csc = c as ICrossSectionControl;
+				csc.StartSection = section;
+				csc.EndSection = endSection;
+				yield return c;
+			}
+		}
+		
 	}
 }
 

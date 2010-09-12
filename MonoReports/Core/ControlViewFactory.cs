@@ -77,10 +77,10 @@ namespace MonoReports.Core
 									.SectionViews
 									.FirstOrDefault(s => s.ControlModel  is PageFooterSection);
 			                    	return new CrossSectionLineView(ctrl as CrossSectionLine,section,fs);
-								}else if(section.ControlModel is PageFooterSection){
+								}else if(section.ControlModel is GroupHeaderSection){
 									SectionView fs = reportView
 									.SectionViews
-									.FirstOrDefault(s => s.ControlModel  is PageHeaderSection);
+									.FirstOrDefault(s => s.ControlModel  is GroupFooterSection);
 			                    	return new CrossSectionLineView(ctrl as CrossSectionLine,fs,section);
 								}
 								throw new Exception("Unimplemented");

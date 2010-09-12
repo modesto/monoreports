@@ -41,11 +41,15 @@ namespace MonoReports.ControlView
 			Report = report;
 			controlViewFactory = new ControlViewFactory (this);
 			sectionViews = new List<SectionView> ();
-			
-			for (int i = 0; i < report.Sections.Count; i++) {
-				AddSection (report.Sections[i]);
+			addSectionView (report.PageHeaderSection);
+			foreach (var groupHeader in report.GroupHeaderSections) {
+				addSectionView (groupHeader);
 			}
-				
+			addSectionView (report.DetailSection);
+			foreach (var groupFooter in report.GroupFooterSections) {
+				addSectionView (groupFooter);
+			}
+			addSectionView (report.PageFooterSection);
 		}
 		
 		private List<SectionView> sectionViews;
@@ -58,7 +62,10 @@ namespace MonoReports.ControlView
 		}
 		
 		
-		public void AddSection (Section section)
+		 
+		
+		
+		private void addSectionView (Section section)
 		{
 			Cairo.PointD sectionSpan;
 			if (sectionViews.Count > 0) {
@@ -70,6 +77,9 @@ namespace MonoReports.ControlView
 			var sectionView = new SectionView (Report, controlViewFactory, section, sectionSpan);
 			sectionViews.Add (sectionView);
 		}
+		
+		
+		 
 	}
 }
 

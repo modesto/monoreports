@@ -1,5 +1,5 @@
 // 
-// CrossSectionLine.cs
+// ICrossSectionControl.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -26,35 +26,20 @@
 using System;
 namespace MonoReports.Model.Controls
 {
-	public class CrossSectionLine : Line, ICrossSectionControl
+	public interface ICrossSectionControl
 	{
-		public CrossSectionLine ():base()
-		{
-			BackgroundColor =  System.Drawing.Color.Black;	
-			LineWidth = 2;
+		Section StartSection {
+			get;
+			set;
 		}
 		
-		public override object Clone ()
-		{
-			CrossSectionLine line = new CrossSectionLine();
-			CopyBasicProperties(line);			 
-			line.End = new Point(End.X,End.Y);
-			line.LineWidth = LineWidth;
-			return line;
-		}
-	
-		#region ICrossSectionControl implementation
-		public Section StartSection {
+		
+		Section EndSection {
 			get;
 			set;
 		}
-
-		public Section EndSection {
-			get;
-			set;
-		}
-		#endregion
-		 
-}
+		
+		
+	}
 }
 

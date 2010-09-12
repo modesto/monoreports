@@ -34,9 +34,9 @@ namespace MonoReports.Core
 	public class ReportRenderer : IReportRenderer
 	{
 		Dictionary<Control, ControlViewBase> controlRenderersDictionary;
-		DesignView designView;
-
-
+		DesignView designView;		
+		RenderState renderState;
+		
 		public ReportRenderer (DesignView designView)
 		{
 			this.designView = designView;
@@ -56,10 +56,12 @@ namespace MonoReports.Core
 
 		public void RenderPage ( Page p)
 		{
-			
+			renderState = new RenderState(){ IsDesign = false, Render = true };
 			for (int i = 0; i < p.Sections.Count; i++) {
-				var section = p.Sections[i];				
-			 		
+				var section = p.Sections[i];
+				var sectionView = controlRenderersDictionary[section.TemplateControl] as SectionView;			 				
+			 	renderState.SectionView = sectionView;	
+				renderState.Section  = section;
 				designView.CurrentContext.Save();	
 				RenderControl (section);
 				designView.CurrentContext.Translate(0,section.Location.Y);
@@ -81,7 +83,8 @@ namespace MonoReports.Core
 				throw new Exception ("No template control found", exp);
 			}
 			controlView.ControlModel = control;
-			RenderState renderState = new RenderState(){ IsDesign = false, Render = false, CurrentSection = controlView.ParentSection };
+			RenderState renderState = new RenderState(){ IsDesign = false, Render = false,
+				SectionView = controlView.ParentSection };
 			var result = controlView.Render (designView.CurrentContext, renderState);
 			controlView.ControlModel = control.TemplateControl;
 			return result;
@@ -97,7 +100,7 @@ namespace MonoReports.Core
 				throw new Exception ("No template control found", exp);
 			}
 			controlView.ControlModel = control;
-			RenderState renderState = new RenderState(){ IsDesign = false, Render = true, CurrentSection = controlView.ParentSection, CrossSectionControls = designView.CrossSectionControls};
+			
 			controlView.Render (designView.CurrentContext, renderState);
 			controlView.ControlModel = control.TemplateControl;
 		}

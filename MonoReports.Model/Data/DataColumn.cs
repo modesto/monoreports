@@ -46,12 +46,9 @@ namespace MonoReports.Model.Data
 	public class PropertyDataColumn : DataColumn {
 		
 		public PropertyInfo propertyInfo;
-		IDataSource parentDataSource;
 		
-		public PropertyDataColumn(IDataSource parentDataSource, PropertyInfo pinfo){
+		public PropertyDataColumn( PropertyInfo pinfo){
 			propertyInfo = pinfo;
-	 
-			this.parentDataSource = parentDataSource;
 		}
 		
 		public override string Name {

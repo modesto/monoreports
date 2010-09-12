@@ -62,24 +62,25 @@ namespace MonoReports.ControlView
 		public override Size Render (Cairo.Context c, RenderState renderState)
 		{
 			c.Save ();
-			if (renderState.IsDesign && renderState.Render) {
-				if(renderState.CurrentSection == StartSection){
+			//renderState.IsDesign &&
+			if ( renderState.Render) {
+				if(renderState.SectionView == StartSection){
 					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, line.Location.Y);
-					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, ParentSection.Section.Height);
+					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, renderState.Section.Height);
 					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth);
 					isActive = true;
 				
-				}else if(renderState.CurrentSection == EndSection){
+				}else if(renderState.SectionView == EndSection){
 					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, line.End.Y);
 					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, 0);
 					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth);
 					isActive = false;
 				}else{
-					if(isActive){
+					//if(isActive){
 					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, 0);
-					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, renderState.CurrentSection.Section.Height);
+					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, renderState.Section.Height);
 					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth);
-					}
+					//}
 				}
 			}
 			c.Restore ();

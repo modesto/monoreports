@@ -29,10 +29,11 @@ using System.Collections.Generic;
 
 namespace MonoReports.Model.Data
 {
-	public interface IDataSource : IEnumerable
+	public interface IDataSource 
 	{		
-		Dictionary<string,DataColumn> Columns {get;} 	
-		string GetValue(string fieldName, object current);
+		List<DataColumn> Columns {get;}			
+		IList<DataRow> GetRows();
+		int ColumnIndex(string columnName);
 	}
 }
 

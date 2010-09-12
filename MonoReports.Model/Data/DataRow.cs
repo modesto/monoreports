@@ -1,5 +1,5 @@
 // 
-// CrossSectionLine.cs
+// DataRow.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,37 +24,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace MonoReports.Model.Controls
+namespace MonoReports.Model.Data
 {
-	public class CrossSectionLine : Line, ICrossSectionControl
+	public struct DataRow
 	{
-		public CrossSectionLine ():base()
-		{
-			BackgroundColor =  System.Drawing.Color.Black;	
-			LineWidth = 2;
-		}
-		
-		public override object Clone ()
-		{
-			CrossSectionLine line = new CrossSectionLine();
-			CopyBasicProperties(line);			 
-			line.End = new Point(End.X,End.Y);
-			line.LineWidth = LineWidth;
-			return line;
-		}
-	
-		#region ICrossSectionControl implementation
-		public Section StartSection {
-			get;
-			set;
-		}
 
-		public Section EndSection {
-			get;
-			set;
+		public string[] Values { get; set; }
+
+		public string this[int index] {
+			get { return Values[index]; }
 		}
-		#endregion
-		 
-}
+	}
 }
 

@@ -74,11 +74,23 @@ namespace MonoReports.ControlView
 		public Section Section {
 			get { return section; }
 		}
+		
+		public List<ControlViewBase> DesignCrossSectionControlsToAdd {
+			get;
+			set;
+		}
 
+		public List<ControlViewBase> DesignCrossSectionControlsToRemove {
+			get;
+			set;
+		}
 
-
+		
+		
 		public SectionView (Report parentReport, IControlViewFactory controlViewFactory, Section section, Cairo.PointD sectionSpan) : base(section)
 		{
+			DesignCrossSectionControlsToAdd = new List<ControlViewBase>();
+			DesignCrossSectionControlsToRemove = new List<ControlViewBase>();
 			this.controlViewFactory = controlViewFactory;
 			this.parentReport = parentReport;
 			
@@ -149,6 +161,8 @@ namespace MonoReports.ControlView
 						var ctrl = Controls[j];
 						ctrl.Render (c, renderState);
 					}
+					
+					
 					for (int w = 0; w < renderState.CrossSectionControls.Count; w++) {
 						var crossCtrl = renderState.CrossSectionControls[w];
 						crossCtrl.Render (c, renderState);

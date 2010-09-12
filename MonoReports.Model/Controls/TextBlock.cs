@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using System.Drawing;
+using MonoReports.Model.Data;
 
 namespace MonoReports.Model.Controls
 {
@@ -82,5 +83,14 @@ namespace MonoReports.Model.Controls
 		}
 		
 		#endregion
+		
+		
+		public override void AssignValue (Data.IDataSource source, DataRow row)
+		{		
+			if(!string.IsNullOrEmpty(this.FieldName) && source.ColumnIndex(this.FieldName) != -1){
+				int index =  source.ColumnIndex(this.FieldName);				
+				this.Text =  row[index];
+			}
+		}
 	}
 }

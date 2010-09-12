@@ -26,19 +26,20 @@
 using System;
 using System.Collections.Generic;
 using MonoReports.ControlView;
+using MonoReports.Model.Controls;
 namespace MonoReports.Core
 {
 	public class RenderState
 	{
-
-		bool render;
-		
-		public SectionView CurrentSection {get;set;}
-		public List<ControlViewBase> CrossSectionControls{get;set;}
-		
-		public RenderState(){
+		public RenderState (){
 			CrossSectionControls = new List<ControlViewBase>();
 		}
+		bool render;
+		
+		public SectionView SectionView {get;set;}
+		public Section Section {get;set;}
+		public List<ControlViewBase> CrossSectionControls {get;set;}
+		
 		
 		public bool Render {
 			get {
