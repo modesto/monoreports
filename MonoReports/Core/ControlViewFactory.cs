@@ -81,7 +81,7 @@ namespace MonoReports.Core
 									SectionView fs = reportView
 									.SectionViews
 									.FirstOrDefault(s => s.ControlModel  is GroupFooterSection);
-			                    	return new CrossSectionLineView(ctrl as CrossSectionLine,fs,section);
+			                    	return new CrossSectionLineView(ctrl as CrossSectionLine,section,fs);
 								}
 								throw new Exception("Unimplemented");
 						}

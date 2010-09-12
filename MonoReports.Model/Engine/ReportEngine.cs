@@ -147,6 +147,7 @@ namespace MonoReports.Model.Engine
 			double gh = processSection (groupHeaderSection, new DataRow ());
 			processCrossSectionControls(groupHeaderSection);
 			addSection(groupHeaderSection,gh);
+			crossSectionRepositoryIndex++;
 		}
 		
 		
@@ -156,6 +157,7 @@ namespace MonoReports.Model.Engine
 			double gh = processSection (groupFooterSection, new DataRow ());		
 			processCrossSectionControls(groupFooterSection);
 			addSection(groupFooterSection,gh);
+			crossSectionRepositoryIndex--;
 		}
 		
 		
@@ -235,7 +237,9 @@ namespace MonoReports.Model.Engine
 				double height = processSection (detailSection, row);
 				processCrossSectionControls(detailSection);
 				addSection(detailSection,height);
- 
+ 				 if(j == rows.Count - 1){
+					processGroupFooter(0);
+				}
 			 
 			}
 			
@@ -244,19 +248,19 @@ namespace MonoReports.Model.Engine
 		}
 		
 	
-		Section previousSection = null;
+		//Section previousSection = null;
 		
 		void addSection(Section s, double height){
 			
 				if (height > spaceLeftOnCurrentPage) {
-					if (previousSection != null)
-						previousSection.Size = new Size (s.Size.Width, previousSection.Height + spaceLeftOnCurrentPage);
+					//if (previousSection != null)
+					//	previousSection.Size = new Size (s.Size.Width, previousSection.Height + spaceLeftOnCurrentPage);
 					newPage ();
 				}
 				s.Location = new Point (s.Location.X, currentY);
 				s.Size = new Size (s.Size.Width, height);
 				currentPage.Sections.Add (s);
-				previousSection = s;
+				//previousSection = s;
 				spaceLeftOnCurrentPage -= height;
 				currentY += height;						
 		}
@@ -269,12 +273,11 @@ namespace MonoReports.Model.Engine
 			footerSection.Format ();
 			
 			double height = processSection (footerSection, new DataRow ());
-			for (int w = 0; w <= crossSectionRepositoryIndex; w++) {
-				foreach (var crossSectionControl in crossSectionControlsRepository[w]) {
+			
+				foreach (var crossSectionControl in crossSectionControlsRepository[0]) {
 					footerSection.Controls.Add (crossSectionControl.Clone () as Control);
 				}
-				
-			}
+		
 			
 			footerSection.Size = new Size (footerSection.Size.Width, height);
 			footerSectionsHeight += height;
@@ -283,8 +286,7 @@ namespace MonoReports.Model.Engine
 			currentFooterY += footerSection.Height;
 			
 			spaceLeftOnCurrentPage -= footerSectionsHeight;
-			
-			
+						
 			currentPage.Sections.Add (footerSection);
 		}
 
@@ -366,18 +368,7 @@ namespace MonoReports.Model.Engine
 			
 		}
 
-		void processGroupHeader (GroupHeaderSection gh)
-		{
-			crossSectionRepositoryIndex++;
-			
-		}
-
-
-		void processGroupFooter (GroupFooterSection gf)
-		{
-			crossSectionRepositoryIndex--;
-			
-		}
+	 
 
 		void newPage ()
 		{
@@ -389,8 +380,7 @@ namespace MonoReports.Model.Engine
 			ReportContext.CurrentPageIndex++;
 			currentPage = new Page { PageNumber = ReportContext.CurrentPageIndex };
 			spaceLeftOnCurrentPage = Report.Height;
-			Report.Pages.Add (currentPage);
-			
+			Report.Pages.Add (currentPage);			
 			processPageHeader ();
 			processPageFooter ();
 		}
