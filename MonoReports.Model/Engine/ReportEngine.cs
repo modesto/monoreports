@@ -221,10 +221,6 @@ namespace MonoReports.Model.Engine
 				
 				var row = rows[j];
 				
-				if (j == 0) {
-					processGroupHeader(0);
-				}
-				
 				for (int g = 0; g < groupColumnIndeces.Count; g++) {
 					if (groupColumnIndeces[g] != -1 && groupCurrentKey[g] != row[groupColumnIndeces[g]]) {
 						processGroupHeader(g);
@@ -237,30 +233,29 @@ namespace MonoReports.Model.Engine
 				double height = processSection (detailSection, row);
 				processCrossSectionControls(detailSection);
 				addSection(detailSection,height);
- 				 if(j == rows.Count - 1){
-					processGroupFooter(0);
-				}
 			 
 			}
 			
 			
+		
 			
 		}
 		
 	
-		//Section previousSection = null;
+		Section lastFooterSection = null;
 		
 		void addSection(Section s, double height){
-			
+
 				if (height > spaceLeftOnCurrentPage) {
-					//if (previousSection != null)
-					//	previousSection.Size = new Size (s.Size.Width, previousSection.Height + spaceLeftOnCurrentPage);
+					if (s is DetailSection){
+						lastFooterSection.Location = new  Point(lastFooterSection.Location.X, lastFooterSection.Location.Y - spaceLeftOnCurrentPage);
+						lastFooterSection.Size = new Size(lastFooterSection.Width,lastFooterSection.Height + spaceLeftOnCurrentPage);
+					}
 					newPage ();
 				}
 				s.Location = new Point (s.Location.X, currentY);
 				s.Size = new Size (s.Size.Width, height);
 				currentPage.Sections.Add (s);
-				//previousSection = s;
 				spaceLeftOnCurrentPage -= height;
 				currentY += height;						
 		}
@@ -286,7 +281,7 @@ namespace MonoReports.Model.Engine
 			currentFooterY += footerSection.Height;
 			
 			spaceLeftOnCurrentPage -= footerSectionsHeight;
-						
+			lastFooterSection = footerSection;			
 			currentPage.Sections.Add (footerSection);
 		}
 
@@ -373,7 +368,7 @@ namespace MonoReports.Model.Engine
 		void newPage ()
 		{
 			
-			if (ReportContext.CurrentPageIndex > 0) {
+			if (ReportContext.CurrentPageIndex > 0) {				
 				ReportRenderer.NextPage ();
 			}
 			currentY = 0;
