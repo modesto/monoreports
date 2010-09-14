@@ -35,16 +35,19 @@ namespace MonoReports.Tools
 		public CrossSectionLineTool (DesignView designView) : base(designView)
 		{
 		}
+		
 
-
+		
+			
+			
 		public override void CreateNewControl (SectionView sectionView)
 		{
 			if (sectionView.AllowCrossSectionControl) {
 				var startPoint = sectionView.PointInSectionByAbsolutePoint (designView.StartPressPoint.X, designView.StartPressPoint.Y);
-				var endPoint = new MonoReports.Model.Controls.Point(0, 10);
+				var endPoint = new MonoReports.Model.Controls.Point(designView.StartPressPoint.X, 10);
 				var l = new CrossSectionLine { Location = new MonoReports.Model.Controls.Point (startPoint.X, startPoint.Y), End = endPoint };
 				
-				var lineView = sectionView.AddControl (l) as CrossSectionLineView;
+				CrossSectionLineView lineView = sectionView.AddControl (l) as CrossSectionLineView;
 			
 				sectionView.Section.Controls.Add (l);
 				sectionView.DesignCrossSectionControlsToAdd.Add(lineView);
@@ -60,13 +63,13 @@ namespace MonoReports.Tools
 		{
 			 
 			if (designView != null && designView.SelectedControl != null && designView.IsDesign) {
-				var p1 = designView
-					.SelectedControl
-					.ParentSection
-					.AbsolutePointByLocalPoint(line.Location.X ,line.Location.Y );
-				
-
+				CrossSectionLineView lineView = designView.SelectedControl as CrossSectionLineView;
+				var p1 = lineView.StartSection.AbsolutePointByLocalPoint(line.Location.X ,line.Location.Y );																
 				c.DrawGripper (p1);
+
+				var p2 = lineView.EndSection.AbsolutePointByLocalPoint(line.End.X ,line.End.Y );																
+				c.DrawGripper (p2);
+				
 			}
 		}
 		
@@ -79,11 +82,15 @@ namespace MonoReports.Tools
 														
 					if (startPointHit) {
 						line.Location = new MonoReports.Model.Controls.Point ( Math.Max(0, line.Location.X +  designView.DeltaPoint.X), Math.Max(0, line.Location.Y + designView.DeltaPoint.Y));
+						line.End = new MonoReports.Model.Controls.Point ( Math.Max(0, line.End.X + designView.DeltaPoint.X), line.End.Y);
 						
 					} else if (endPointHit) {
+						line.Location = new MonoReports.Model.Controls.Point ( Math.Max(0, line.Location.X +  designView.DeltaPoint.X), line.Location.Y);
+						line.End = new MonoReports.Model.Controls.Point ( Math.Max(0, line.End.X +  designView.DeltaPoint.X), Math.Max(0, line.End.Y + designView.DeltaPoint.Y));
 						
 					} else {
 						line.Location = new MonoReports.Model.Controls.Point ( Math.Max(0, line.Location.X +  designView.DeltaPoint.X), Math.Max(0, line.Location.Y));
+						line.End = new MonoReports.Model.Controls.Point ( Math.Max(0, line.End.X + designView.DeltaPoint.X), line.End.Y);
 						
 					}
 
@@ -94,17 +101,26 @@ namespace MonoReports.Tools
 		
 		public override void OnMouseDown ()
 		{
-			currentSection = designView.SelectedControl != null ? designView.SelectedControl.ParentSection : null;
-			line = designView.SelectedControl.ControlModel as Line;
+			CrossSectionLineView lineView = designView.SelectedControl as CrossSectionLineView;			 
+			line = lineView.ControlModel as Line;
+			
 			var location = line.Location;
- 			var startPoint = currentSection.PointInSectionByAbsolutePoint(designView.StartPressPoint);
+ 			var startPoint = lineView.ParentSection.PointInSectionByAbsolutePoint(designView.StartPressPoint);
+			var endPoint = lineView.EndSection.PointInSectionByAbsolutePoint(designView.StartPressPoint);
 			
 			Cairo.PointD startDistance = new Cairo.PointD ( location.X - startPoint.X,  location.Y - startPoint.Y);
+			Cairo.PointD endDistance = new Cairo.PointD ( line.End.X - endPoint.X,  line.End.Y - endPoint.Y);
 			
-			if (startDistance.X < 6 && startDistance.X > -6 && startDistance.Y < 6 && startDistance.Y > -6) {
+			if (startDistance.X < 8 && startDistance.X > -8 && startDistance.Y < 8 && startDistance.Y > -8) {
 				startPointHit = true;
 			}
+			
+			if (endDistance.X < 8 && endDistance.X > -8 && endDistance.Y < 8 && endDistance.Y > -8) {
+				endPointHit = true;
+			}
 		}
+		
+	 
 		
 
 		#region implemented abstract members of MonoReports.Tools.BaseTool

@@ -52,7 +52,7 @@ namespace MonoReports.Tools
 			var l = new Line(){ 	
 				
 				Location = new MonoReports.Model.Controls.Point(startPoint.X,startPoint.Y),
-				End = new MonoReports.Model.Controls.Point(0 ,0)
+				End = new MonoReports.Model.Controls.Point(startPoint.X,startPoint.Y)
 				};
 			
 			var lineView = sectionView.AddControl(l);			
@@ -69,12 +69,12 @@ namespace MonoReports.Tools
 				if (designView.IsMoving && designView.SelectedControl != null) {
 														
 					if (startPointHit) {
-						line.Location = new MonoReports.Model.Controls.Point ( Math.Max(0, line.Location.X + designView.DeltaPoint.X), Math.Max(0, line.Location.Y + designView.DeltaPoint.Y));
-						line.End = new MonoReports.Model.Controls.Point (line.End.X - designView.DeltaPoint.X, line.End.Y - designView.DeltaPoint.Y);
+						line.Location = new MonoReports.Model.Controls.Point ( Math.Max(0, line.Location.X + designView.DeltaPoint.X), Math.Max(0, line.Location.Y + designView.DeltaPoint.Y));						
 					} else if (endPointHit) {
-						line.End = new MonoReports.Model.Controls.Point ( Math.Max(- line.Location.X ,  line.End.X + designView.DeltaPoint.X), Math.Max(- line.Location.Y, line.End.Y + designView.DeltaPoint.Y));
+						line.End = new MonoReports.Model.Controls.Point ( Math.Max(0, line.End.X + designView.DeltaPoint.X), Math.Max(0, line.End.Y + designView.DeltaPoint.Y));
 					} else {
 						line.Location = new MonoReports.Model.Controls.Point ( Math.Max(0, line.Location.X + designView.DeltaPoint.X), Math.Max(0, line.Location.Y + designView.DeltaPoint.Y));						
+						line.End = new MonoReports.Model.Controls.Point ( Math.Max(0, line.End.X + designView.DeltaPoint.X), Math.Max(0, line.End.Y + designView.DeltaPoint.Y));
 					}
 
 				}
@@ -96,7 +96,7 @@ namespace MonoReports.Tools
 				var p2 = designView
 					.SelectedControl
 					.ParentSection
-					.AbsolutePointByLocalPoint(line.Location.X + line.End.X, line.Location.Y + line.End.Y);
+					.AbsolutePointByLocalPoint( line.End.X, line.End.Y);
 				c.DrawGripper (p1);
 				c.DrawGripper (p2);
 			}
@@ -111,12 +111,12 @@ namespace MonoReports.Tools
  			var startPoint = currentSection.PointInSectionByAbsolutePoint(designView.StartPressPoint);
 			
 			Cairo.PointD startDistance = new Cairo.PointD ( location.X - startPoint.X,  location.Y - startPoint.Y);
-			Cairo.PointD endDistance = new Cairo.PointD (location.X + line.End.X - startPoint.X,location.Y+ line.End.Y - startPoint.Y);
+			Cairo.PointD endDistance = new Cairo.PointD (line.End.X - startPoint.X,line.End.Y - startPoint.Y);
 			
-			if (startDistance.X < 6 && startDistance.X > -6 && startDistance.Y < 6 && startDistance.Y > -6) {
+			if (startDistance.X < 8 && startDistance.X > -8 && startDistance.Y < 8 && startDistance.Y > -8) {
 				startPointHit = true;
 			} else {
-				if (endDistance.X < 6 && endDistance.X > -6 && endDistance.Y < 6 && endDistance.Y > -6)
+				if (endDistance.X < 8 && endDistance.X > -8 && endDistance.Y < 8 && endDistance.Y > -8)
 					endPointHit = true;
 			}
 		}

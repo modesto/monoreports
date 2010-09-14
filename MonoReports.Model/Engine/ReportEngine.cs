@@ -332,7 +332,7 @@ namespace MonoReports.Model.Engine
 					marginBottom = Math.Min (marginBottom, section.Height - (control.Location.Y + control.Height));
 					
 					
-					control.Location = new Point (control.Location.X, span + control.Location.Y);
+					control.MoveControlByY(span);
 					
 					if (control.CanGrow) {
 						control.Size = controlSize;

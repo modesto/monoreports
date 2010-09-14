@@ -37,6 +37,15 @@ namespace MonoReports.Model.Controls
 		
 		public Point End { get; set; }
 		public double LineWidth {get;set;}
+		public bool ExtendToBottom {get;set;}
+		
+		
+		public override void MoveControlByY (double y)
+		{
+			Location = new Point(this.Location.X,this.Location.Y + y);
+			End = new Point(this.End.X,this.End.Y + y);
+		}
+		
 		#region implemented abstract members of MonoReports.Model.Controls.Control
 		public override object Clone ()
 		{
@@ -44,6 +53,7 @@ namespace MonoReports.Model.Controls
 			CopyBasicProperties(line);			 
 			line.End = new Point(End.X,End.Y);
 			line.LineWidth = LineWidth;
+			line.ExtendToBottom = ExtendToBottom;
 			return line;
 		}
 		
