@@ -68,7 +68,7 @@ namespace MonoReports.ControlView
 			if(renderState.Render){
 				Cairo.PointD p1 = new Cairo.PointD(line.Location.X ,line.Location.Y);
 				Cairo.PointD p2 = new Cairo.PointD(line.End.X, line.End.Y);
-		 		c.DrawLine(p1,p2,line.BackgroundColor.ToCairoColor(), line.LineWidth);
+		 		c.DrawLine(p1,p2,line.BackgroundColor.ToCairoColor(), line.LineWidth,line.LineType);
 			}
 			c.Restore();
 			return new MonoReports.Model.Controls.Size(0,0);
@@ -80,7 +80,7 @@ namespace MonoReports.ControlView
 		public override bool ContainsPoint (double x, double y)
 		{
 			double span = 2;
-			Cairo.PointD p1 =  ParentSection.AbsolutePointByLocalPoint(line.Location.X,line.Location.Y);
+			Cairo.PointD p1 = ParentSection.AbsolutePointByLocalPoint(line.Location.X,line.Location.Y);
 			Cairo.PointD p2 = ParentSection.AbsolutePointByLocalPoint(line.End.X, line.End.Y);
 			Cairo.PointD hitPoint = new Cairo.PointD(x,y);
  			if (hitPoint.X >= (Math.Max (p1.X, p2.X) + span) || hitPoint.X <= (Math.Min (p1.X, p2.X) - span) || hitPoint.Y >= (Math.Max (p1.Y, p2.Y) + span) || hitPoint.Y <= (Math.Min (p1.Y, p2.Y) - span))

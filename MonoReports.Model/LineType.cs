@@ -1,5 +1,5 @@
 // 
-// Rectangle.cs
+// LineType.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,42 +24,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-
-namespace MonoReports.Model.Controls
+namespace MonoReports.Model
 {
-	public class Line : Control
+	public enum LineType
 	{
-		public Line ():base()
-		{			
-			BackgroundColor =  System.Drawing.Color.Black;			
-			LineWidth = 2;
-		}				
-		
-		public Point End { get; set; }
-		public double LineWidth {get;set;}
-		public bool ExtendToBottom {get;set;}
-		public LineType LineType {get;set;}
-		
-		
-		public override void MoveControlByY (double y)
-		{
-			Location = new Point(this.Location.X,this.Location.Y + y);
-			End = new Point(this.End.X,this.End.Y + y);
-		}
-		
-		#region implemented abstract members of MonoReports.Model.Controls.Control
-		public override object Clone ()
-		{
-			Line line = new Line();
-			CopyBasicProperties(line);			 
-			line.End = new Point(End.X,End.Y);
-			line.LineWidth = LineWidth;
-			line.LineType = LineType;
-			line.ExtendToBottom = ExtendToBottom;
-			return line;
-		}
-		
-		#endregion
+		Solid,
+		Dots,
+		Dash,
+		DashDot,
+		DashDotDot
 	}
 }
 

@@ -68,6 +68,7 @@
     <Compile Include="Group.cs" />
     <Compile Include="Controls\ICrossSectionControl.cs" />
     <Compile Include="Data\DataRow.cs" />
+    <Compile Include="LineType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Engine\" />

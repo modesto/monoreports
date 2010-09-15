@@ -37,7 +37,8 @@ namespace MonoReports.Model.Controls
 		public override object Clone ()
 		{
 			CrossSectionLine line = new CrossSectionLine();
-			CopyBasicProperties(line);			 
+			CopyBasicProperties(line);		
+			line.LineType = LineType;
 			line.End = new Point(End.X,End.Y);
 			line.LineWidth = LineWidth;
 			return line;

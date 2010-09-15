@@ -67,19 +67,19 @@ namespace MonoReports.ControlView
 				if(renderState.SectionView == StartSection){
 					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, line.Location.Y);
 					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, renderState.Section.Height);
-					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth);
+					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth,line.LineType);
 					isActive = true;
 				
 				}else if(renderState.SectionView == EndSection){
 					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, line.End.Y);
 					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, 0);
-					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth);
+					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth,line.LineType);
 					isActive = false;
 				}else{
 					//if(isActive){
 					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, 0);
 					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, renderState.Section.Height);
-					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth);
+					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth,line.LineType);
 					//}
 				}
 			}

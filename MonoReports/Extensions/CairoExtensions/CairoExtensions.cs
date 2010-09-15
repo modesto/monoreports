@@ -568,15 +568,43 @@ namespace MonoReports.Extensions.CairoExtensions
 			
 			return p;
 		}
+		
+		
+		static double[] dotsStyle = new double[]{1};
+		static double[] dashesStyle = new double[]{3};
+		static double[] dashDotStyle = new double[]{3,1};
+		static double[] dashDotDotStyle = new double[]{3,1,1};
+		
+		static double[] getDashByLineStyle(LineType type ){
+			
+		switch ( type) {
+				
+				case LineType.Solid:				
+					return null;
+				case LineType.Dots:
+					return dotsStyle;
+				case LineType.Dash:
+					return dashesStyle;
+				case LineType.DashDot:
+					return dashDotStyle;
+				case LineType.DashDotDot:
+					return dashDotDotStyle;			 
+				 
+			default:
+			break;
+			}
+			return null;
+		}
+		
+		
 
-		public static Rectangle DrawLine (this Context g, PointD p1, PointD p2, Color color, double lineWidth)
+		public static Rectangle DrawLine (this Context g, PointD p1, PointD p2, Color color, double lineWidth, LineType lineType)
 		{
-			// Put it on a pixel line
-			//if (lineWidth == 1)
-			//	p1 = new PointD (p1.X - 0.5, p1.Y - 0.5);
-
 			g.Save ();
-			 
+			var dashesStyle = getDashByLineStyle(lineType);
+			if(dashesStyle != null){
+				g.SetDash(dashesStyle,lineWidth);
+			}
 			g.MoveTo (p1.X, p1.Y);
 			g.LineTo (p2.X, p2.Y);
 
