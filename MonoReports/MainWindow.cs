@@ -107,7 +107,7 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 		
 		
 		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 20), End = new Controls.Point (420, 10) });
-		currentReport.AddGroup("none");
+		currentReport.AddGroup("Age");
         reportView = new ReportView(currentReport);
 		designView = new MonoReports.ControlView.DesignView (reportView, this,toolBoxService);
 	}
@@ -308,14 +308,14 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 			reportRenderer = new ReportRenderer (designView);
 			reportEngine = new Model.ReportEngine (currentReport, reportRenderer);
 			var logicians = new List<Logician> ();
-			logicians.Add (new Logician { Name = "Alfred", Surname = "Tarski" });
-			logicians.Add (new Logician { Name = "Gotlob", Surname = "Frege" });
-			logicians.Add (new Logician { Name = "Kurt", Surname = "Gödel" });
-			logicians.Add (new Logician { Name = "Unknown ", Surname = "Logican" });
-			logicians.Add (new Logician { Name = "Józef", Surname = "Bocheński" });
-			logicians.Add (new Logician { Name = "Stanisław", Surname = "Leśniewski" });
-			logicians.Add (new Logician { Name = "Saul", Surname = "Kripke" });
-			logicians.Add (new Logician { Name = "George", Surname = "Boolos" });
+			logicians.Add (new Logician { Name = "Alfred", Surname = "Tarski", Age =33 });
+			logicians.Add (new Logician { Name = "Gotlob", Surname = "Frege", Age =42 });
+			logicians.Add (new Logician { Name = "Kurt", Surname = "Gödel", Age =22 });
+			logicians.Add (new Logician { Name = "Unknown ", Surname = "Logican", Age =33 });
+			logicians.Add (new Logician { Name = "Józef", Surname = "Bocheński", Age =62 });
+			logicians.Add (new Logician { Name = "Stanisław", Surname = "Leśniewski", Age =79 });
+			logicians.Add (new Logician { Name = "Saul", Surname = "Kripke", Age =40 });
+			logicians.Add (new Logician { Name = "George", Surname = "Boolos", Age =79 });
 			ImageSurface imagesSurface = new ImageSurface (Format.Argb32, (int)currentReport.Width, (int)currentReport.Height);
 			Cairo.Context cr = new Cairo.Context (imagesSurface);
 			designView.CurrentContext = cr;
@@ -347,6 +347,8 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 		public string Surname { get; set; }
 
 		public string Name { get; set; }
+		
+		public int Age { get; set; }
 	}
 	
 	

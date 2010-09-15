@@ -197,12 +197,12 @@ namespace MonoReports.Model.Engine
 					
 					groupCurrentKey.Add (String.Empty);
 					if (groupColumnIndeces[i] != -1) {
-						
+						int columnIndex = groupColumnIndeces[i];
 						if (isFirstOrdering) {
-							orderedRows = rowsAll.OrderBy (r => r.Values[groupColumnIndeces[i]]);
+							orderedRows = rowsAll.OrderBy (r => r.Values[columnIndex]);
 							isFirstOrdering = false;
 						} else {
-							orderedRows = orderedRows.ThenBy (r => r.Values[groupColumnIndeces[i]]);
+							orderedRows = orderedRows.ThenBy (r => r.Values[columnIndex]);
 						}
 					}
 					
@@ -222,8 +222,26 @@ namespace MonoReports.Model.Engine
 				var row = rows[j];
 				
 				for (int g = 0; g < groupColumnIndeces.Count; g++) {
-					if (groupColumnIndeces[g] != -1 && groupCurrentKey[g] != row[groupColumnIndeces[g]]) {
-						processGroupHeader(g);
+					
+					if (groupColumnIndeces[g] != -1 ) {
+						string newKey = row[groupColumnIndeces[g]];
+						if(groupCurrentKey[g] != newKey){	
+									
+							if(j > 0){
+								processGroupFooter(g);
+							}
+							groupCurrentKey[g] = newKey;
+							processGroupHeader(g);
+							
+						}
+					}else{
+						if(j == rows.Count -1){
+							processGroupFooter(g);
+						}
+							
+						if(j == 0){
+							processGroupHeader(g);
+						}
 					}
 				}
 				
@@ -235,7 +253,10 @@ namespace MonoReports.Model.Engine
 				addSection(detailSection,height);
 			 
 			}
-			
+			 
+			for (int i = Report.Groups.Count - 1; i >= 0; i--) {
+					processGroupFooter(i);	 
+			}
 			
 		
 			
