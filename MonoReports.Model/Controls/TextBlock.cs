@@ -47,6 +47,11 @@ namespace MonoReports.Model.Controls
 		
 		public string FontName {get;set;}
 		
+		
+		public double Span {get;set;}
+		
+		public double LineSpan {get;set;}
+		
 		public double FontSize {get;set;}
 		
 		public FontSlant FontSlant {get;set;}
@@ -71,6 +76,8 @@ namespace MonoReports.Model.Controls
 			CopyBasicProperties(textBlock);			 
 			textBlock.Border = (Border) Border.Clone();
 			textBlock.FontName = FontName;
+			textBlock.LineSpan = LineSpan;
+			textBlock.Span = Span;
 			textBlock.FontSize = FontSize;
 			textBlock.FontSlant =   FontSlant;
 			textBlock.FontWeight =   FontWeight;

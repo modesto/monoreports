@@ -712,13 +712,14 @@ namespace MonoReports.Extensions.CairoExtensions
 		
 		public static Rectangle DrawTextBlock (this Context g, TextBlock tb, bool render)
 		{
+		 	double doubleSpan = tb.Span * 2;
 			g.Save ();
-			g.MoveTo (tb.Left, tb.Top);
+			g.MoveTo (tb.Left + tb.Span, tb.Top + tb.Span);
 			g.Color = tb.FontColor.ToCairoColor();
 			Pango.Layout layout = Pango.CairoHelper.CreateLayout (g);
 			
 			layout.Wrap = Pango.WrapMode.Word;
-			layout.Width = (int)(tb.Width * Pango.Scale.PangoScale);
+			layout.Width = (int)((tb.Width - doubleSpan) * Pango.Scale.PangoScale);
 			Pango.FontDescription fd = new Pango.FontDescription ();			
 			fd.Family = tb.FontName;
 		
@@ -729,8 +730,8 @@ namespace MonoReports.Extensions.CairoExtensions
 			fd.AbsoluteSize = tb.FontSize * Pango.Scale.PangoScale;
 			layout.FontDescription = fd;
 		 
-			layout.Spacing = (int)(0 * Pango.Scale.PangoScale);
-			layout.Indent = (int)(0 * Pango.Scale.PangoScale);
+			layout.Spacing = (int)(tb.LineSpan * Pango.Scale.PangoScale);
+			layout.Indent = (int)(0 * Pango.Scale.PangoScale);			
 			layout.Alignment = ReportToPangoAlignment (tb.HorizontalAlignment);  
 			layout.SetText (tb.Text);
 		
@@ -747,7 +748,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			
 			g.Restore ();
 		
-			return new Rectangle( tb.Left + te.X / Pango.Scale.PangoScale, tb.Top + te.Y / Pango.Scale.PangoScale, (te.Width / Pango.Scale.PangoScale) , (te.Height/ Pango.Scale.PangoScale) );
+			return new Rectangle( tb.Left - tb.Span + te.X / Pango.Scale.PangoScale, tb.Top - tb.Span + te.Y / Pango.Scale.PangoScale, (te.Width / Pango.Scale.PangoScale) + doubleSpan , (te.Height/ Pango.Scale.PangoScale) + doubleSpan);
 						
 		}
 
