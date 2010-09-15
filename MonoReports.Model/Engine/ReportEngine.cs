@@ -325,6 +325,7 @@ namespace MonoReports.Model.Engine
 			
 			List<SpanInfo> spans = new List<SpanInfo> ();
 			
+			List<Line> extendetLines = new List<Line>();
 			
 			if (orderedControls.Count > 0) {
 				marginBottom = double.MaxValue;
@@ -333,7 +334,9 @@ namespace MonoReports.Model.Engine
 					controlBottomY = 0;
 					tmpSpan = 0;
 					ungrowedControlBottom = 0;
-					
+					if(control is Line && (control as Line).ExtendToBottom){
+						extendetLines.Add(control as Line);	
+					}
 					
 					control.AssignValue (source, currentRow);
 					
@@ -371,6 +374,16 @@ namespace MonoReports.Model.Engine
 					
 				}
 				
+				foreach (Line lineItem in extendetLines) {
+					if(lineItem.Location.Y == lineItem.End.Y){
+						lineItem.Location =  new Point(lineItem.Location.X,maxControlBottom + marginBottom);
+						lineItem.End =  new Point(lineItem.End.X,maxControlBottom + marginBottom);
+					}else if(lineItem.Location.Y > lineItem.End.Y){
+						lineItem.Location =  new Point(lineItem.Location.X,maxControlBottom + marginBottom);
+					}else{
+						lineItem.End =  new Point(lineItem.End.X,maxControlBottom + marginBottom);
+					}
+				}
 				
 			}
 			
