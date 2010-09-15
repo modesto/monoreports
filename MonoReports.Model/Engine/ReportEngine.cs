@@ -334,6 +334,8 @@ namespace MonoReports.Model.Engine
 					controlBottomY = 0;
 					tmpSpan = 0;
 					ungrowedControlBottom = 0;
+					if(!control.IsVisible)
+						continue;
 					if(control is Line && (control as Line).ExtendToBottom){
 						extendetLines.Add(control as Line);	
 					}

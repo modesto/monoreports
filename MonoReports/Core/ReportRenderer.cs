@@ -67,7 +67,9 @@ namespace MonoReports.Core
 				designView.CurrentContext.Translate(0,section.Location.Y);
  
 				for (int j = 0; j < section.Controls.Count; j++) {
-					RenderControl (section.Controls[j]);
+					var ctrl = section.Controls[j];
+					if(ctrl.IsVisible)
+						RenderControl (ctrl);
 				}
 				designView.CurrentContext.Restore();
 			}
