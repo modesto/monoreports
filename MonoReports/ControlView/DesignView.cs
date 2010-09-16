@@ -57,8 +57,19 @@ namespace MonoReports.ControlView
 		public bool Render { get; private set; }
 		public IWorkspaceService WorkspaceService { get; set; }
 		public IToolBoxService ToolBoxService { get; set; }
-		public ReportView ReportView { get; set; }
+		
+		private ReportView reportView;
+		
+		public ReportView ReportView { get {
+				return reportView;				
+			} 
+			set{
+				reportView = value;
+				
+			}
+		}
 		internal Context CurrentContext;				
+		
 		
 			
 		public DesignView (ReportView reportView, IWorkspaceService workspaceService, IToolBoxService toolBoxService)

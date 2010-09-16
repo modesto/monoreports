@@ -96,8 +96,9 @@ namespace MonoReports.ControlView
 			
 			if (section is DetailSection)
 				AllowCrossSectionControl = false;
-			else
+			else{
 				AllowCrossSectionControl = true;
+			}
 			
 			SectionSpan = sectionSpan;
 			controls = new System.Collections.Generic.List<ControlViewBase> ();
@@ -113,7 +114,7 @@ namespace MonoReports.ControlView
 			controls.Add (controlView);
 		}
 
-		public ControlViewBase AddControl (Control controlToAdd)
+		public ControlViewBase CreateControlView (Control controlToAdd)
 		{
 			var controlView = controlViewFactory.CreateControlView (controlToAdd, this);
 			AddControlView (controlView);
@@ -123,7 +124,7 @@ namespace MonoReports.ControlView
 		public void AddControls (IList<Control> controlsToAdd)
 		{
 			for (int i = 0; i < controlsToAdd.Count; i++) {
-				AddControl (controlsToAdd[i]);
+				CreateControlView (controlsToAdd[i]);
 			}
 		}
 

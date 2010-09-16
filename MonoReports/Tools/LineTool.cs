@@ -55,7 +55,7 @@ namespace MonoReports.Tools
 				End = new MonoReports.Model.Controls.Point(startPoint.X,startPoint.Y)
 				};
 			
-			var lineView = sectionView.AddControl(l);			
+			var lineView = sectionView.CreateControlView(l);			
 			sectionView.Section.Controls.Add(l);
 			lineView.ParentSection = sectionView;
 			designView.SelectedControl = lineView;			 
