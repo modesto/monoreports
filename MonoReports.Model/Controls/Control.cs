@@ -103,7 +103,8 @@ namespace MonoReports.Model.Controls
 			
 		}
 		
-		public virtual void AssignValue(Data.IDataSource source, DataRow row){
+		public virtual void AssignValue(IDataSource dataSource){
+			
 		}
 		
 	}

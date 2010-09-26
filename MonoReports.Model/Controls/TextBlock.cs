@@ -62,6 +62,8 @@ namespace MonoReports.Model.Controls
 		
 		public string FieldName {get;set;}
 		
+		public string FieldTextFormat {get;set;}
+		
 		public HorizontalAlignment HorizontalAlignment {get;set;}
 		public VerticalAlignment VerticalAlignment {get;set;}
 		
@@ -92,11 +94,11 @@ namespace MonoReports.Model.Controls
 		#endregion
 		
 		
-		public override void AssignValue (Data.IDataSource source, DataRow row)
+		public override void AssignValue (IDataSource dataSource)
 		{		
-			if(!string.IsNullOrEmpty(this.FieldName) && source.ColumnIndex(this.FieldName) != -1){
-				int index =  source.ColumnIndex(this.FieldName);				
-				this.Text =  row[index];
+			if(!string.IsNullOrEmpty(this.FieldName)){
+				 			
+				this.Text =  dataSource.GetValue(this.FieldName,FieldTextFormat);
 			}
 		}
 	}

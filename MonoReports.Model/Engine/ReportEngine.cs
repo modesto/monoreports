@@ -50,51 +50,28 @@ namespace MonoReports.Model.Engine
 		List<string> groupCurrentKey = null;
 
 		public ReportEngine (Report report, IReportRenderer renderer)
-		{
-			source = new DummyDataSource ();
+		{			
 			Report = report;
+			source = Report._dataSource;
 			ReportRenderer = renderer;
 		}
 
-		private object datasource;
-
-		public object DataSource {
-			get { return datasource; }
-			set {
-				
-				if (value != datasource) {
-					datasource = value;
-					
-					if (datasource != null) {
-						Type type = datasource.GetType ();
-						//FIXME handle anonymous types
-						if (type.IsGenericType && datasource is IEnumerable) {
-							
-							var args = type.GetGenericArguments ();
-							var genArgType = args[0];
-							
-							var pocoSourceType = typeof(GenericEnumerableDataSource<>);
-							
-							var genType = pocoSourceType.MakeGenericType (genArgType);
-							try {
-								source = Activator.CreateInstance (genType, datasource) as IDataSource;
-							} catch (Exception exp) {
-								Console.WriteLine (exp.ToString ());
-							}
-						}
-						
-						
-					}
-					
-				}
-			}
-		}
-
+		 
 		private void onBeforeReportProcess ()
 		{
 			//todo exec Report event			
 		}
 
+		public void Process ()
+		{
+			
+			init ();
+			newPage ();
+			
+			processDetails ();
+			
+			onAfterReportProcess ();
+		}
 
 		void init ()
 		{
@@ -112,23 +89,12 @@ namespace MonoReports.Model.Engine
 			
 		}
 
-		public void Process ()
-		{
-			
-			init ();
-			newPage ();
-			
-			processDetails ();
-			
-			onAfterReportProcess ();
-		}
-
 		void processPageHeader ()
 		{
 			var headerSection = Report.PageHeaderSection.Clone () as PageHeaderSection;
 			headerSection.Format ();
 			headerSection.Location = new Point (headerSection.Location.X, currentY);
-			double height = processSection (headerSection, new DataRow ());
+			double height = processSection (headerSection);
 			headerSection.Size = new Size (headerSection.Size.Width, height);
 			currentY += height;
 			
@@ -144,7 +110,7 @@ namespace MonoReports.Model.Engine
 		void processGroupHeader (int groupIndex)
 		{
 			var groupHeaderSection = Report.GroupHeaderSections[groupIndex].Clone () as Section;
-			double gh = processSection (groupHeaderSection, new DataRow ());
+			double gh = processSection (groupHeaderSection);
 			processCrossSectionControls(groupHeaderSection);
 			addSection(groupHeaderSection,gh);
 			crossSectionRepositoryIndex++;
@@ -154,14 +120,14 @@ namespace MonoReports.Model.Engine
 		void processGroupFooter (int groupIndex)
 		{
 			var groupFooterSection = Report.GroupFooterSections[groupIndex].Clone () as Section;
-			double gh = processSection (groupFooterSection, new DataRow ());		
+			double gh = processSection (groupFooterSection);		
 			processCrossSectionControls(groupFooterSection);
 			addSection(groupFooterSection,gh);
 			crossSectionRepositoryIndex--;
 		}
 		
 		
-		void processCrossSectionControls(Section section){
+		void processCrossSectionControls(Section section){			
 			for (int w = 0; w <= crossSectionRepositoryIndex; w++) {
 					foreach (var crossSectionControl in crossSectionControlsRepository[w]) {
 						section.Controls.Add (crossSectionControl.Clone () as Control);
@@ -173,61 +139,41 @@ namespace MonoReports.Model.Engine
 		void processDetails ()
 		{
 			
-			
-			IDataSource dataSource = (source as IDataSource);
 			groupColumnIndeces = new List<int> ();
 			for (int i = 0; i < Report.Groups.Count; i++) {
-				var col = dataSource.Columns.FirstOrDefault (cl => cl.Name == Report.Groups[i].GroupingFieldName);
+				var col = Report.Fields.FirstOrDefault (cl => cl.Name == Report.Groups[i].GroupingFieldName);
+				
 				if (col != null)
-					groupColumnIndeces.Add (dataSource.Columns.IndexOf (col));
+					groupColumnIndeces.Add (Report.Fields.IndexOf (col));
 				else {
 					groupColumnIndeces.Add (-1);
 				}
 			}
 			
-			
-			var rowsAll = dataSource.GetRows ();
+			IDataSource dataSource = (source as IDataSource);
+			List<string> sorting = new List<string>();
 			
 			if (Report.Groups.Count > 0) {
-				groupCurrentKey = new List<string> ();
-				
-				bool isFirstOrdering = true;
-				IOrderedEnumerable<DataRow> orderedRows = null;
+ 				
+				groupCurrentKey = new List<string>();
 				for (int i = 0; i < Report.Groups.Count; i++) {
-					
-					groupCurrentKey.Add (String.Empty);
-					if (groupColumnIndeces[i] != -1) {
-						int columnIndex = groupColumnIndeces[i];
-						if (isFirstOrdering) {
-							orderedRows = rowsAll.OrderBy (r => r.Values[columnIndex]);
-							isFirstOrdering = false;
-						} else {
-							orderedRows = orderedRows.ThenBy (r => r.Values[columnIndex]);
-						}
-					}
-					
+					sorting.Add(Report.Groups[i].GroupingFieldName);
+					groupCurrentKey.Add(String.Empty);
 				}
-				
-				if (orderedRows != null) {
-					rowsAll = orderedRows.ToList ();
-				}
-				
-				
+ 
 			}
-			
-			var rows = rowsAll;
-			
-			for (int j = 0; j < rows.Count; j++) {
-				
-				var row = rows[j];
-				
-				for (int g = 0; g < groupColumnIndeces.Count; g++) {
-					
-					if (groupColumnIndeces[g] != -1 ) {
-						string newKey = row[groupColumnIndeces[g]];
+			dataSource.ApplySort(sorting);
+		 
+			 
+			while (dataSource.MoveNext()) {
+ 
+				for (int g = 0; g < Report.Groups.Count; g++) {
+					var currentGroup = Report.Groups[g];
+					if (!string.IsNullOrEmpty(currentGroup.GroupingFieldName)) {
+						string newKey = dataSource.GetValue(currentGroup.GroupingFieldName,String.Empty);
 						if(groupCurrentKey[g] != newKey){	
 									
-							if(j > 0){
+							if(dataSource.CurrentRowIndex > 0){
 								processGroupFooter(g);
 							}
 							groupCurrentKey[g] = newKey;
@@ -235,11 +181,11 @@ namespace MonoReports.Model.Engine
 							
 						}
 					}else{
-						if(j == rows.Count -1){
+						if(dataSource.IsLast){
 							processGroupFooter(g);
 						}
 							
-						if(j == 0){
+						if(dataSource.CurrentRowIndex == 0){
 							processGroupHeader(g);
 						}
 					}
@@ -248,7 +194,7 @@ namespace MonoReports.Model.Engine
 				var detailSection = Report.DetailSection.Clone () as DetailSection;
 				
 				detailSection.Format ();
-				double height = processSection (detailSection, row);
+				double height = processSection (detailSection);
 				processCrossSectionControls(detailSection);
 				addSection(detailSection,height);
 			 
@@ -288,7 +234,7 @@ namespace MonoReports.Model.Engine
 			var footerSection = Report.PageFooterSection.Clone () as PageFooterSection;
 			footerSection.Format ();
 			
-			double height = processSection (footerSection, new DataRow ());
+			double height = processSection (footerSection);
 			
 				foreach (var crossSectionControl in crossSectionControlsRepository[0]) {
 					footerSection.Controls.Add (crossSectionControl.Clone () as Control);
@@ -308,7 +254,7 @@ namespace MonoReports.Model.Engine
 
 
 
-		double processSection (Section section, DataRow currentRow)
+		double processSection (Section section)
 		{
 			
 			var orderedControls = section.Controls.OrderBy (ctrl => ctrl.Location.Y).ToList ();
@@ -340,7 +286,7 @@ namespace MonoReports.Model.Engine
 						extendetLines.Add(control as Line);	
 					}
 					
-					control.AssignValue (source, currentRow);
+					control.AssignValue (source);
 					
 					
 					y = control.Location.Y + span;
@@ -378,10 +324,10 @@ namespace MonoReports.Model.Engine
 				
 				foreach (Line lineItem in extendetLines) {
 					if(lineItem.Location.Y == lineItem.End.Y){
-						lineItem.Location =  new Point(lineItem.Location.X,maxControlBottom + marginBottom);
-						lineItem.End =  new Point(lineItem.End.X,maxControlBottom + marginBottom);
+						lineItem.Location =  new Point(lineItem.Location.X,maxControlBottom + marginBottom - lineItem.LineWidth / 2);
+						lineItem.End =  new Point(lineItem.End.X,maxControlBottom + marginBottom - lineItem.LineWidth / 2);
 					}else if(lineItem.Location.Y > lineItem.End.Y){
-						lineItem.Location =  new Point(lineItem.Location.X,maxControlBottom + marginBottom);
+						lineItem.Location =  new Point(lineItem.Location.X,maxControlBottom + marginBottom );
 					}else{
 						lineItem.End =  new Point(lineItem.End.X,maxControlBottom + marginBottom);
 					}

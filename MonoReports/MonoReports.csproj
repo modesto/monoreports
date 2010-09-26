@@ -66,6 +66,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -105,6 +106,10 @@
     <Compile Include="ControlView\CrossSectionLineView.cs" />
     <Compile Include="Tools\CrossSectionLineTool.cs" />
     <Compile Include="Core\RenderState.cs" />
+    <Compile Include="Gui\ReportExplorer.cs" />
+    <Compile Include="gtk-gui\MonoReports.Gui.ReportExplorer.cs" />
+    <Compile Include="Gui\DataProviderConsole.cs" />
+    <Compile Include="gtk-gui\MonoReports.Gui.DataProviderConsole.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\" />
@@ -116,6 +121,7 @@
     <Folder Include="Extensions\GtkExtensions\" />
     <Folder Include="Extensions\CairoExtensions\" />
     <Folder Include="Extensions\" />
+    <Folder Include="Gui\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

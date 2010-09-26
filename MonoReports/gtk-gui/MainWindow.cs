@@ -45,7 +45,7 @@ public partial class MainWindow
 
 	private global::Gtk.HBox contentHbox;
 
-	private global::Gtk.HPaned hpaned1;
+	private global::Gtk.HPaned mainHPaned;
 
 	private global::Gtk.Notebook mainNotebook;
 
@@ -65,9 +65,11 @@ public partial class MainWindow
 
 	private global::Gtk.Label previewTitleLabel;
 
-	private global::Gtk.VBox vbox2;
+	private global::Gtk.VPaned rightVPaned;
 
-	private global::MonoDevelop.Components.PropertyGrid.PropertyGrid propertygrid2;
+	private global::MonoReports.Gui.ReportExplorer reportExplorer;
+
+	private global::MonoDevelop.Components.PropertyGrid.PropertyGrid mainPropertygrid;
 
 	private global::Gtk.Statusbar bottomStatusbar;
 
@@ -152,11 +154,11 @@ public partial class MainWindow
 		this.contentHbox.Name = "contentHbox";
 		this.contentHbox.Spacing = 6;
 		// Container child contentHbox.Gtk.Box+BoxChild
-		this.hpaned1 = new global::Gtk.HPaned ();
-		this.hpaned1.CanFocus = true;
-		this.hpaned1.Name = "hpaned1";
-		this.hpaned1.Position = 576;
-		// Container child hpaned1.Gtk.Paned+PanedChild
+		this.mainHPaned = new global::Gtk.HPaned ();
+		this.mainHPaned.CanFocus = true;
+		this.mainHPaned.Name = "mainHPaned";
+		this.mainHPaned.Position = 658;
+		// Container child mainHPaned.Gtk.Paned+PanedChild
 		this.mainNotebook = new global::Gtk.Notebook ();
 		this.mainNotebook.CanFocus = true;
 		this.mainNotebook.Events = ((global::Gdk.EventMask)(52992));
@@ -223,50 +225,57 @@ public partial class MainWindow
 		this.previewTitleLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("preview");
 		this.mainNotebook.SetTabLabel (this.previewVbox, this.previewTitleLabel);
 		this.previewTitleLabel.ShowAll ();
-		this.hpaned1.Add (this.mainNotebook);
-		global::Gtk.Paned.PanedChild w14 = ((global::Gtk.Paned.PanedChild)(this.hpaned1[this.mainNotebook]));
+		this.mainHPaned.Add (this.mainNotebook);
+		global::Gtk.Paned.PanedChild w14 = ((global::Gtk.Paned.PanedChild)(this.mainHPaned[this.mainNotebook]));
 		w14.Resize = false;
 		w14.Shrink = false;
-		// Container child hpaned1.Gtk.Paned+PanedChild
-		this.vbox2 = new global::Gtk.VBox ();
-		this.vbox2.Name = "vbox2";
-		this.vbox2.Spacing = 3;
-		// Container child vbox2.Gtk.Box+BoxChild
-		this.propertygrid2 = new global::MonoDevelop.Components.PropertyGrid.PropertyGrid ();
-		this.propertygrid2.CanDefault = true;
-		this.propertygrid2.CanFocus = true;
-		this.propertygrid2.Name = "propertygrid2";
-		this.propertygrid2.ShowToolbar = false;
-		this.propertygrid2.ShowHelp = false;
-		this.vbox2.Add (this.propertygrid2);
-		global::Gtk.Box.BoxChild w15 = ((global::Gtk.Box.BoxChild)(this.vbox2[this.propertygrid2]));
-		w15.Position = 0;
-		this.hpaned1.Add (this.vbox2);
-		global::Gtk.Paned.PanedChild w16 = ((global::Gtk.Paned.PanedChild)(this.hpaned1[this.vbox2]));
+		// Container child mainHPaned.Gtk.Paned+PanedChild
+		this.rightVPaned = new global::Gtk.VPaned ();
+		this.rightVPaned.CanFocus = true;
+		this.rightVPaned.Name = "rightVPaned";
+		this.rightVPaned.Position = 157;
+		// Container child rightVPaned.Gtk.Paned+PanedChild
+		this.reportExplorer = new global::MonoReports.Gui.ReportExplorer ();
+		this.reportExplorer.Events = ((global::Gdk.EventMask)(256));
+		this.reportExplorer.Name = "reportExplorer";
+		this.rightVPaned.Add (this.reportExplorer);
+		global::Gtk.Paned.PanedChild w15 = ((global::Gtk.Paned.PanedChild)(this.rightVPaned[this.reportExplorer]));
+		w15.Resize = false;
+		// Container child rightVPaned.Gtk.Paned+PanedChild
+		this.mainPropertygrid = new global::MonoDevelop.Components.PropertyGrid.PropertyGrid ();
+		this.mainPropertygrid.CanDefault = true;
+		this.mainPropertygrid.CanFocus = true;
+		this.mainPropertygrid.Name = "mainPropertygrid";
+		this.mainPropertygrid.ShowToolbar = false;
+		this.mainPropertygrid.ShowHelp = false;
+		this.rightVPaned.Add (this.mainPropertygrid);
+		global::Gtk.Paned.PanedChild w16 = ((global::Gtk.Paned.PanedChild)(this.rightVPaned[this.mainPropertygrid]));
 		w16.Resize = false;
-		this.contentHbox.Add (this.hpaned1);
-		global::Gtk.Box.BoxChild w17 = ((global::Gtk.Box.BoxChild)(this.contentHbox[this.hpaned1]));
-		w17.PackType = ((global::Gtk.PackType)(1));
-		w17.Position = 0;
+		this.mainHPaned.Add (this.rightVPaned);
+		global::Gtk.Paned.PanedChild w17 = ((global::Gtk.Paned.PanedChild)(this.mainHPaned[this.rightVPaned]));
+		w17.Resize = false;
+		this.contentHbox.Add (this.mainHPaned);
+		global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.contentHbox[this.mainHPaned]));
+		w18.Position = 0;
 		this.mainVbox.Add (this.contentHbox);
-		global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.mainVbox[this.contentHbox]));
-		w18.Position = 2;
+		global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.mainVbox[this.contentHbox]));
+		w19.Position = 2;
 		// Container child mainVbox.Gtk.Box+BoxChild
 		this.bottomStatusbar = new global::Gtk.Statusbar ();
 		this.bottomStatusbar.Name = "bottomStatusbar";
 		this.bottomStatusbar.Spacing = 6;
 		this.mainVbox.Add (this.bottomStatusbar);
-		global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.mainVbox[this.bottomStatusbar]));
-		w19.Position = 3;
-		w19.Expand = false;
-		w19.Fill = false;
+		global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.mainVbox[this.bottomStatusbar]));
+		w20.Position = 3;
+		w20.Expand = false;
+		w20.Fill = false;
 		this.Add (this.mainVbox);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
-		this.DefaultWidth = 835;
-		this.DefaultHeight = 586;
-		this.propertygrid2.HasDefault = true;
+		this.DefaultWidth = 1027;
+		this.DefaultHeight = 697;
+		this.mainPropertygrid.HasDefault = true;
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
 		this.quitAction.Activated += new global::System.EventHandler (this.OnQuitActionActivated);

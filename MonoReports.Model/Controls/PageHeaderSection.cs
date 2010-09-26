@@ -33,10 +33,16 @@ namespace MonoReports.Model.Controls
 			this.Name = "Page Header";
 		}
 		
+		public bool DrawOnFirstPage {
+			get;
+			set;
+		}
+		
 		public override object Clone ()
 		{
 			PageHeaderSection ds = new PageHeaderSection();
 			CopyTo(ds);
+			ds.DrawOnFirstPage = this.DrawOnFirstPage;
 			return ds;
 		}
 	}

@@ -37,6 +37,7 @@ using MonoReports.Extensions.GtkExtensions;
 using MonoReports.ControlView;
 using Newtonsoft.Json;
 using MonoReports.Tools;
+using MonoReports.Gui;
 
 public partial class MainWindow : Gtk.Window, IWorkspaceService
 {
@@ -47,7 +48,7 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 	MonoReports.Model.Engine.ReportEngine reportEngine;
 	Report currentReport;
 	ToolBoxService toolBoxService;
-	
+
 	public Report CurrentReport {
 		get { return this.currentReport; }
 		set { currentReport = value; }
@@ -72,9 +73,6 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 	{
 		
 		currentReport = new Report ();
-		
-		
-		
 		
 		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock Żection Żecsdfsdfsdfsfsdfsdion Żecsdfsdfsdfs fsdfsdion Żecsdfsdfsdfsfsdfsdion Żection Żecsdfs dfsdfsfsdfs dfs dfsdfsdfsdfsd ftion Żection ŻSection Ż", FontColor = System.Drawing.Color.Red, CanGrow = true, Location = new Controls.Point (3, 3), Size = new Controls.Size (200, 80) });
 		
@@ -107,9 +105,10 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 		
 		
 		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 20), End = new Controls.Point (420, 10) });
-		currentReport.AddGroup("Age");
-        reportView = new ReportView(currentReport);
-		designView = new MonoReports.ControlView.DesignView (reportView, this,toolBoxService);
+		currentReport.AddGroup ("Age");
+		reportView = new ReportView (currentReport);
+		designView = new MonoReports.ControlView.DesignView (reportView, this, toolBoxService);
+		reportExplorer.DesignView = designView;
 	}
 
 	protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
@@ -183,7 +182,7 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 
 	public void ShowInPropertyGrid (object o)
 	{
-		propertygrid2.CurrentObject = o;
+		mainPropertygrid.CurrentObject = o;
 	}
 
 	public void SetCursor (Gdk.CursorType cursorType)
@@ -196,10 +195,13 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 		drawingarea.QueueDraw ();
 	}
 
+
+
+
 	void buildMainToolbar ()
 	{
 		
-		toolBoxService = new ToolBoxService();
+		toolBoxService = new ToolBoxService ();
 		
 		
 		
@@ -219,14 +221,14 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 		};
 		
 		mainToolbar.Insert (zoomCombobox, 0);
-
 		
-		 
+		
+		
 	}
 
 	int pageNumber = 0;
 	ToolBarSpinButton pageSpinButton = null;
-	
+
 	void buildPreviewToolbar ()
 	{
 		pageSpinButton = new ToolBarSpinButton (40, 1, 1, 1);
@@ -246,20 +248,18 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 	protected virtual void OnEditActionActivated (object sender, System.EventArgs e)
 	{
 		
-		toolBoxService.SetToolByName("LineTool");
+		toolBoxService.SetToolByName ("LineTool");
 		
 	}
-	
+
 
 	protected virtual void OnSaveActionActivated (object sender, System.EventArgs e)
 	{
 		
 		using (System.IO.FileStream file = System.IO.File.OpenWrite ("test.mrp")) {
 			
-		 
-			var serializedProject = JsonConvert.SerializeObject (reportView.Report, 
-			                                                     Formatting.None, 
-			                                                     new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
+			
+			var serializedProject = JsonConvert.SerializeObject (reportView.Report, Formatting.None, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
 			byte[] bytes = System.Text.Encoding.UTF8.GetBytes (serializedProject);
 			file.Write (bytes, 0, bytes.Length);
 			
@@ -279,47 +279,46 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 			System.IO.FileStream file = System.IO.File.OpenRead (fc.Filename);
 			byte[] bytes = new byte[file.Length];
 			file.Read (bytes, 0, (int)file.Length);
-			propertygrid2.CurrentObject = null;
-				
-				
-			var report = JsonConvert.DeserializeObject<Report> (System.Text.Encoding.UTF8.GetString (bytes), 
-			                                                    new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects,
-				Converters = new List<JsonConverter> (
-				    new JsonConverter[] { new MonoReports.Extensions.PointConverter (), 
-					new MonoReports.Extensions.SizeConverter () 
-				}) });
+			mainPropertygrid.CurrentObject = null;
+			
+			
+			var report = JsonConvert.DeserializeObject<Report> (System.Text.Encoding.UTF8.GetString (bytes), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects, Converters = new List<JsonConverter> (new JsonConverter[] { new MonoReports.Extensions.PointConverter (), new MonoReports.Extensions.SizeConverter () }) });
 			CurrentReport = report;
-			reportView = new ReportView(currentReport);
-			designView = new DesignView (reportView, this,toolBoxService);
+			reportView = new ReportView (currentReport);
+			designView = new DesignView (reportView, this, toolBoxService);
 			file.Close ();
 		}
 		
 		fc.Destroy ();
 		drawingarea.QueueDraw ();
 	}
-	
+
 //TODO remove example report and data source to some external class	
-	
+
 	protected virtual void OnMainNotebookSwitchPage (object o, Gtk.SwitchPageArgs args)
 	{
 		
 		if (args.PageNum == 1) {
 			designView.IsDesign = false;
 			reportRenderer = new ReportRenderer (designView);
+			
+
+			var logicians = new[] { new { Name = "Alfred", Surname = "Tarski", Age = 33 }, 
+				new { Name = "Gotlob", Surname = "Frege", Age = 42 }, 
+				new { Name = "Kurt", Surname = "Gödel", Age = 22 }, 
+				new { Name = "Unknown ", Surname = "Logican", Age = 33 }, 
+				new { Name = "Józef", Surname = "Bocheński", Age = 22 }, 
+				new { Name = "Stanisław", Surname = "Leśniewski", Age = 79 }, 
+				new { Name = "Saul", Surname = "Kripke", Age = 40 }, 
+				new { Name = "George", Surname = "Boolos", Age = 79 } };
+ 
+			currentReport.DataSource = logicians;
 			reportEngine = new Model.ReportEngine (currentReport, reportRenderer);
-			var logicians = new List<Logician> ();
-			logicians.Add (new Logician { Name = "Alfred", Surname = "Tarski", Age =33 });
-			logicians.Add (new Logician { Name = "Gotlob", Surname = "Frege", Age =42 });
-			logicians.Add (new Logician { Name = "Kurt", Surname = "Gödel", Age =22 });
-			logicians.Add (new Logician { Name = "Unknown ", Surname = "Logican", Age =33 });
-			logicians.Add (new Logician { Name = "Józef", Surname = "Bocheński", Age =62 });
-			logicians.Add (new Logician { Name = "Stanisław", Surname = "Leśniewski", Age =79 });
-			logicians.Add (new Logician { Name = "Saul", Surname = "Kripke", Age =40 });
-			logicians.Add (new Logician { Name = "George", Surname = "Boolos", Age =79 });
 			ImageSurface imagesSurface = new ImageSurface (Format.Argb32, (int)currentReport.Width, (int)currentReport.Height);
 			Cairo.Context cr = new Cairo.Context (imagesSurface);
 			designView.CurrentContext = cr;
-			reportEngine.DataSource = logicians;
+			//reportEngine.DataSource = logicians;
+			
 			reportEngine.Process ();
 			(cr as IDisposable).Dispose ();
 			pageSpinButton.SpinButton.SetRange (1, reportView.Report.Pages.Count);
@@ -329,27 +328,14 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 			drawingarea.QueueDraw ();
 		}
 	}
-	
+
 	protected virtual void OnSortAscendingActionActivated (object sender, System.EventArgs e)
 	{
-		toolBoxService.SetToolByName("CrossSectionLineTool");
+		toolBoxService.SetToolByName ("CrossSectionLineTool");
 		
 	}
-	
-	
-	
-	
-	
-	
-	public class Logician
-	{
 
-		public string Surname { get; set; }
-
-		public string Name { get; set; }
-		
-		public int Age { get; set; }
-	}
+ 
 	
 	
 }

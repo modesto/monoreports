@@ -32,27 +32,52 @@ namespace MonoReports.Model.Data
 {
 	public class DummyDataSource : IDataSource
 	{
-		public DummyDataSource ()
-		{
-		}
  
-		#region IDataSource implementation
-		public IList<DataRow> GetRows ()
+		 
+		public DataField[] DiscoverFields ()
 		{
-			throw new NotImplementedException ();
+			return new DataField[0];
 		}
 
-		public int ColumnIndex (string columnName)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public List<DataColumn> Columns {
+		public int CurrentRowIndex {
 			get {
-				throw new NotImplementedException ();
+				return -1;
 			}
 		}
-		#endregion
+ 
+		public bool MoveNext ()
+		{
+			return false;
+		}
+
+		public void Reset ()
+		{
+			
+		}
+
+		public object Current {
+			get {
+				return null;
+			}
+		}
+		
+ 
+		public string GetValue (string fieldName, string format)
+		{
+			return String.Empty;
+		}
+
+		public void ApplySort (IEnumerable<string> sortingFields)
+		{
+			 
+		}
+
+		public bool IsLast {
+			get {
+				return true;
+			}
+		}
+ 	
 	}
 }
 

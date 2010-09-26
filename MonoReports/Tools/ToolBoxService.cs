@@ -52,6 +52,7 @@ namespace MonoReports.Tools
 			
 			ToolByNameFactory.Add("LineTool", () => { return new LineTool(designView);  });
 			ToolByNameFactory.Add("CrossSectionLineTool", () => { return new CrossSectionLineTool(designView);  });
+			ToolByNameFactory.Add("CrossSectionLineTool1", () => { return new CrossSectionLineTool(designView);  });
 		}
  
 		

@@ -1,5 +1,5 @@
 // 
-// IDataSource.cs
+// MyClass.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,18 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace MonoReports.Model.Data
+namespace MonoReports.Tests
 {
-	public interface IDataSource : IEnumerator
-	{				
-		string GetValue(string fieldName, string format);
-		int CurrentRowIndex{get;}
-		void ApplySort(IEnumerable<string> sortingFields);
-		DataField[] DiscoverFields();
-		bool IsLast {get;}	 	
+	public class MyClass
+	{
+		public MyClass ()
+		{
+		}
 	}
 }
 

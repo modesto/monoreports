@@ -38,34 +38,31 @@ namespace MonoReports.Model.Data
 		public GenericEnumerableDataSource (IEnumerable<T> data)
 		{
 			this.data = data;
-			Columns = new List<DataColumn> ();
+			
 			columnIndeces = new Dictionary<string, int>();
 			int i = 0;
-			foreach (var p in typeof(T).GetProperties ()) {
-				DataColumn dc = new PropertyDataColumn (p);
-				Columns.Add (dc);
-				columnIndeces.Add(dc.Name,i++);
-			}
+			
 			
 		}
 
 
 		#region IDataSource implementation
 		
-		public List<DataColumn> Columns { get; private set;}
+		
 
 		public IList<DataRow> GetRows ()
 		{
 			List<DataRow> rows = new List<DataRow> (100);
-			var enumerator = data.GetEnumerator ();
-			while (enumerator.MoveNext ()) {
-				DataRow row = new DataRow ();
-				row.Values = new string[Columns.Count];
-				for (int i = 0; i < Columns.Count; i++) {
-					row.Values[i] = Columns[i].GetValue (enumerator.Current);
-				}
-				rows.Add (row);
-			}
+			//3tk change IDataSource !!!!
+//			var enumerator = data.GetEnumerator ();
+//			while (enumerator.MoveNext ()) {
+//				DataRow row = new DataRow ();
+//				row.Values = new string[Columns.Count];
+//				for (int i = 0; i < Columns.Count; i++) {
+//					row.Values[i] = Columns[i].GetValue (enumerator.Current);
+//				}
+//				rows.Add (row);
+//			}
 			
 			return rows;
 		}

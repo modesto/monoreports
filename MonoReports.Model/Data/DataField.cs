@@ -1,5 +1,5 @@
 // 
-// IDataSource.cs
+// Field.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,18 +24,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Reflection;
 
 namespace MonoReports.Model.Data
 {
-	public interface IDataSource : IEnumerator
-	{				
-		string GetValue(string fieldName, string format);
-		int CurrentRowIndex{get;}
-		void ApplySort(IEnumerable<string> sortingFields);
-		DataField[] DiscoverFields();
-		bool IsLast {get;}	 	
+	public abstract class  DataField
+	{
+		public DataField ()
+		{
+		}
+		
+		public virtual string Name {
+			get;
+			set;
+		}
+		
+		 
+		
+		public abstract string GetValue(object current);
+	}
+	
+	
+	public class PropertyDataField : DataField {
+		
+		public PropertyInfo propertyInfo;
+		
+		public PropertyDataField( PropertyInfo pinfo){
+			propertyInfo = pinfo;
+		}
+		
+		public override string Name {
+			get {
+				return propertyInfo.Name;
+			}
+			set {
+				;
+			}
+		}
+		
+		public override  string GetValue (object current)
+		{
+			
+			 var val = propertyInfo.GetValue(current,null);
+			
+			 return val != null ? val.ToString() : null;
+		}
+		
 	}
 }
 

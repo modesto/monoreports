@@ -27,6 +27,7 @@ using System;
 using MonoReports.ControlView;
 using Cairo;
 using MonoReports.Model.Controls;
+using Gtk;
 namespace MonoReports.Tools
 {
 	public abstract class BaseTool
@@ -70,6 +71,10 @@ namespace MonoReports.Tools
 
 		public virtual void OnMouseMove ()
 		{
+			
+		}
+		
+		public virtual void OnKeyDown(Key key){
 			
 		}
 	}

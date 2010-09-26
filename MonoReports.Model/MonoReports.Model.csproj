@@ -44,10 +44,8 @@
     <Compile Include="ReportContext.cs" />
     <Compile Include="FontSlant.cs" />
     <Compile Include="FontWeight.cs" />
-    <Compile Include="Data\DataColumn.cs" />
     <Compile Include="Data\IDataSource.cs" />
     <Compile Include="Data\DummyDataSource.cs" />
-    <Compile Include="Data\GenericEnumerableDataSource.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="Controls\Control.cs" />
     <Compile Include="Controls\Section.cs" />
@@ -69,6 +67,8 @@
     <Compile Include="Controls\ICrossSectionControl.cs" />
     <Compile Include="Data\DataRow.cs" />
     <Compile Include="LineType.cs" />
+    <Compile Include="Data\DataField.cs" />
+    <Compile Include="Data\ObjectDataSource.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Engine\" />

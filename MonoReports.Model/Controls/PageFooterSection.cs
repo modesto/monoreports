@@ -35,10 +35,16 @@ namespace MonoReports.Model.Controls
 			this.Name = "Page Footter";
 		}
 		
+		public bool DrawOnFirstPage {
+			get;
+			set;
+		}
+		
 		public override object Clone ()
 		{
 			PageFooterSection pfs = new PageFooterSection();
 			CopyTo(pfs);
+			pfs.DrawOnFirstPage = this.DrawOnFirstPage;
 			return pfs;
 		}
 	}

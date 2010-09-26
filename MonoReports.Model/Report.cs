@@ -26,6 +26,8 @@
 using System;
 using System.Collections.Generic;
 using MonoReports.Model.Controls;
+using MonoReports.Model.Data;
+using System.Collections;
 
 namespace MonoReports.Model
 {
@@ -35,48 +37,109 @@ namespace MonoReports.Model
 	{
 
 		public Report ()
-		{		
+		{
 			Width = 600;
 			Height = 800;
-			Groups = new List<Group>();
-			GroupHeaderSections = new List<GroupHeaderSection>();
-			GroupFooterSections = new List<GroupFooterSection>();
-			Pages = new List<Page>();
-			ResourceRepository = new List<byte[]>();
-			PageHeaderSection  = new Controls.PageHeaderSection { Location = new Controls.Point (0, 0), Size = new Controls.Size (600, 150) };
+			Groups = new List<Group> ();
+			Fields = new List<DataField> ();
+			GroupHeaderSections = new List<GroupHeaderSection> ();
+			GroupFooterSections = new List<GroupFooterSection> ();
+			Pages = new List<Page> ();
+			ResourceRepository = new List<byte[]> ();
+			PageHeaderSection = new Controls.PageHeaderSection { Location = new Controls.Point (0, 0), Size = new Controls.Size (600, 150) };
 			DetailSection = new Controls.DetailSection { Location = new Controls.Point (0, 150), Size = new Controls.Size (600, 150) };
 			PageFooterSection = new Controls.PageFooterSection { Location = new Controls.Point (0, 300), Size = new Controls.Size (600, 100) };
 		}
+
+		public string Title { get; set; }
+
+		public PageHeaderSection PageHeaderSection { get; set; }
+		public PageFooterSection PageFooterSection { get; set; }
+		public DetailSection DetailSection { get; internal set; }
+		public List<GroupHeaderSection> GroupHeaderSections { get; set; }
+		public List<GroupFooterSection> GroupFooterSections { get; set; }
+		public List<Page> Pages { get; internal set; }
+		public List<Group> Groups { get; internal set; }
+		public List<byte[]> ResourceRepository { get; set; }
+		public double Height { get; set; }
+		public double Width { get; set; }
+		public UnitType Unit { get; set; }
+
+		public void AddGroup (string fieldName)
+		{
+			Group gr = new Group { GroupingFieldName = fieldName };
+			Groups.Add (gr);
+			GroupHeaderSection gh = new GroupHeaderSection { Name = "Group header " + gr.GroupingFieldName, Size = new Controls.Size (600, 20), Location = new Controls.Point (0, 150) };
+			GroupHeaderSections.Add (gh);
+			GroupFooterSection gf = new GroupFooterSection { Name = "Group footer " + gr.GroupingFieldName, Size = new Controls.Size (600, 20), Location = new Controls.Point (0, 250) };
+			GroupFooterSections.Add (gf);
+		}
+
+		public void RemoveGroup (Group gr)
+		{
+			int index = Groups.IndexOf (gr);
+			if (index != -1) {
+				Groups.RemoveAt (index);
+				GroupHeaderSections.RemoveAt (index);
+				GroupFooterSections.RemoveAt (index);
+			}
+		}
+
+		object dataSource;
+		public object DataSource { 
+			get { return dataSource; } 
+			set {
+				dataSource = value;
+				Type r =  dataSource.GetType();
+				Type r2 = r.GetElementType();
+				if(r2 == null){
+					Type t =  r.GetGenericArguments()[0];
+					Type genericType = typeof(ObjectDataSource<>); 
+					var ttt =  genericType.MakeGenericType( new Type[]{t});
+					_dataSource = (Activator.CreateInstance(ttt, dataSource))  as IDataSource;
+				}else{
+					
+						Type genericType = typeof(ObjectDataSource<>); 
+					var ttt =  genericType.MakeGenericType( new Type[]{r2});
+					_dataSource = (Activator.CreateInstance(ttt, dataSource))  as IDataSource;
+				}
+				
+			} 
 		
-		public string Title {get;set;}
-		
-		public PageHeaderSection PageHeaderSection {get;set;}
-		public PageFooterSection PageFooterSection {get;set;}
-		public DetailSection DetailSection {get; internal set;}
-		public List<GroupHeaderSection> GroupHeaderSections {get;set;}
-		public List<GroupFooterSection> GroupFooterSections {get;set;}		
-		public List<Page> Pages {get; internal set;}				
-		public List<Group> Groups {get; internal set;}		
-		public List<byte[]> ResourceRepository {get; set;}
-		public double Height {get;set;}
-		public double Width {get;set;}
-		public UnitType Unit {get;set;}
- 
-		public void AddGroup(string fieldName){
-			Group group = new Group(){ GroupingFieldName = fieldName};
-			Groups.Add(group);			
-			GroupHeaderSection gh = new GroupHeaderSection(){ Name = "Group header " + group.GroupingFieldName, Size = new Controls.Size (600, 20), Location = new Controls.Point (0, 150)};
-			GroupHeaderSections.Add(gh);							
-			GroupFooterSection gf = new GroupFooterSection(){ Name = "Group footer " + group.GroupingFieldName, Size = new Controls.Size (600, 20), Location = new Controls.Point (0, 250)};
-			GroupFooterSections.Add(gf);
 		}
 		
-		public void RemoveGroup(Group group){
-			int index = Groups.IndexOf(group);
-			if(index != -1){
-				Groups.RemoveAt(index);
-				GroupHeaderSections.RemoveAt(index);
-				GroupFooterSections.RemoveAt(index);
+		
+		internal IDataSource _dataSource {get;set;}
+		
+		
+		public List<DataField> Fields { get; private set; }
+
+		void fillFieldsFromDataSource ()
+		{
+			if (DataSource != null) {
+				if (DataSource is IEnumerable) {
+					
+					IEnumerator enumerator = (DataSource as IEnumerable).GetEnumerator ();
+					
+					if (enumerator.MoveNext ()) {
+						
+						if (enumerator.Current != null) {
+							getFieldsFromType (enumerator.Current.GetType ());
+						}
+					}
+				} else {
+					getFieldsFromType (DataSource.GetType ());
+				}
+			}
+		}
+
+		 
+
+		void getFieldsFromType (Type t)
+		{
+			foreach (var p in t.GetProperties ()) {
+				PropertyDataField df = new PropertyDataField (p);
+				Fields.Add (df);				
 			}
 		}
 	}
