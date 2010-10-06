@@ -29,6 +29,7 @@ using MonoReports.ControlView;
 using MonoReports.Model.Controls;
 using MonoReports.Core;
 using System.Linq;
+using MonoReports.Services;
 
 
 namespace MonoReports.Core
@@ -36,12 +37,12 @@ namespace MonoReports.Core
 	public class ControlViewFactory : IControlViewFactory
 	{
 	
-		ReportView reportView = null;
+		DesignService designService = null;
 			
-		public ControlViewFactory (ReportView reportView)
+		public ControlViewFactory (DesignService designService)
 		{
 				
-			this.reportView = reportView;
+			this.designService = designService;
 			controlViewDictionary = new Dictionary<System.Type, Func<MonoReports.Model.Controls.Control,SectionView,ControlViewBase> >();
 			
 			controlViewDictionary
@@ -64,7 +65,7 @@ namespace MonoReports.Core
 				.Add(
 				     typeof(Image),
 				     	(ctrl, section) => {
-			                    return new ImageView(ctrl as Image,section,this.reportView);
+			                    return new ImageView(ctrl as Image,section,this.designService);
 						}
 				);
 			
@@ -73,12 +74,12 @@ namespace MonoReports.Core
 				     typeof(CrossSectionLine),
 				     	(ctrl, section) => {
 								if(section.ControlModel is PageHeaderSection){
-									SectionView fs = reportView
+									SectionView fs = designService
 									.SectionViews
 									.FirstOrDefault(s => s.ControlModel  is PageFooterSection);
 			                    	return new CrossSectionLineView(ctrl as CrossSectionLine,section,fs);
 								}else if(section.ControlModel is GroupHeaderSection){
-									SectionView fs = reportView
+									SectionView fs = designService
 									.SectionViews
 									.FirstOrDefault(s => s.ControlModel  is GroupFooterSection);
 			                    	return new CrossSectionLineView(ctrl as CrossSectionLine,section,fs);

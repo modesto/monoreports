@@ -1,5 +1,5 @@
 // 
-// ZoomTool.cs
+// UndoRedoService.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,19 +24,47 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoReports.ControlView;
-using MonoReports.Services;
-namespace MonoReports.Tools
+using System.Collections.Generic;
+namespace MonoReports.Core
 {
-	public class ZoomTool : BaseTool
+	public class UndoRedoService
 	{
-		public ZoomTool(DesignService designService) : base(designService)
+				
+		public UndoRedoService ()
 		{
+			undoList = new List<Action>();
+			redoList = new List<Action>();
+		}
+		
+		int index = -1;
+		
+		public void Add(Action undo, Action redo){
+			undoList.Add(undo);
+			redoList.Add(redo);
+			index++;
+		}
+			
+		
+		public void Undo(){			
+			if(index > 0){
+				undoList[index]();
+				index--;
+			}
+		}
+		
+		
+		public void Redo(){
+			if(index + 1 < redoList.Count){
+				index++;
+				redoList[index]();
+			}
 			
 		}
 		
-		public override string Name {get {return "ZoomTool"; }}
-
+		
+		List<Action> undoList;
+		List<Action> redoList;
+		
 		
 	}
 }

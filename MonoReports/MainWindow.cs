@@ -33,34 +33,28 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using Cairo;
 using Model = MonoReports.Model.Engine;
-using MonoReports.Extensions.GtkExtensions;
+using MonoReports.Gui.Widgets;
 using MonoReports.ControlView;
-using Newtonsoft.Json;
 using MonoReports.Tools;
 using MonoReports.Gui;
+using MonoReports.Services;
 
-public partial class MainWindow : Gtk.Window, IWorkspaceService
+public partial class MainWindow : Gtk.Window
 {
 
-	DesignView designView;
-	ReportView reportView;
-	ReportRenderer reportRenderer;
-	MonoReports.Model.Engine.ReportEngine reportEngine;
-	Report currentReport;
+	DesignService designService;
 	ToolBoxService toolBoxService;
-
-	public Report CurrentReport {
-		get { return this.currentReport; }
-		set { currentReport = value; }
-	}
-
+	WorkspaceService workspaceService;
 
 	public MainWindow () : base(Gtk.WindowType.Toplevel)
 	{
 		Build ();
-		buildMainToolbar ();
-		exampleReport ();
-		buildPreviewToolbar ();
+		workspaceService = new WorkspaceService(this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
+		designService = new DesignService(workspaceService,exampleReport());
+		maindesignview1.DesignService = designService;
+		maindesignview1.WorkSpaceService = workspaceService;
+		workspaceService.InvalidateDesignArea();
+		toolBoxService = new ToolBoxService(designService);
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -69,10 +63,10 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 		a.RetVal = true;
 	}
 
-	void exampleReport ()
+	Report exampleReport ()
 	{
-		
-		currentReport = new Report ();
+		 
+		var currentReport = new Report ();
 		
 		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock Żection Żecsdfsdfsdfsfsdfsdion Żecsdfsdfsdfs fsdfsdion Żecsdfsdfsdfsfsdfsdion Żection Żecsdfs dfsdfsfsdfs dfs dfsdfsdfsdfsd ftion Żection ŻSection Ż", FontColor = System.Drawing.Color.Red, CanGrow = true, Location = new Controls.Point (3, 3), Size = new Controls.Size (200, 80) });
 		
@@ -106,9 +100,7 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 		
 		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 20), End = new Controls.Point (420, 10) });
 		currentReport.AddGroup ("Age");
-		reportView = new ReportView (currentReport);
-		designView = new MonoReports.ControlView.DesignView (reportView, this, toolBoxService);
-		reportExplorer.DesignView = designView;
+		return currentReport;
 	}
 
 	protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
@@ -117,61 +109,7 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 	}
 
 
-	protected virtual void OnDrawingareaExposeEvent (object o, Gtk.ExposeEventArgs args)
-	{
-		if (designView != null) {
-			DrawingArea area = (DrawingArea)o;
-			Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
-			cr.Antialias = Cairo.Antialias.Gray;
-			designView.RedrawReport (cr);
-			area.SetSizeRequest (designView.Width, 800);
-			(cr as IDisposable).Dispose ();
-		}
-	}
-
-	protected virtual void OnPreviewDrawingareaExposeEvent (object o, Gtk.ExposeEventArgs args)
-	{
-		DrawingArea area = (DrawingArea)o;
-		Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
-		//Cairo.Context cr = new Cairo.Context (pdfSurface);
-		cr.Antialias = Cairo.Antialias.Gray;
-		designView.CurrentContext = cr;
-		reportRenderer.RenderPage (reportView.Report.Pages[pageNumber]);
-		area.SetSizeRequest (designView.Width, 800);
-		
-		(cr as IDisposable).Dispose ();
-	}
-
-
-
-
-
-	protected virtual void OnDrawingareaButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
-	{
-		
-		if (designView.IsDesign) {
-			Status (String.Format ("press x:{0} y:{1} | xroot:{2} yroot:{3}", args.Event.X, args.Event.Y, args.Event.XRoot, args.Event.YRoot));
-			designView.ButtonPress (args.Event.X, args.Event.Y);
-		}
-		
-	}
-
-	protected virtual void OnDrawingareaMotionNotifyEvent (object o, Gtk.MotionNotifyEventArgs args)
-	{
-		
-		if (designView.IsDesign) {
-			designView.MouseMove (args.Event.X, args.Event.Y);
-			Status (String.Format ("move x:{0} y:{1}", args.Event.X, args.Event.Y));
-		}
-		
-	}
-
-	protected virtual void OnDrawingareaButtonReleaseEvent (object o, Gtk.ButtonReleaseEventArgs args)
-	{
-		if (designView.IsDesign) {
-			designView.ButtonRelease (args.Event.X, args.Event.Y);
-		}
-	}
+	
 
 
 	public void Status (string message)
@@ -190,13 +128,7 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 		this.GdkWindow.Cursor = new Gdk.Cursor (cursorType);
 	}
 
-	public void InvalidateDrawingArea ()
-	{
-		drawingarea.QueueDraw ();
-	}
-
-
-
+ 
 
 	void buildMainToolbar ()
 	{
@@ -216,8 +148,8 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 			
 			if (!double.TryParse (text, out percent))
 				return;
-			percent = Math.Min (percent, 300);
-			designView.ZoomChanged (percent / 100.0);
+			percent = Math.Min (percent, 400);
+			designService.ZoomChanged (percent / 100.0);
 		};
 		
 		mainToolbar.Insert (zoomCombobox, 0);
@@ -226,24 +158,9 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 		
 	}
 
-	int pageNumber = 0;
-	ToolBarSpinButton pageSpinButton = null;
-
-	void buildPreviewToolbar ()
-	{
-		pageSpinButton = new ToolBarSpinButton (40, 1, 1, 1);
-		pageSpinButton.SpinButton.ValueChanged += delegate(object sender, EventArgs e) {
-			
-			pageNumber = (int)(pageSpinButton.SpinButton.Value);
-			pageNumber -= 1;
-			previewDrawingArea.QueueDraw ();
-		};
-		
-		ToolBarLabel pagelabel = new ToolBarLabel ("Page: ");
-		previewToolbar.Insert (pagelabel, 0);
-		previewToolbar.Insert (pageSpinButton, 1);
-		
-	}
+	
+	
+	
 
 	protected virtual void OnEditActionActivated (object sender, System.EventArgs e)
 	{
@@ -259,11 +176,11 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 		using (System.IO.FileStream file = System.IO.File.OpenWrite ("test.mrp")) {
 			
 			
-			var serializedProject = JsonConvert.SerializeObject (reportView.Report, Formatting.None, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
-			byte[] bytes = System.Text.Encoding.UTF8.GetBytes (serializedProject);
-			file.Write (bytes, 0, bytes.Length);
-			
-			file.Close ();
+//			var serializedProject = JsonConvert.SerializeObject (reportView.Report, Formatting.None, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
+//			byte[] bytes = System.Text.Encoding.UTF8.GetBytes (serializedProject);
+//			file.Write (bytes, 0, bytes.Length);
+//			
+//			file.Close ();
 		}
 		
 	}
@@ -279,56 +196,21 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 			System.IO.FileStream file = System.IO.File.OpenRead (fc.Filename);
 			byte[] bytes = new byte[file.Length];
 			file.Read (bytes, 0, (int)file.Length);
-			mainPropertygrid.CurrentObject = null;
+			ShowInPropertyGrid(null);
 			
 			
-			var report = JsonConvert.DeserializeObject<Report> (System.Text.Encoding.UTF8.GetString (bytes), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects, Converters = new List<JsonConverter> (new JsonConverter[] { new MonoReports.Extensions.PointConverter (), new MonoReports.Extensions.SizeConverter () }) });
-			CurrentReport = report;
-			reportView = new ReportView (currentReport);
-			designView = new DesignView (reportView, this, toolBoxService);
+			//var report = JsonConvert.DeserializeObject<Report> (System.Text.Encoding.UTF8.GetString (bytes), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects, Converters = new List<JsonConverter> (new JsonConverter[] { new MonoReports.Extensions.PointConverter (), new MonoReports.Extensions.SizeConverter () }) });
+			//CurrentReport = report;
+			//var reportView = new ReportView (currentReport);
+			//designService = new DesignService (reportView, this, toolBoxService);
 			file.Close ();
 		}
 		
 		fc.Destroy ();
-		drawingarea.QueueDraw ();
+		 
 	}
 
-//TODO remove example report and data source to some external class	
-
-	protected virtual void OnMainNotebookSwitchPage (object o, Gtk.SwitchPageArgs args)
-	{
-		
-		if (args.PageNum == 1) {
-			designView.IsDesign = false;
-			reportRenderer = new ReportRenderer (designView);
-			
-
-			var logicians = new[] { new { Name = "Alfred", Surname = "Tarski", Age = 33 }, 
-				new { Name = "Gotlob", Surname = "Frege", Age = 42 }, 
-				new { Name = "Kurt", Surname = "Gödel", Age = 22 }, 
-				new { Name = "Unknown ", Surname = "Logican", Age = 33 }, 
-				new { Name = "Józef", Surname = "Bocheński", Age = 22 }, 
-				new { Name = "Stanisław", Surname = "Leśniewski", Age = 79 }, 
-				new { Name = "Saul", Surname = "Kripke", Age = 40 }, 
-				new { Name = "George", Surname = "Boolos", Age = 79 } };
  
-			currentReport.DataSource = logicians;
-			reportEngine = new Model.ReportEngine (currentReport, reportRenderer);
-			ImageSurface imagesSurface = new ImageSurface (Format.Argb32, (int)currentReport.Width, (int)currentReport.Height);
-			Cairo.Context cr = new Cairo.Context (imagesSurface);
-			designView.CurrentContext = cr;
-			//reportEngine.DataSource = logicians;
-			
-			reportEngine.Process ();
-			(cr as IDisposable).Dispose ();
-			pageSpinButton.SpinButton.SetRange (1, reportView.Report.Pages.Count);
-			previewDrawingArea.QueueDraw ();
-		} else {
-			designView.IsDesign = true;
-			drawingarea.QueueDraw ();
-		}
-	}
-
 	protected virtual void OnSortAscendingActionActivated (object sender, System.EventArgs e)
 	{
 		toolBoxService.SetToolByName ("CrossSectionLineTool");
@@ -336,7 +218,8 @@ public partial class MainWindow : Gtk.Window, IWorkspaceService
 	}
 
  
-	
+	 
+	 
 	
 }
 

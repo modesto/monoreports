@@ -30,6 +30,7 @@ using MonoReports.Model;
 using MonoReports.Core;
 using MonoReports.Extensions.CairoExtensions;
 using MonoReports.Model.Controls;
+using MonoReports.Services;
 
 namespace MonoReports.Tools
 {
@@ -49,7 +50,7 @@ namespace MonoReports.Tools
 		Border selectBorder;
 		GripperType gripperType;
 
-		public RectTool (DesignView designView) : base(designView)
+		public RectTool (DesignService designService) : base(designService)
 		{
 			selectBorder = new Border ();
 			selectBorder.Color = System.Drawing.Color.Black;
@@ -59,31 +60,38 @@ namespace MonoReports.Tools
 		public override void OnBeforeDraw (Context c)
 		{
 			
-			if (designView.IsPressed && designView.IsMoving && designView.SelectedControl != null) {
-				var control = designView.SelectedControl;
+			
+			
+			
+		}
+		
+		public override void OnMouseMove ()
+		{
+			if (designService.IsPressed && designService.IsMoving && designService.SelectedControl != null) {
+				var control = designService.SelectedControl;
 				var location = control.ControlModel.Location;
 				
-				if (designView.IsMoving) {
+				if (designService.IsMoving) {
 					if (!isResizing) {
-						var point = new MonoReports.Model.Controls.Point (Math.Max(0, location.X + designView.DeltaPoint.X), Math.Max(0, location.Y + designView.DeltaPoint.Y));
+						var point = new MonoReports.Model.Controls.Point (Math.Max(0, location.X + designService.DeltaPoint.X), Math.Max(0, location.Y + designService.DeltaPoint.Y));
 						control.ControlModel.Location = point;
 					} else {
 						
 						switch (gripperType) {
 						case GripperType.NE:
-							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width + designView.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height - designView.DeltaPoint.Y));
-							control.ControlModel.Location = new MonoReports.Model.Controls.Point (location.X, location.Y + designView.DeltaPoint.Y);
+							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width + designService.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height - designService.DeltaPoint.Y));
+							control.ControlModel.Location = new MonoReports.Model.Controls.Point (location.X, location.Y + designService.DeltaPoint.Y);
 							break;
 						case GripperType.SE:
-							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width + designView.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height + designView.DeltaPoint.Y));
+							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width + designService.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height + designService.DeltaPoint.Y));
 							break;
 						case GripperType.SW:
-							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width - designView.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height + designView.DeltaPoint.Y));
-							control.ControlModel.Location = new MonoReports.Model.Controls.Point (location.X + designView.DeltaPoint.X, location.Y);
+							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width - designService.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height + designService.DeltaPoint.Y));
+							control.ControlModel.Location = new MonoReports.Model.Controls.Point (location.X + designService.DeltaPoint.X, location.Y);
 							break;
 						case GripperType.NW:
-							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width - designView.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height - designView.DeltaPoint.Y));
-							control.ControlModel.Location = new MonoReports.Model.Controls.Point (location.X + designView.DeltaPoint.X, location.Y + designView.DeltaPoint.Y);
+							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width - designService.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height - designService.DeltaPoint.Y));
+							control.ControlModel.Location = new MonoReports.Model.Controls.Point (location.X + designService.DeltaPoint.X, location.Y + designService.DeltaPoint.Y);
 							break;
 						default:
 							break;
@@ -94,29 +102,27 @@ namespace MonoReports.Tools
 				}
 				
 			}
-			
-			
 		}
 		
 		public override string Name {get {return "RectTool"; }}
 
 		public override void OnAfterDraw (Context c)
 		{
-			if (designView.SelectedControl != null && designView.IsDesign) {
+			if (designService.SelectedControl != null && designService.IsDesign) {
 				c.Save ();
 				c.SetDash (new double[] { 1.0 }, 1);
-				c.DrawInsideBorder (designView.SelectedControl.AbsoluteBound, selectBorder, true);
-				c.DrawSelectBox (designView.SelectedControl.AbsoluteBound);
+				c.DrawInsideBorder (designService.SelectedControl.AbsoluteBound, selectBorder, true);
+				c.DrawSelectBox (designService.SelectedControl.AbsoluteBound);
 				c.Restore ();
 			}
 		}
 
 		public override void OnMouseDown ()
 		{
-			if (designView.SelectedControl != null) {
+			if (designService.SelectedControl != null) {
 				
-				var control = designView.SelectedControl;
-				var pointInSection = control.ParentSection.PointInSectionByAbsolutePoint (designView.MousePoint);
+				var control = designService.SelectedControl;
+				var pointInSection = control.ParentSection.PointInSectionByAbsolutePoint (designService.MousePoint);
 				var location = control.ControlModel.Location;
 				isResizing = false;
 				if (pointInSection.Y > location.Y && pointInSection.Y < location.Y + gripSize) {

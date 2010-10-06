@@ -1,5 +1,5 @@
 // 
-// ZoomTool.cs
+// EventAggregator.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,20 +24,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoReports.ControlView;
-using MonoReports.Services;
-namespace MonoReports.Tools
+namespace MonoReports.Core
 {
-	public class ZoomTool : BaseTool
+	public class EventAggregator
 	{
-		public ZoomTool(DesignService designService) : base(designService)
+		public EventAggregator ()
 		{
-			
 		}
-		
-		public override string Name {get {return "ZoomTool"; }}
-
-		
 	}
 }
 

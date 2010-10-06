@@ -25,6 +25,19 @@
 // THE SOFTWARE.
 using System;
 using MonoReports.ControlView;
+using System.IO;
+using System.Text;
+using System.Globalization;
+using System.Collections;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Threading;
+using System.Net;
+using System.Net.Sockets;
+using System.Collections.Generic;
+using Mono.CSharp;
+using MonoReports.Services;
+
 namespace MonoReports.Gui
 {
 	[System.ComponentModel.ToolboxItem(true)]
@@ -34,70 +47,124 @@ namespace MonoReports.Gui
 		{
 			this.Build ();
 			
-		Gtk.TreeViewColumn objectColumn = new Gtk.TreeViewColumn ();
+			Gtk.TreeViewColumn objectColumn = new Gtk.TreeViewColumn ();
 			objectColumn.Title = "Report";
 			Gtk.CellRendererText cell = new Gtk.CellRendererText ();
-		    objectColumn.PackStart (cell, true);
+			objectColumn.PackStart (cell, true);
 			
 			exporerTreeview.AppendColumn (objectColumn);
 			objectColumn.AddAttribute (cell, "text", 0);
 			
-		}
-		
-		DesignView designView;
-		
-		public DesignView DesignView {
 			
-			get{
-				return designView;
+			Evaluator.MessageOutput = Console.Out;
+			
+			Evaluator.Init (new string[0]);
+			AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoaded;
+			
+			// Add all currently loaded assemblies
+			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
+				try {
+					Evaluator.ReferenceAssembly (a);
+				} catch (Exception exp) {
+					Console.WriteLine (exp.ToString ());
+				}
 			}
 			
-			set{			
-				designView = value;				
-				refreshDataFieldsFromDatasource ();
-			}
-		}
-		
-		
-		void refreshDataFieldsFromDatasource () {
-			 
-				if (designView != null)
-					updateTree ();
-		}
-		
-		void updateTree (){
- 
+			Evaluate ("using System; using System.Linq; using System.Collections.Generic; using System.Collections;");
 			
-			var model = new Gtk.TreeStore(typeof(string));
+			
+		}
+
+
+
+
+		StringWriter outputWriter = new StringWriter ();
+		DesignService designService;
+
+		public DesignService DesignService {
+
+			get { return designService; }
+
+				
+			set { designService = value; }
+		}
+
+		static void AssemblyLoaded (object sender, AssemblyLoadEventArgs e)
+		{
+			
+			Evaluator.ReferenceAssembly (e.LoadedAssembly);
+			
+		}
+
+
+
+		void updateTree ()
+		{
+			
+			
+			var model = new Gtk.TreeStore (typeof(string));
 			
 			exporerTreeview.Model = model;
 			
-			var staticDataFieldsNode = model.AppendValues("Static Fields");
-			model.AppendValues(staticDataFieldsNode,"PageNumber");
-			model.AppendValues(staticDataFieldsNode,"NumberOfPages");
+			var staticDataFieldsNode = model.AppendValues ("Static Fields");
+			model.AppendValues (staticDataFieldsNode, "PageNumber");
+			model.AppendValues (staticDataFieldsNode, "NumberOfPages");
 			
-			var dataFieldsNode = model.AppendValues("Data Fields");
-			foreach (var field in designView.ReportView.Report.Fields) {
-					model.AppendValues(dataFieldsNode,field.Name);
+			var dataFieldsNode = model.AppendValues ("Data Fields");
+			foreach (var field in designService.Report.Fields) {
+				model.AppendValues (dataFieldsNode, field.Name);
 			}
-		
-		 
+			
+			
 		}
-		
-		 
+
+
 		protected virtual void OnUpdateFieldsFromDataSourceButtonButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
-		  	
+			
 		}
-		
+
 		protected virtual void OnUpdateFieldsFromDataSourceButtonActivated (object sender, System.EventArgs e)
 		{
-		
+			
 		}
-		
+
 		protected virtual void OnUpdateFieldsFromDataSourceButtonClicked (object sender, System.EventArgs e)
 		{
-				refreshDataFieldsFromDatasource ();
+			
+		}
+
+		protected virtual string Evaluate (string input)
+		{
+			bool result_set;
+			object result;
+			
+			try {
+				input = Evaluator.Evaluate (input, out result, out result_set);
+				
+				if (result_set) {
+					
+					outputTextview.Buffer.Text = result.ToString ();
+					DesignService.Report.DataSource = result;
+					updateTree ();
+				}
+			} catch (Exception e) {
+				Console.WriteLine (e);
+				return null;
+			}
+			
+			return input;
+		}
+
+
+		protected virtual void OnExecScriptButtonClicked (object sender, System.EventArgs e)
+		{
+			
+			
+			object returnVal = null;
+			string script = scriptTextView.Buffer.Text;
+			Evaluate (script);
+ 
 		}
 		
 		

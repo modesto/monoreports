@@ -28,15 +28,16 @@ using MonoReports.ControlView;
 using Cairo;
 using MonoReports.Model.Controls;
 using Gtk;
+using MonoReports.Services;
 namespace MonoReports.Tools
 {
 	public abstract class BaseTool
 	{
-		protected DesignView designView;
+		protected DesignService designService;
 
-		public BaseTool (DesignView designView)
+		public BaseTool (DesignService designService)
 		{
-			this.designView = designView;
+			this.designService = designService;
 		}
 		
 		
@@ -77,6 +78,9 @@ namespace MonoReports.Tools
 		public virtual void OnKeyDown(Key key){
 			
 		}
+		
+		
+		
 	}
 }
 

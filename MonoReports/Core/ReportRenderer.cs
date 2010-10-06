@@ -28,22 +28,23 @@ using MonoReports.Model.Controls;
 using MonoReports.ControlView;
 using System.Collections.Generic;
 using MonoReports.Model;
+using MonoReports.Services;
 
 namespace MonoReports.Core
 {
 	public class ReportRenderer : IReportRenderer
 	{
 		Dictionary<Control, ControlViewBase> controlRenderersDictionary;
-		DesignView designView;		
+		DesignService designService;		
 		RenderState renderState;
 		
-		public ReportRenderer (DesignView designView)
+		public ReportRenderer (DesignService designService)
 		{
-			this.designView = designView;
+			this.designService = designService;
 			
 			controlRenderersDictionary = new Dictionary<Control, ControlViewBase> ();
 			
-			foreach (var sectionView in designView.ReportView.SectionViews) {
+			foreach (var sectionView in designService.SectionViews) {
 				controlRenderersDictionary.Add (sectionView.ControlModel, sectionView);
 				foreach (var controlView in sectionView.Controls) {
 					if(!controlRenderersDictionary.ContainsKey(controlView.ControlModel))
@@ -62,16 +63,16 @@ namespace MonoReports.Core
 				var sectionView = controlRenderersDictionary[section.TemplateControl] as SectionView;			 				
 			 	renderState.SectionView = sectionView;	
 				renderState.Section  = section;
-				designView.CurrentContext.Save();	
+				designService.CurrentContext.Save();	
 				RenderControl (section);
-				designView.CurrentContext.Translate(0,section.Location.Y);
+				designService.CurrentContext.Translate(0,section.Location.Y);
  
 				for (int j = 0; j < section.Controls.Count; j++) {
 					var ctrl = section.Controls[j];
 					if(ctrl.IsVisible)
 						RenderControl (ctrl);
 				}
-				designView.CurrentContext.Restore();
+				designService.CurrentContext.Restore();
 			}
 		}
 
@@ -87,7 +88,7 @@ namespace MonoReports.Core
 			controlView.ControlModel = control;
 			RenderState renderState = new RenderState(){ IsDesign = false, Render = false,
 				SectionView = controlView.ParentSection };
-			var result = controlView.Render (designView.CurrentContext, renderState);
+			var result = controlView.Render (designService.CurrentContext, renderState);
 			controlView.ControlModel = control.TemplateControl;
 			return result;
 		}
@@ -103,13 +104,13 @@ namespace MonoReports.Core
 			}
 			controlView.ControlModel = control;
 			
-			controlView.Render (designView.CurrentContext, renderState);
+			controlView.Render (designService.CurrentContext, renderState);
 			controlView.ControlModel = control.TemplateControl;
 		}
 
 		public void NextPage ()
 		{
-			designView.NextPage ();
+			designService.NextPage ();
 		}
 
 		

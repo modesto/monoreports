@@ -4,73 +4,31 @@
 public partial class MainWindow
 {
 	private global::Gtk.UIManager UIManager;
-
 	private global::Gtk.Action FileAction;
-
 	private global::Gtk.Action FileAction1;
-
 	private global::Gtk.Action quitAction;
-
 	private global::Gtk.Action HelpAction;
-
 	private global::Gtk.Action HelpAction1;
-
 	private global::Gtk.Action executeAction;
-
 	private global::Gtk.Action Action;
-
 	private global::Gtk.Action aboutAction;
-
 	private global::Gtk.Action zoomFitAction;
-
 	private global::Gtk.Action Action1;
-
 	private global::Gtk.Action openAction;
-
 	private global::Gtk.Action saveAction;
-
 	private global::Gtk.Action executeAction1;
-
 	private global::Gtk.Action dialogErrorAction;
-
 	private global::Gtk.ToggleAction editAction;
-
 	private global::Gtk.Action sortAscendingAction;
-
 	private global::Gtk.VBox mainVbox;
-
 	private global::Gtk.MenuBar mainMenubar;
-
 	private global::Gtk.Toolbar mainToolbar;
-
 	private global::Gtk.HBox contentHbox;
-
 	private global::Gtk.HPaned mainHPaned;
-
-	private global::Gtk.Notebook mainNotebook;
-
-	private global::Gtk.ScrolledWindow designScrolledWindow;
-
-	private global::Gtk.DrawingArea drawingarea;
-
-	private global::Gtk.Label designTitleLabel;
-
-	private global::Gtk.VBox previewVbox;
-
-	private global::Gtk.ScrolledWindow previewScrolledWindow;
-
-	private global::Gtk.DrawingArea previewDrawingArea;
-
-	private global::Gtk.Toolbar previewToolbar;
-
-	private global::Gtk.Label previewTitleLabel;
-
+	private global::MonoReports.Gui.Widgets.MainDesignView maindesignview1;
 	private global::Gtk.VPaned rightVPaned;
-
 	private global::MonoReports.Gui.ReportExplorer reportExplorer;
-
 	private global::MonoDevelop.Components.PropertyGrid.PropertyGrid mainPropertygrid;
-
 	private global::Gtk.Statusbar bottomStatusbar;
 
 	protected virtual void Build ()
@@ -134,7 +92,7 @@ public partial class MainWindow
 		this.mainMenubar = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/mainMenubar")));
 		this.mainMenubar.Name = "mainMenubar";
 		this.mainVbox.Add (this.mainMenubar);
-		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.mainVbox[this.mainMenubar]));
+		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.mainVbox [this.mainMenubar]));
 		w2.Position = 0;
 		w2.Expand = false;
 		w2.Fill = false;
@@ -145,7 +103,7 @@ public partial class MainWindow
 		this.mainToolbar.ShowArrow = false;
 		this.mainToolbar.IconSize = ((global::Gtk.IconSize)(1));
 		this.mainVbox.Add (this.mainToolbar);
-		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.mainVbox[this.mainToolbar]));
+		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.mainVbox [this.mainToolbar]));
 		w3.Position = 1;
 		w3.Expand = false;
 		w3.Fill = false;
@@ -157,125 +115,56 @@ public partial class MainWindow
 		this.mainHPaned = new global::Gtk.HPaned ();
 		this.mainHPaned.CanFocus = true;
 		this.mainHPaned.Name = "mainHPaned";
-		this.mainHPaned.Position = 658;
+		this.mainHPaned.Position = 789;
 		// Container child mainHPaned.Gtk.Paned+PanedChild
-		this.mainNotebook = new global::Gtk.Notebook ();
-		this.mainNotebook.CanFocus = true;
-		this.mainNotebook.Events = ((global::Gdk.EventMask)(52992));
-		this.mainNotebook.Name = "mainNotebook";
-		this.mainNotebook.CurrentPage = 0;
-		// Container child mainNotebook.Gtk.Notebook+NotebookChild
-		this.designScrolledWindow = new global::Gtk.ScrolledWindow ();
-		this.designScrolledWindow.CanFocus = true;
-		this.designScrolledWindow.Name = "designScrolledWindow";
-		this.designScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
-		// Container child designScrolledWindow.Gtk.Container+ContainerChild
-		global::Gtk.Viewport w4 = new global::Gtk.Viewport ();
-		w4.ShadowType = ((global::Gtk.ShadowType)(0));
-		// Container child GtkViewport.Gtk.Container+ContainerChild
-		this.drawingarea = new global::Gtk.DrawingArea ();
-		this.drawingarea.Events = ((global::Gdk.EventMask)(774));
-		this.drawingarea.Name = "drawingarea";
-		w4.Add (this.drawingarea);
-		this.designScrolledWindow.Add (w4);
-		this.mainNotebook.Add (this.designScrolledWindow);
-		// Notebook tab
-		this.designTitleLabel = new global::Gtk.Label ();
-		this.designTitleLabel.Name = "designTitleLabel";
-		this.designTitleLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("desing");
-		this.mainNotebook.SetTabLabel (this.designScrolledWindow, this.designTitleLabel);
-		this.designTitleLabel.ShowAll ();
-		// Container child mainNotebook.Gtk.Notebook+NotebookChild
-		this.previewVbox = new global::Gtk.VBox ();
-		this.previewVbox.Name = "previewVbox";
-		this.previewVbox.Spacing = 6;
-		// Container child previewVbox.Gtk.Box+BoxChild
-		this.previewScrolledWindow = new global::Gtk.ScrolledWindow ();
-		this.previewScrolledWindow.CanFocus = true;
-		this.previewScrolledWindow.Name = "previewScrolledWindow";
-		this.previewScrolledWindow.ShadowType = ((global::Gtk.ShadowType)(1));
-		// Container child previewScrolledWindow.Gtk.Container+ContainerChild
-		global::Gtk.Viewport w8 = new global::Gtk.Viewport ();
-		w8.ShadowType = ((global::Gtk.ShadowType)(0));
-		// Container child GtkViewport1.Gtk.Container+ContainerChild
-		this.previewDrawingArea = new global::Gtk.DrawingArea ();
-		this.previewDrawingArea.Events = ((global::Gdk.EventMask)(774));
-		this.previewDrawingArea.Name = "previewDrawingArea";
-		w8.Add (this.previewDrawingArea);
-		this.previewScrolledWindow.Add (w8);
-		this.previewVbox.Add (this.previewScrolledWindow);
-		global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.previewVbox[this.previewScrolledWindow]));
-		w11.Position = 0;
-		// Container child previewVbox.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString ("<ui><toolbar name='previewToolbar'/></ui>");
-		this.previewToolbar = ((global::Gtk.Toolbar)(this.UIManager.GetWidget ("/previewToolbar")));
-		this.previewToolbar.Name = "previewToolbar";
-		this.previewToolbar.ShowArrow = false;
-		this.previewVbox.Add (this.previewToolbar);
-		global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.previewVbox[this.previewToolbar]));
-		w12.Position = 1;
-		w12.Expand = false;
-		w12.Fill = false;
-		this.mainNotebook.Add (this.previewVbox);
-		global::Gtk.Notebook.NotebookChild w13 = ((global::Gtk.Notebook.NotebookChild)(this.mainNotebook[this.previewVbox]));
-		w13.Position = 1;
-		// Notebook tab
-		this.previewTitleLabel = new global::Gtk.Label ();
-		this.previewTitleLabel.Name = "previewTitleLabel";
-		this.previewTitleLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("preview");
-		this.mainNotebook.SetTabLabel (this.previewVbox, this.previewTitleLabel);
-		this.previewTitleLabel.ShowAll ();
-		this.mainHPaned.Add (this.mainNotebook);
-		global::Gtk.Paned.PanedChild w14 = ((global::Gtk.Paned.PanedChild)(this.mainHPaned[this.mainNotebook]));
-		w14.Resize = false;
-		w14.Shrink = false;
+		this.maindesignview1 = new global::MonoReports.Gui.Widgets.MainDesignView ();
+		this.maindesignview1.Events = ((global::Gdk.EventMask)(256));
+		this.maindesignview1.Name = "maindesignview1";
+		this.mainHPaned.Add (this.maindesignview1);
+		global::Gtk.Paned.PanedChild w4 = ((global::Gtk.Paned.PanedChild)(this.mainHPaned [this.maindesignview1]));
+		w4.Resize = false;
 		// Container child mainHPaned.Gtk.Paned+PanedChild
 		this.rightVPaned = new global::Gtk.VPaned ();
 		this.rightVPaned.CanFocus = true;
 		this.rightVPaned.Name = "rightVPaned";
-		this.rightVPaned.Position = 157;
+		this.rightVPaned.Position = 363;
 		// Container child rightVPaned.Gtk.Paned+PanedChild
 		this.reportExplorer = new global::MonoReports.Gui.ReportExplorer ();
 		this.reportExplorer.Events = ((global::Gdk.EventMask)(256));
 		this.reportExplorer.Name = "reportExplorer";
 		this.rightVPaned.Add (this.reportExplorer);
-		global::Gtk.Paned.PanedChild w15 = ((global::Gtk.Paned.PanedChild)(this.rightVPaned[this.reportExplorer]));
-		w15.Resize = false;
+		global::Gtk.Paned.PanedChild w5 = ((global::Gtk.Paned.PanedChild)(this.rightVPaned [this.reportExplorer]));
+		w5.Resize = false;
 		// Container child rightVPaned.Gtk.Paned+PanedChild
 		this.mainPropertygrid = new global::MonoDevelop.Components.PropertyGrid.PropertyGrid ();
-		this.mainPropertygrid.CanDefault = true;
-		this.mainPropertygrid.CanFocus = true;
 		this.mainPropertygrid.Name = "mainPropertygrid";
 		this.mainPropertygrid.ShowToolbar = false;
 		this.mainPropertygrid.ShowHelp = false;
 		this.rightVPaned.Add (this.mainPropertygrid);
-		global::Gtk.Paned.PanedChild w16 = ((global::Gtk.Paned.PanedChild)(this.rightVPaned[this.mainPropertygrid]));
-		w16.Resize = false;
 		this.mainHPaned.Add (this.rightVPaned);
-		global::Gtk.Paned.PanedChild w17 = ((global::Gtk.Paned.PanedChild)(this.mainHPaned[this.rightVPaned]));
-		w17.Resize = false;
+		global::Gtk.Paned.PanedChild w7 = ((global::Gtk.Paned.PanedChild)(this.mainHPaned [this.rightVPaned]));
+		w7.Resize = false;
 		this.contentHbox.Add (this.mainHPaned);
-		global::Gtk.Box.BoxChild w18 = ((global::Gtk.Box.BoxChild)(this.contentHbox[this.mainHPaned]));
-		w18.Position = 0;
+		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.contentHbox [this.mainHPaned]));
+		w8.Position = 0;
 		this.mainVbox.Add (this.contentHbox);
-		global::Gtk.Box.BoxChild w19 = ((global::Gtk.Box.BoxChild)(this.mainVbox[this.contentHbox]));
-		w19.Position = 2;
+		global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.mainVbox [this.contentHbox]));
+		w9.Position = 2;
 		// Container child mainVbox.Gtk.Box+BoxChild
 		this.bottomStatusbar = new global::Gtk.Statusbar ();
 		this.bottomStatusbar.Name = "bottomStatusbar";
 		this.bottomStatusbar.Spacing = 6;
 		this.mainVbox.Add (this.bottomStatusbar);
-		global::Gtk.Box.BoxChild w20 = ((global::Gtk.Box.BoxChild)(this.mainVbox[this.bottomStatusbar]));
-		w20.Position = 3;
-		w20.Expand = false;
-		w20.Fill = false;
+		global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.mainVbox [this.bottomStatusbar]));
+		w10.Position = 3;
+		w10.Expand = false;
+		w10.Fill = false;
 		this.Add (this.mainVbox);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
 		this.DefaultWidth = 1027;
 		this.DefaultHeight = 697;
-		this.mainPropertygrid.HasDefault = true;
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);
 		this.quitAction.Activated += new global::System.EventHandler (this.OnQuitActionActivated);
@@ -283,14 +172,5 @@ public partial class MainWindow
 		this.saveAction.Activated += new global::System.EventHandler (this.OnSaveActionActivated);
 		this.editAction.Activated += new global::System.EventHandler (this.OnEditActionActivated);
 		this.sortAscendingAction.Activated += new global::System.EventHandler (this.OnSortAscendingActionActivated);
-		this.mainNotebook.SwitchPage += new global::Gtk.SwitchPageHandler (this.OnMainNotebookSwitchPage);
-		this.drawingarea.ButtonPressEvent += new global::Gtk.ButtonPressEventHandler (this.OnDrawingareaButtonPressEvent);
-		this.drawingarea.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler (this.OnDrawingareaButtonReleaseEvent);
-		this.drawingarea.MotionNotifyEvent += new global::Gtk.MotionNotifyEventHandler (this.OnDrawingareaMotionNotifyEvent);
-		this.drawingarea.ExposeEvent += new global::Gtk.ExposeEventHandler (this.OnDrawingareaExposeEvent);
-		this.previewDrawingArea.ExposeEvent += new global::Gtk.ExposeEventHandler (this.OnPreviewDrawingareaExposeEvent);
-		this.previewDrawingArea.ButtonPressEvent += new global::Gtk.ButtonPressEventHandler (this.OnDrawingareaButtonPressEvent);
-		this.previewDrawingArea.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler (this.OnDrawingareaButtonReleaseEvent);
-		this.previewDrawingArea.MotionNotifyEvent += new global::Gtk.MotionNotifyEventHandler (this.OnDrawingareaMotionNotifyEvent);
 	}
 }

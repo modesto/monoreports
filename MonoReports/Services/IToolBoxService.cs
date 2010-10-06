@@ -1,5 +1,5 @@
 // 
-// ZoomTool.cs
+// IToolBoxService.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -26,18 +26,18 @@
 using System;
 using MonoReports.ControlView;
 using MonoReports.Services;
-namespace MonoReports.Tools
-{
-	public class ZoomTool : BaseTool
-	{
-		public ZoomTool(DesignService designService) : base(designService)
-		{
-			
-		}
-		
-		public override string Name {get {return "ZoomTool"; }}
+using MonoReports.Tools;
 
-		
+namespace MonoReports.Services
+{
+	public interface IToolBoxService
+	{
+		DesignService DesignService {get;set;}
+		BaseTool SelectedTool{get;}
+		void SetToolByControlView(ControlViewBase control);
+		void SetTool(BaseTool tool);
+		void SetToolByName(string toolName);
+		void UnselectTool();
 	}
 }
 

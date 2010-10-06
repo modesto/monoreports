@@ -99,11 +99,11 @@ namespace MonoReports.Model
 					_dataSource = (Activator.CreateInstance(ttt, dataSource))  as IDataSource;
 				}else{
 					
-						Type genericType = typeof(ObjectDataSource<>); 
+					Type genericType = typeof(ObjectDataSource<>); 
 					var ttt =  genericType.MakeGenericType( new Type[]{r2});
 					_dataSource = (Activator.CreateInstance(ttt, dataSource))  as IDataSource;
 				}
-				
+				FillFieldsFromDataSource();
 			} 
 		
 		}
@@ -114,33 +114,15 @@ namespace MonoReports.Model
 		
 		public List<DataField> Fields { get; private set; }
 
-		void fillFieldsFromDataSource ()
+		public void FillFieldsFromDataSource ()
 		{
 			if (DataSource != null) {
-				if (DataSource is IEnumerable) {
-					
-					IEnumerator enumerator = (DataSource as IEnumerable).GetEnumerator ();
-					
-					if (enumerator.MoveNext ()) {
-						
-						if (enumerator.Current != null) {
-							getFieldsFromType (enumerator.Current.GetType ());
-						}
-					}
-				} else {
-					getFieldsFromType (DataSource.GetType ());
-				}
+				 Fields = new List<DataField>( _dataSource.DiscoverFields());				 
 			}
 		}
 
 		 
 
-		void getFieldsFromType (Type t)
-		{
-			foreach (var p in t.GetProperties ()) {
-				PropertyDataField df = new PropertyDataField (p);
-				Fields.Add (df);				
-			}
-		}
+		 
 	}
 }

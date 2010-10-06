@@ -33,50 +33,7 @@ namespace MonoReports.ControlView
 	public class ReportView
 	{
 		
-		ControlViewFactory controlViewFactory;
-		public Report Report {get;set;}
-		
-		public ReportView (Report report)
-		{
-			Report = report;
-			controlViewFactory = new ControlViewFactory (this);
-			sectionViews = new List<SectionView> ();
-			addSectionView (report.PageHeaderSection);
-			foreach (var groupHeader in report.GroupHeaderSections) {
-				addSectionView (groupHeader);
-			}
-			addSectionView (report.DetailSection);
-			foreach (var groupFooter in report.GroupFooterSections) {
-				addSectionView (groupFooter);
-			}
-			addSectionView (report.PageFooterSection);
-		}
-		
-		private List<SectionView> sectionViews;
 
-		public IList<SectionView> SectionViews {
-			get { return sectionViews; }
-			private set {
-				;
-			}
-		}
-		
-		
-		 
-		
-		
-		private void addSectionView (Section section)
-		{
-			Cairo.PointD sectionSpan;
-			if (sectionViews.Count > 0) {
-				var previousSection = sectionViews[sectionViews.Count - 1];
-				sectionSpan = new Cairo.PointD (0, previousSection.AbsoluteBound.Y + previousSection.AbsoluteBound.Height);
-			} else {
-				sectionSpan = new Cairo.PointD (0, 0);
-			}
-			var sectionView = new SectionView (Report, controlViewFactory, section, sectionSpan);
-			sectionViews.Add (sectionView);
-		}
 		
 		
 		 

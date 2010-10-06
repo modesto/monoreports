@@ -30,6 +30,7 @@ using MonoReports.Model;
 using MonoReports.Core;
 using MonoReports.Extensions.CairoExtensions;
 using MonoReports.Model.Controls;
+using MonoReports.Services;
 
 namespace MonoReports.Tools
 {
@@ -37,7 +38,7 @@ namespace MonoReports.Tools
 	{
 		SectionView currentSection = null;
 			
-		public SectionTool (DesignView designView) : base(designView)
+		public SectionTool (DesignService designService) : base(designService)
 		{
 			
 		}
@@ -45,12 +46,12 @@ namespace MonoReports.Tools
 		public override void OnBeforeDraw (Context c)
 		{
 			
-			if (designView.IsPressed) {			
+			if (designService.IsPressed) {			
 				 
-				if (designView.IsMoving && designView.SelectedControl != null) {
+				if (designService.IsMoving && designService.SelectedControl != null) {
 					
-					var section = designView.SelectedControl as SectionView;														
-					section.ControlModel.Size = new Size(section.ControlModel.Width,section.ControlModel.Height + designView.DeltaPoint.Y);
+					var section = designService.SelectedControl as SectionView;														
+					section.ControlModel.Size = new Size(section.ControlModel.Width,section.ControlModel.Height + designService.DeltaPoint.Y);
 										
 				} 
 				
@@ -68,7 +69,7 @@ namespace MonoReports.Tools
 
 		public override void OnMouseDown ()
 		{
-			currentSection = designView.SelectedControl as SectionView;
+			currentSection = designService.SelectedControl as SectionView;
 		}
 	 
 		public override void OnMouseUp ()
@@ -77,7 +78,7 @@ namespace MonoReports.Tools
 			double y = 0;
 			SectionView previousSection = null;
 			
-			foreach (var sectionView in designView.ReportView.SectionViews) {
+			foreach (var sectionView in designService.SectionViews) {
 				
 				if(y > 0){
 					sectionView.ControlModel.Location = new MonoReports.Model.Controls.Point(sectionView.ControlModel.Location.X,y);						

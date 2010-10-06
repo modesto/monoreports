@@ -1,5 +1,5 @@
 // 
-// ZoomTool.cs
+// ToolBarSlider.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -23,21 +23,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using MonoReports.ControlView;
-using MonoReports.Services;
-namespace MonoReports.Tools
-{
-	public class ZoomTool : BaseTool
-	{
-		public ZoomTool(DesignService designService) : base(designService)
-		{
-			
-		}
-		
-		public override string Name {get {return "ZoomTool"; }}
+// Based on ToolBarSlider.cs 
+//  
+// by:
+//       Jonathan Pobst <monkey@jpobst.com>
+// in Pinta Project
 
-		
+using System;
+namespace MonoReports.Gui.Widgets
+{
+	public class ToolBarSlider
+	{
+		public ToolBarSlider ()
+		{
+		}
 	}
 }
 

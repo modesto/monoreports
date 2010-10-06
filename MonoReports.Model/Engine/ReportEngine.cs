@@ -67,8 +67,9 @@ namespace MonoReports.Model.Engine
 			
 			init ();
 			newPage ();
-			
-			processDetails ();
+			if(source != null){
+				processDetails ();
+			}
 			
 			onAfterReportProcess ();
 		}

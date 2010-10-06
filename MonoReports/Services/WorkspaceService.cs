@@ -1,5 +1,5 @@
 // 
-// ZoomTool.cs
+// WorkspaceService.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,20 +24,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoReports.ControlView;
-using MonoReports.Services;
-namespace MonoReports.Tools
+using Gtk;
+using MonoDevelop.Components.PropertyGrid;
+namespace MonoReports.Services
 {
-	public class ZoomTool : BaseTool
+	public class WorkspaceService : IWorkspaceService
 	{
-		public ZoomTool(DesignService designService) : base(designService)
+		
+		DrawingArea designArea;
+		DrawingArea previewArea;
+		PropertyGrid propertyGrid;
+		Gtk.Window mainWindow;
+		
+		public WorkspaceService (Gtk.Window mainWindow, DrawingArea designArea,DrawingArea previewArea, PropertyGrid propertyGrid)
 		{
-			
+			this.designArea = designArea;
+			this.previewArea = previewArea;
+			this.propertyGrid = propertyGrid;
+			this.mainWindow = mainWindow;
 		}
-		
-		public override string Name {get {return "ZoomTool"; }}
+	
+		#region IWorkspaceService implementation
+		public void Status (string message)
+		{
+			 
+		}
 
-		
-	}
+		public void SetCursor (Gdk.CursorType cursorType)
+		{
+			 
+		}
+
+		public void InvalidateDesignArea ()
+		{
+			designArea.QueueDraw();
+		}
+
+		public void InvalidatePreviewArea ()
+		{
+		  	previewArea.QueueDraw();
+		}
+
+		public void ShowInPropertyGrid (object o)
+		{
+			propertyGrid.CurrentObject = o;
+		}
+		#endregion 
+}
 }
 

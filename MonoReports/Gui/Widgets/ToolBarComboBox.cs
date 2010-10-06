@@ -1,5 +1,5 @@
 // 
-// ZoomTool.cs
+// ToolBarComboBox.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -23,21 +23,52 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using MonoReports.ControlView;
-using MonoReports.Services;
-namespace MonoReports.Tools
-{
-	public class ZoomTool : BaseTool
-	{
-		public ZoomTool(DesignService designService) : base(designService)
-		{
-			
-		}
-		
-		public override string Name {get {return "ZoomTool"; }}
+//
+// Based on ToolBarComboBox.cs 
+//  
+// by:
+//       Jonathan Pobst <monkey@jpobst.com>
+// in Pinta Project
 
-		
+using System;
+using Gtk;
+namespace MonoReports.Gui.Widgets
+{
+	public class ToolBarComboBox : ToolItem
+	{
+		public ComboBox ComboBox { get; private set; }
+		public ListStore Model { get; private set; }
+		public CellRendererText CellRendererText { get; private set;}
+
+		public ToolBarComboBox (int width, int activeIndex, bool allowEntry, params string[] contents)
+		{
+			if (allowEntry)
+				ComboBox = new ComboBoxEntry (contents);
+			else {
+				Model = new ListStore (typeof(string), typeof (object));
+				if (contents != null) {
+					foreach (string entry in contents) {
+						Model.AppendValues (entry, null);
+					}
+				}
+				ComboBox = new ComboBox ();
+				ComboBox.Model = Model;
+				CellRendererText = new CellRendererText();
+				ComboBox.PackStart(CellRendererText, false);
+				ComboBox.AddAttribute(CellRendererText,"text",0);
+			}
+
+			ComboBox.AddEvents ((int)Gdk.EventMask.ButtonPressMask);
+			ComboBox.WidthRequest = width;
+			
+			if (activeIndex >= 0)
+				ComboBox.Active = activeIndex;
+			
+			ComboBox.Show ();
+			
+			Add (ComboBox);
+			Show ();
+		}
 	}
 }
 

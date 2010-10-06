@@ -20,6 +20,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -28,45 +29,46 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="Mono.Posix" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>glib-sharp-2.0</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>glade-sharp-2.0</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="Mono.CSharp" />
     <Reference Include="Mono.TextEditor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Mono.TextEditor.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\Mono.TextEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoDevelop.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\MonoDevelop.Core.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\MonoDevelop.Ide.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\MonoDevelop.Ide.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Mono.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -85,22 +87,14 @@
     <Compile Include="Core\ControlViewFactory.cs" />
     <Compile Include="ControlView\SectionView.cs" />
     <Compile Include="Tools\SectionTool.cs" />
-    <Compile Include="Core\IWorkspaceService.cs" />
     <Compile Include="ControlView\LineView.cs" />
     <Compile Include="ControlView\ImageView.cs" />
     <Compile Include="Core\ReportRenderer.cs" />
     <Compile Include="Tools\LineTool.cs" />
     <Compile Include="Tools\RectTool.cs" />
     <Compile Include="Extensions\JsonConverters.cs" />
-    <Compile Include="Extensions\GtkExtensions\ToolBarComboBox.cs" />
-    <Compile Include="Extensions\GtkExtensions\ToolBarSlider.cs" />
-    <Compile Include="Extensions\GtkExtensions\ToolBarLabel.cs" />
-    <Compile Include="Extensions\GtkExtensions\ToolBarSpinButton.cs" />
     <Compile Include="Extensions\CairoExtensions\CairoExtensions.cs" />
-    <Compile Include="ControlView\DesignView.cs" />
     <Compile Include="Tools\BaseTool.cs" />
-    <Compile Include="Tools\ToolBoxService.cs" />
-    <Compile Include="Tools\IToolBoxService.cs" />
     <Compile Include="Tools\ZoomTool.cs" />
     <Compile Include="ControlView\ReportView.cs" />
     <Compile Include="ControlView\CrossSectionLineView.cs" />
@@ -108,8 +102,20 @@
     <Compile Include="Core\RenderState.cs" />
     <Compile Include="Gui\ReportExplorer.cs" />
     <Compile Include="gtk-gui\MonoReports.Gui.ReportExplorer.cs" />
-    <Compile Include="Gui\DataProviderConsole.cs" />
-    <Compile Include="gtk-gui\MonoReports.Gui.DataProviderConsole.cs" />
+    <Compile Include="Core\UndoRedoService.cs" />
+    <Compile Include="Gui\Widgets\ToolBarComboBox.cs" />
+    <Compile Include="Gui\Widgets\ToolBarLabel.cs" />
+    <Compile Include="Gui\Widgets\ToolBarSlider.cs" />
+    <Compile Include="Gui\Widgets\ToolBarSpinButton.cs" />
+    <Compile Include="Services\DesignService.cs" />
+    <Compile Include="Gui\Widgets\MainDesignView.cs" />
+    <Compile Include="gtk-gui\MonoReports.Gui.Widgets.MainDesignView.cs" />
+    <Compile Include="Services\ToolBoxService.cs" />
+    <Compile Include="Services\IToolBoxService.cs" />
+    <Compile Include="Core\CoreDelegates.cs" />
+    <Compile Include="Core\EventAggregator.cs" />
+    <Compile Include="Services\IWorkspaceService.cs" />
+    <Compile Include="Services\WorkspaceService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\" />
@@ -118,10 +124,11 @@
     <Folder Include="Tools\" />
     <Folder Include="resources\" />
     <Folder Include="Extensions\" />
-    <Folder Include="Extensions\GtkExtensions\" />
     <Folder Include="Extensions\CairoExtensions\" />
     <Folder Include="Extensions\" />
     <Folder Include="Gui\" />
+    <Folder Include="Gui\Widgets\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

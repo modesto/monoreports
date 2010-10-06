@@ -29,13 +29,14 @@ using Cairo;
 using MonoReports.Core;
 using MonoReports.Extensions.CairoExtensions;
 using MonoReports.Model.Controls;
+using MonoReports.Services;
 
 namespace MonoReports.ControlView
 {
 	public class ImageView : ControlViewBase
 	{
 		Image image;
-		ReportView reportView = null;
+		DesignService designService = null;
 		
 		public override Control ControlModel {
 			get { return base.ControlModel; }
@@ -43,8 +44,8 @@ namespace MonoReports.ControlView
 				base.ControlModel = value;
 				if (image != value) {
 					image = value as Image;	
-					if(reportView != null){
-						pixbuf = new Gdk.Pixbuf (reportView.Report.ResourceRepository[image.ImageIndex]);
+					if(designService != null){
+						pixbuf = new Gdk.Pixbuf (designService.Report.ResourceRepository[image.ImageIndex]);
 					}
 				}
 			}
@@ -58,11 +59,11 @@ namespace MonoReports.ControlView
 		private Gdk.Pixbuf pixbuf;
 
 
-		public ImageView (MonoReports.Model.Controls.Image image, SectionView parentSection, ReportView reportView): base(image)
+		public ImageView (MonoReports.Model.Controls.Image image, SectionView parentSection, DesignService designService): base(image)
 		{			
 			this.ParentSection = parentSection;
-			this.reportView = reportView;
-			pixbuf = new Gdk.Pixbuf (reportView.Report.ResourceRepository[image.ImageIndex]);
+			this.designService = designService;
+			pixbuf = new Gdk.Pixbuf (designService.Report.ResourceRepository[image.ImageIndex]);
 			AbsoluteBound = new Rectangle (parentSection.AbsoluteDrawingStartPoint.X + image.Location.X, parentSection.AbsoluteDrawingStartPoint.Y + image.Location.Y, image.Width, image.Height);
 			
 		}

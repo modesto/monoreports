@@ -1,5 +1,5 @@
 // 
-// ZoomTool.cs
+// ToolBarComboBox.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -23,21 +23,39 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+//
+// Based on ToolBarComboBox.cs 
+//  
+// by:
+//       Jonathan Pobst <monkey@jpobst.com>
+// in Pinta Project
+
 using System;
-using MonoReports.ControlView;
-using MonoReports.Services;
-namespace MonoReports.Tools
+using Gtk;
+namespace MonoReports.Gui.Widgets
 {
-	public class ZoomTool : BaseTool
+	public class ToolBarSpinButton : ToolItem
 	{
-		public ZoomTool(DesignService designService) : base(designService)
+		public SpinButton SpinButton { get; private set; }
+		 
+		 
+
+		public ToolBarSpinButton (int width,double min, double max, double step )
 		{
 			
-		}
-		
-		public override string Name {get {return "ZoomTool"; }}
+				SpinButton = new SpinButton (min,max,1);
+			 
 
-		
+			SpinButton.AddEvents ((int)Gdk.EventMask.ButtonPressMask);
+			SpinButton.WidthRequest = width;
+			
+			 
+			
+			SpinButton.Show ();
+			
+			Add (SpinButton);
+			Show ();
+		}
 	}
 }
 

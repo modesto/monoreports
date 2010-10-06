@@ -1,5 +1,5 @@
 // 
-// ZoomTool.cs
+// IStatusService.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,20 +24,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoReports.ControlView;
-using MonoReports.Services;
-namespace MonoReports.Tools
+namespace MonoReports.Services
 {
-	public class ZoomTool : BaseTool
+	public interface IWorkspaceService
 	{
-		public ZoomTool(DesignService designService) : base(designService)
-		{
-			
-		}
-		
-		public override string Name {get {return "ZoomTool"; }}
-
-		
+		void Status(string message);
+		void SetCursor (Gdk.CursorType cursorType);
+		void InvalidateDesignArea ();
+		void InvalidatePreviewArea ();
+		void ShowInPropertyGrid (object o);
 	}
 }
 

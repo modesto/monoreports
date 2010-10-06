@@ -1,5 +1,5 @@
 // 
-// ZoomTool.cs
+// ToolBarLabel.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -23,21 +23,27 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using MonoReports.ControlView;
-using MonoReports.Services;
-namespace MonoReports.Tools
-{
-	public class ZoomTool : BaseTool
-	{
-		public ZoomTool(DesignService designService) : base(designService)
-		{
-			
-		}
-		
-		public override string Name {get {return "ZoomTool"; }}
+//
+// Based on ToolBarLabel.cs 
+//  
+// by:
+//       Jonathan Pobst <monkey@jpobst.com>
+// in Pinta Project
 
-		
+using System;
+using Gtk;
+namespace MonoReports.Gui.Widgets
+{
+	public class ToolBarLabel : ToolItem
+	{
+		public ToolBarLabel (string text)
+		{
+			Label l = new Label (text);
+			l.Show ();
+			
+			Add (l);
+			Show ();
+		}
 	}
 }
 
