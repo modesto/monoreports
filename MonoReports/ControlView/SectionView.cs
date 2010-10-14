@@ -46,6 +46,7 @@ namespace MonoReports.ControlView
 		public static double SectionGripperHeight = 3;
 		public Cairo.PointD SectionSpan { get; set; }
 		public Cairo.PointD AbsoluteDrawingStartPoint { get; set; }
+	 	public Rectangle HeaderAbsoluteBound { get; set; }
 		public Rectangle GripperAbsoluteBound { get; set; }
 		IControlViewFactory controlViewFactory;
 		Report parentReport;
@@ -132,6 +133,7 @@ namespace MonoReports.ControlView
 		{
 			AbsoluteBound = new Rectangle (SectionSpan.X, SectionSpan.Y, section.Width, section.Height + SectionheaderHeight + SectionGripperHeight);
 			GripperAbsoluteBound = new Rectangle (SectionSpan.X, SectionSpan.Y + section.Height + SectionheaderHeight, section.Width, SectionGripperHeight);
+			HeaderAbsoluteBound = new Rectangle (SectionSpan.X, SectionSpan.Y,  section.Width, SectionheaderHeight);
 			AbsoluteDrawingStartPoint = new Cairo.PointD (AbsoluteBound.X, AbsoluteBound.Y + SectionheaderHeight);
 		}
 

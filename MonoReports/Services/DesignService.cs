@@ -139,6 +139,13 @@ namespace MonoReports.Services
 					
 					if (sectionView.AbsoluteBound.ContainsPoint (StartPressPoint.X, StartPressPoint.Y)) {
 						
+						if(sectionView.HeaderAbsoluteBound.ContainsPoint(StartPressPoint.X, StartPressPoint.Y)){
+							SelectedControl = sectionView;
+							continue;
+						}else{
+							SelectedControl = null;
+						}
+						
 						if (SelectedTool != null && SelectedTool.CreateMode) {
 							SelectedTool.CreateNewControl (sectionView);
 							SelectedTool.CreateMode = false;
@@ -148,7 +155,7 @@ namespace MonoReports.Services
 								SelectedControl = sectionView;
 								 
 							} else {
-								SelectedControl = null;
+								
 								for (int j = 0; j < sectionView.Controls.Count; j++) {
 									var controlView = sectionView.Controls[j];
 									if (controlView.ContainsPoint (StartPressPoint.X, StartPressPoint.Y)) {

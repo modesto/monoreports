@@ -69,6 +69,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\MonoDevelop.Ide.dll</HintPath>
     </Reference>
+    <Reference Include="libstetic, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\..\usr\lib\monodevelop\AddIns\MonoDevelop.GtkCore\libstetic.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -100,8 +104,6 @@
     <Compile Include="ControlView\CrossSectionLineView.cs" />
     <Compile Include="Tools\CrossSectionLineTool.cs" />
     <Compile Include="Core\RenderState.cs" />
-    <Compile Include="Gui\ReportExplorer.cs" />
-    <Compile Include="gtk-gui\MonoReports.Gui.ReportExplorer.cs" />
     <Compile Include="Core\UndoRedoService.cs" />
     <Compile Include="Gui\Widgets\ToolBarComboBox.cs" />
     <Compile Include="Gui\Widgets\ToolBarLabel.cs" />
@@ -116,6 +118,8 @@
     <Compile Include="Core\EventAggregator.cs" />
     <Compile Include="Services\IWorkspaceService.cs" />
     <Compile Include="Services\WorkspaceService.cs" />
+    <Compile Include="Gui\Widgets\ReportExplorer.cs" />
+    <Compile Include="gtk-gui\MonoReports.Gui.Widgets.ReportExplorer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\" />

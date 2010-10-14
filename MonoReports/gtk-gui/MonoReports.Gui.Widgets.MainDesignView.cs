@@ -40,7 +40,8 @@ namespace MonoReports.Gui.Widgets
 			w3.ShadowType = ((global::Gtk.ShadowType)(0));
 			// Container child GtkViewport.Gtk.Container+ContainerChild
 			this.drawingarea = new global::Gtk.DrawingArea ();
-			this.drawingarea.Events = ((global::Gdk.EventMask)(774));
+			this.drawingarea.Events = ((global::Gdk.EventMask)(66310));
+			this.drawingarea.ExtensionEvents = ((global::Gdk.ExtensionMode)(1));
 			this.drawingarea.Name = "drawingarea";
 			w3.Add (this.drawingarea);
 			this.designScrolledWindow.Add (w3);
@@ -97,6 +98,7 @@ namespace MonoReports.Gui.Widgets
 			}
 			w1.SetUiManager (UIManager);
 			this.Hide ();
+			this.mainNotebook.SwitchPage += new global::Gtk.SwitchPageHandler (this.OnMainNotebookSwitchPage);
 			this.drawingarea.ButtonPressEvent += new global::Gtk.ButtonPressEventHandler (this.OnDrawingareaButtonPressEvent);
 			this.drawingarea.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler (this.OnDrawingareaButtonReleaseEvent);
 			this.drawingarea.MotionNotifyEvent += new global::Gtk.MotionNotifyEventHandler (this.OnDrawingareaMotionNotifyEvent);

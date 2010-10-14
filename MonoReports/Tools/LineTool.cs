@@ -30,6 +30,7 @@ using MonoReports.ControlView;
 using Cairo;
 using MonoReports.Model.Controls;
 using MonoReports.Services;
+
 namespace MonoReports.Tools
 {
 	public class LineTool : BaseTool
@@ -40,24 +41,23 @@ namespace MonoReports.Tools
 		protected Line line;
 		protected SectionView currentSection = null;
 
-
 		public LineTool (DesignService designService) : base(designService)
 		{
 			
 		}
-		
+
 		public override void CreateNewControl (SectionView sectionView)
 		{
 			
-			var startPoint = sectionView.PointInSectionByAbsolutePoint(designService.StartPressPoint.X,designService.StartPressPoint.Y);
-			var l = new Line(){ 	
+			var startPoint = sectionView.PointInSectionByAbsolutePoint (designService.StartPressPoint.X, designService.StartPressPoint.Y);
+			var l = new Line (){ 	
 				
 				Location = new MonoReports.Model.Controls.Point(startPoint.X,startPoint.Y),
 				End = new MonoReports.Model.Controls.Point(startPoint.X,startPoint.Y)
 				};
 			
-			var lineView = sectionView.CreateControlView(l);			
-			sectionView.Section.Controls.Add(l);
+			var lineView = sectionView.CreateControlView (l);			
+			sectionView.Section.Controls.Add (l);
 			lineView.ParentSection = sectionView;
 			designService.SelectedControl = lineView;			 
 		}
@@ -67,66 +67,68 @@ namespace MonoReports.Tools
 			
 		
 		}
-		
+
 		public override void OnMouseMove ()
 		{
-				if (designService.IsPressed) {
+			if (designService.IsPressed) {
 				
 				if (designService.IsMoving && designService.SelectedControl != null) {
 														
 					if (startPointHit) {
-						line.Location = new MonoReports.Model.Controls.Point ( Math.Max(0, line.Location.X + designService.DeltaPoint.X), Math.Max(0, line.Location.Y + designService.DeltaPoint.Y));						
+						line.Location = new MonoReports.Model.Controls.Point ( Math.Max (0, line.Location.X + designService.DeltaPoint.X), Math.Max (0, line.Location.Y + designService.DeltaPoint.Y));						
 					} else if (endPointHit) {
-						line.End = new MonoReports.Model.Controls.Point ( Math.Max(0, line.End.X + designService.DeltaPoint.X), Math.Max(0, line.End.Y + designService.DeltaPoint.Y));
+						line.End = new MonoReports.Model.Controls.Point ( Math.Max (0, line.End.X + designService.DeltaPoint.X), Math.Max (0, line.End.Y + designService.DeltaPoint.Y));
 					} else {
-						line.Location = new MonoReports.Model.Controls.Point ( Math.Max(0, line.Location.X + designService.DeltaPoint.X), Math.Max(0, line.Location.Y + designService.DeltaPoint.Y));						
-						line.End = new MonoReports.Model.Controls.Point ( Math.Max(0, line.End.X + designService.DeltaPoint.X), Math.Max(0, line.End.Y + designService.DeltaPoint.Y));
+						line.Location = new MonoReports.Model.Controls.Point ( Math.Max (0, line.Location.X + designService.DeltaPoint.X), Math.Max (0, line.Location.Y + designService.DeltaPoint.Y));						
+						line.End = new MonoReports.Model.Controls.Point ( Math.Max (0, line.End.X + designService.DeltaPoint.X), Math.Max (0, line.End.Y + designService.DeltaPoint.Y));
 					}
 
 				}
 				
 			}
 		}
-		
-		public override string Name {get {return "LineTool"; }}
+
+		public override string Name {
+			get { return "LineTool"; }
+		}
 
 		public override void OnAfterDraw (Context c)
 		{
-			 
+				
 			if (designService != null && designService.SelectedControl != null && designService.IsDesign) {
 				var p1 = designService
 					.SelectedControl
 					.ParentSection
-					.AbsolutePointByLocalPoint(line.Location.X ,line.Location.Y );
+					.AbsolutePointByLocalPoint (line.Location.X, line.Location.Y);
 				
 				var p2 = designService
 					.SelectedControl
 					.ParentSection
-					.AbsolutePointByLocalPoint( line.End.X, line.End.Y);
+					.AbsolutePointByLocalPoint (line.End.X, line.End.Y);
 				c.DrawGripper (p1);
 				c.DrawGripper (p2);
 			}
 		}
 
-
 		public override void OnMouseDown ()
 		{
 			currentSection = designService.SelectedControl != null ? designService.SelectedControl.ParentSection : null;
-			line = designService.SelectedControl.ControlModel as Line;
-			var location = line.Location;
- 			var startPoint = currentSection.PointInSectionByAbsolutePoint(designService.StartPressPoint);
+			if (designService.SelectedControl != null) {
+				line = designService.SelectedControl.ControlModel as Line;
+				var location = line.Location;
+				var startPoint = currentSection.PointInSectionByAbsolutePoint (designService.StartPressPoint);
 			
-			Cairo.PointD startDistance = new Cairo.PointD ( location.X - startPoint.X,  location.Y - startPoint.Y);
-			Cairo.PointD endDistance = new Cairo.PointD (line.End.X - startPoint.X,line.End.Y - startPoint.Y);
+				Cairo.PointD startDistance = new Cairo.PointD ( location.X - startPoint.X,  location.Y - startPoint.Y);
+				Cairo.PointD endDistance = new Cairo.PointD (line.End.X - startPoint.X,line.End.Y - startPoint.Y);
 			
-			if (startDistance.X < 8 && startDistance.X > -8 && startDistance.Y < 8 && startDistance.Y > -8) {
-				startPointHit = true;
-			} else {
-				if (endDistance.X < 8 && endDistance.X > -8 && endDistance.Y < 8 && endDistance.Y > -8)
-					endPointHit = true;
+				if (startDistance.X < 8 && startDistance.X > -8 && startDistance.Y < 8 && startDistance.Y > -8) {
+					startPointHit = true;
+				} else {
+					if (endDistance.X < 8 && endDistance.X > -8 && endDistance.Y < 8 && endDistance.Y > -8)
+						endPointHit = true;
+				}
 			}
 		}
-
 
 		public override void OnMouseUp ()
 		{

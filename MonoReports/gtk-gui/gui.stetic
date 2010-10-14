@@ -9,6 +9,7 @@
     <widget-library name="../../../../../../../../opt/monodevelop/lib/monodevelop/bin/Mono.TextEditor.dll" />
     <widget-library name="../../../../../../../../opt/monodevelop/lib/monodevelop/bin/MonoDevelop.Ide.dll" />
     <widget-library name="../bin/Debug/MonoReports.exe" internal="true" />
+    <widget-library name="../../../../../../../../usr/lib/monodevelop/AddIns/MonoDevelop.GtkCore/libstetic.dll" />
   </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="1027 697">
     <action-group name="Default">
@@ -137,10 +138,7 @@
             <property name="MemberName" />
             <property name="ShowArrow">False</property>
             <property name="IconSize">Menu</property>
-            <node name="mainToolbar" type="Toolbar">
-              <node type="Toolitem" action="editAction" />
-              <node type="Toolitem" action="sortAscendingAction" />
-            </node>
+            <node name="mainToolbar" type="Toolbar" />
           </widget>
           <packing>
             <property name="Position">1</property>
@@ -171,11 +169,10 @@
                   <widget class="Gtk.VPaned" id="rightVPaned">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
-                    <property name="Position">363</property>
+                    <property name="Position">291</property>
                     <child>
-                      <widget class="MonoReports.Gui.ReportExplorer" id="reportExplorer">
+                      <widget class="MonoReports.Gui.Widgets.ReportExplorer" id="reportExplorer">
                         <property name="MemberName" />
-                        <property name="Events">ButtonPressMask</property>
                       </widget>
                       <packing>
                         <property name="Resize">False</property>
@@ -226,97 +223,6 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Bin" id="MonoReports.Gui.ReportExplorer" design-size="363 525">
-    <property name="MemberName" />
-    <property name="Visible">False</property>
-    <child>
-      <widget class="Gtk.VPaned" id="vpaned1">
-        <property name="MemberName" />
-        <property name="CanFocus">True</property>
-        <property name="Position">280</property>
-        <child>
-          <widget class="Gtk.VPaned" id="vpaned2">
-            <property name="MemberName" />
-            <property name="CanFocus">True</property>
-            <property name="Position">182</property>
-            <child>
-              <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow1">
-                <property name="MemberName" />
-                <property name="ShadowType">In</property>
-                <child>
-                  <widget class="Gtk.TextView" id="scriptTextView">
-                    <property name="MemberName" />
-                    <property name="CanFocus">True</property>
-                    <property name="ShowScrollbars">True</property>
-                    <property name="Text" translatable="yes" />
-                  </widget>
-                </child>
-              </widget>
-              <packing>
-                <property name="Resize">False</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="Gtk.VBox" id="vbox1">
-                <property name="MemberName" />
-                <property name="Spacing">6</property>
-                <child>
-                  <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow2">
-                    <property name="MemberName" />
-                    <property name="ShadowType">In</property>
-                    <child>
-                      <widget class="Gtk.TextView" id="outputTextview">
-                        <property name="MemberName" />
-                        <property name="CanFocus">True</property>
-                        <property name="ShowScrollbars">True</property>
-                        <property name="Text" translatable="yes" />
-                      </widget>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="Position">0</property>
-                    <property name="AutoSize">True</property>
-                  </packing>
-                </child>
-                <child>
-                  <widget class="Gtk.Button" id="execScriptButton">
-                    <property name="MemberName" />
-                    <property name="CanFocus">True</property>
-                    <property name="Type">TextOnly</property>
-                    <property name="Label" translatable="yes">Execute</property>
-                    <property name="UseUnderline">True</property>
-                    <signal name="Clicked" handler="OnExecScriptButtonClicked" />
-                  </widget>
-                  <packing>
-                    <property name="Position">1</property>
-                    <property name="AutoSize">True</property>
-                    <property name="Expand">False</property>
-                    <property name="Fill">False</property>
-                  </packing>
-                </child>
-              </widget>
-            </child>
-          </widget>
-          <packing>
-            <property name="Resize">False</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
-            <property name="MemberName" />
-            <property name="ShadowType">In</property>
-            <child>
-              <widget class="Gtk.TreeView" id="exporerTreeview">
-                <property name="MemberName" />
-                <property name="CanFocus">True</property>
-                <property name="ShowScrollbars">True</property>
-              </widget>
-            </child>
-          </widget>
-        </child>
-      </widget>
-    </child>
-  </widget>
   <widget class="Gtk.Bin" id="MonoReports.Gui.Widgets.MainDesignView" design-size="733 573">
     <action-group name="Default" />
     <property name="MemberName" />
@@ -327,6 +233,7 @@
         <property name="CanFocus">True</property>
         <property name="Events">ButtonPressMask, ButtonReleaseMask, KeyPressMask, KeyReleaseMask, FocusChangeMask, StructureMask</property>
         <property name="CurrentPage">0</property>
+        <signal name="SwitchPage" handler="OnMainNotebookSwitchPage" />
         <child>
           <widget class="Gtk.ScrolledWindow" id="designScrolledWindow">
             <property name="MemberName" />
@@ -339,7 +246,8 @@
                 <child>
                   <widget class="Gtk.DrawingArea" id="drawingarea">
                     <property name="MemberName" />
-                    <property name="Events">ExposureMask, PointerMotionMask, ButtonPressMask, ButtonReleaseMask</property>
+                    <property name="Events">ExposureMask, PointerMotionMask, ButtonPressMask, ButtonReleaseMask, PropertyChangeMask</property>
+                    <property name="ExtensionEvents">All</property>
                     <signal name="ButtonPressEvent" handler="OnDrawingareaButtonPressEvent" />
                     <signal name="ButtonReleaseEvent" handler="OnDrawingareaButtonReleaseEvent" />
                     <signal name="MotionNotifyEvent" handler="OnDrawingareaMotionNotifyEvent" />
@@ -416,6 +324,25 @@
           <packing>
             <property name="type">tab</property>
           </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Bin" id="MonoReports.Gui.Widgets.ReportExplorer" design-size="305 451">
+    <property name="MemberName" />
+    <property name="Visible">False</property>
+    <child>
+      <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+        <property name="MemberName" />
+        <property name="ShadowType">In</property>
+        <child>
+          <widget class="Gtk.TreeView" id="exporerTreeview">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Events">PointerMotionMask, PointerMotionHintMask, ButtonMotionMask, Button1MotionMask, Button2MotionMask, Button3MotionMask, ButtonPressMask, ButtonReleaseMask, KeyPressMask, KeyReleaseMask, EnterNotifyMask, LeaveNotifyMask, FocusChangeMask, StructureMask, PropertyChangeMask, VisibilityNotifyMask, ProximityInMask, ProximityOutMask, SubstructureMask, ScrollMask</property>
+            <property name="ExtensionEvents">All</property>
+            <property name="ShowScrollbars">True</property>
+          </widget>
         </child>
       </widget>
     </child>

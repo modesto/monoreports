@@ -1,5 +1,5 @@
 // 
-// WorkspaceService.cs
+// MyClass.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,52 +24,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Gtk;
-using MonoDevelop.Components.PropertyGrid;
-namespace MonoReports.Services
+using NUnit.Framework;
+using MonoReports.Model.Engine;
+using MonoReports.Model;
+using Moq;
+namespace MonoReports.Tests
 {
-	public class WorkspaceService : IWorkspaceService
-	{
-		
-		DrawingArea designArea;
-		DrawingArea previewArea;
-		PropertyGrid propertyGrid;
-		Gtk.Window mainWindow;
-		
-		public WorkspaceService (Gtk.Window mainWindow, DrawingArea designArea,DrawingArea previewArea, PropertyGrid propertyGrid)
-		{
-			this.designArea = designArea;
-			this.previewArea = previewArea;
-			this.propertyGrid = propertyGrid;
-			this.mainWindow = mainWindow;
-		}
 	
-		#region IWorkspaceService implementation
-		public void Status (string message)
+	[TestFixture]
+	public class ReportEngineTest
+	{
+		public ReportEngineTest ()
 		{
+		}
+		
+		[Test]
+		public void EmptyDataSourceDoesNotCrashReportEngine(){
+			Report report = new Report();
+			Mock mock = new Mock<IReportRenderer>();		
+			ReportEngine engine = new ReportEngine(report,mock.Object as IReportRenderer);
+			engine.Process();
 			 
 		}
-
-		public void SetCursor (Gdk.CursorType cursorType)
-		{
-		 	mainWindow.GdkWindow.Cursor = new Gdk.Cursor (cursorType);
-		}
-
-		public void InvalidateDesignArea ()
-		{
-			designArea.QueueDraw();
-		}
-
-		public void InvalidatePreviewArea ()
-		{
-		  	previewArea.QueueDraw();
-		}
-
-		public void ShowInPropertyGrid (object o)
-		{
-			propertyGrid.CurrentObject = o;
-		}
-		#endregion 
-}
+	}
 }
 

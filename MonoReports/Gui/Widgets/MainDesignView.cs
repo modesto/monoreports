@@ -31,13 +31,16 @@ using MonoReports.ControlView;
 using MonoReports.Model.Engine;
 using MonoReports.Model;
 using Cairo;
+using Gdk;
+
 namespace MonoReports.Gui.Widgets
 {
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class MainDesignView : Gtk.Bin
 	{
 		DesignService designService;
-
+		
+		
 		public DesignService DesignService {
 			get {
 				return this.designService;
@@ -64,25 +67,53 @@ namespace MonoReports.Gui.Widgets
 		ToolBarSpinButton pageSpinButton = null;
 		ReportEngine reportEngine;
 		Report currentReport;
-		
+
 		public DrawingArea DesignDrawingArea { 
 			get { return drawingarea;}
 		}
-		
+
 		public DrawingArea PreviewDrawingArea { 
 			get { return previewDrawingArea;}
 		}
 		
 		
+
 		public MainDesignView ()
 		{
 			this.Build ();			
 			buildPreviewToolbar ();
+			
+		Gtk.Drag.DestSet(DesignDrawingArea,DestDefaults.All,new TargetEntry[]{new TargetEntry("Field", TargetFlags.OtherWidget,2)},DragAction.Copy);
+			//Gtk.Drag.DestSet(DesignDrawingArea, ,Targets,DragAction.Default);
+			
+			DesignDrawingArea.DragDataGet += delegate(object o, DragDataGetArgs args) {
+				Console.WriteLine("asdad");
+			};
+			
+			DesignDrawingArea.DragEnd += delegate(object o, DragEndArgs args) {
+					Console.WriteLine("asdad");
+			};
+				
+			DesignDrawingArea.DragFailed += delegate(object o, DragFailedArgs args) {
+					Console.WriteLine("asdad");
+			};
 			 
+			DesignDrawingArea.DragDrop += delegate(object o, DragDropArgs args) {
+				 var source =    Gtk.Drag.GetSourceWidget(args.Context);
+			 		if(source.GetType() == typeof(TreeView)){
+						TreeIter item;
+						((TreeView) source).Selection.GetSelected(out item);
+ 						var fieldName = ((TreeView) source).Model.GetValue(item,0).ToString();
+					//TODO add control with field
+					 
+						Gtk.Drag.Finish(args.Context,true,false,0);
+					}
+			};
+			DesignDrawingArea.DragDataReceived += delegate(object o, DragDataReceivedArgs args) {
+				Console.WriteLine("asdad");
+			};
 		}
-		
- 
-		
+
 		void buildPreviewToolbar ()
 		{
 			pageSpinButton = new ToolBarSpinButton (40, 1, 1, 1);
@@ -98,9 +129,7 @@ namespace MonoReports.Gui.Widgets
 			previewToolbar.Insert (pageSpinButton, 1);
 			
 		}
-		
-		
-		
+
 		protected virtual void OnDrawingareaExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
 			if (designService != null) {
@@ -115,15 +144,18 @@ namespace MonoReports.Gui.Widgets
 
 		protected virtual void OnPreviewDrawingareaExposeEvent (object o, Gtk.ExposeEventArgs args)
 		{
-			DrawingArea area = (DrawingArea)o;
-			Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
-			//Cairo.Context cr = new Cairo.Context (pdfSurface);
-			cr.Antialias = Cairo.Antialias.Gray;
-			designService.CurrentContext = cr;
-			reportRenderer.RenderPage (designService.Report.Pages[pageNumber]);
-			area.SetSizeRequest (designService.Width, designService.Height);
 			
-			(cr as IDisposable).Dispose ();
+			DrawingArea area = (DrawingArea)o;
+			if (designService.Report.Pages.Count > 0) {
+				Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
+			//Cairo.Context cr = new Cairo.Context (pdfSurface);
+				cr.Antialias = Cairo.Antialias.Gray;
+				designService.CurrentContext = cr;
+				reportRenderer.RenderPage (designService.Report.Pages [pageNumber]);
+				area.SetSizeRequest (designService.Width, designService.Height);
+			
+				(cr as IDisposable).Dispose ();
+			}
 		}
 
 		protected virtual void OnDrawingareaButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
@@ -152,30 +184,29 @@ namespace MonoReports.Gui.Widgets
 				designService.ButtonRelease (args.Event.X, args.Event.Y);
 			}
 		}
- 
-
 
 		protected virtual void OnMainNotebookSwitchPage (object o, Gtk.SwitchPageArgs args)
 		{
-			
-			if (args.PageNum == 1) {
-				designService.IsDesign = false;
-				reportRenderer = new ReportRenderer (designService);
+			if (designService != null) {
+				if (args.PageNum == 1) {
+					designService.IsDesign = false;
+					reportRenderer = new ReportRenderer (designService);
 				
 				
-				reportEngine = new ReportEngine (currentReport, reportRenderer);
-				ImageSurface imagesSurface = new ImageSurface (Format.Argb32, (int)currentReport.Width, (int)currentReport.Height);
-				Cairo.Context cr = new Cairo.Context (imagesSurface);
-				designService.CurrentContext = cr;
+					reportEngine = new ReportEngine (designService.Report, reportRenderer);
+					ImageSurface imagesSurface = new ImageSurface (Format.Argb32, (int)designService.Report.Width, (int)designService.Report.Height);
+					Cairo.Context cr = new Cairo.Context (imagesSurface);
+					designService.CurrentContext = cr;
 				//reportEngine.DataSource = logicians;
 				
-				reportEngine.Process ();
-				(cr as IDisposable).Dispose ();
-				pageSpinButton.SpinButton.SetRange (1, designService.Report.Pages.Count);
-				previewDrawingArea.QueueDraw ();
-			} else {
-				designService.IsDesign = true;
-				drawingarea.QueueDraw ();
+					reportEngine.Process ();
+					(cr as IDisposable).Dispose ();
+					pageSpinButton.SpinButton.SetRange (1, designService.Report.Pages.Count);
+					previewDrawingArea.QueueDraw ();
+				} else {
+					designService.IsDesign = true;
+					drawingarea.QueueDraw ();
+				}
 			}
 		}
 	}

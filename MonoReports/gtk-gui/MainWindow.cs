@@ -27,7 +27,7 @@ public partial class MainWindow
 	private global::Gtk.HPaned mainHPaned;
 	private global::MonoReports.Gui.Widgets.MainDesignView maindesignview1;
 	private global::Gtk.VPaned rightVPaned;
-	private global::MonoReports.Gui.ReportExplorer reportExplorer;
+	private global::MonoReports.Gui.Widgets.ReportExplorer reportExplorer;
 	private global::MonoDevelop.Components.PropertyGrid.PropertyGrid mainPropertygrid;
 	private global::Gtk.Statusbar bottomStatusbar;
 
@@ -97,7 +97,7 @@ public partial class MainWindow
 		w2.Expand = false;
 		w2.Fill = false;
 		// Container child mainVbox.Gtk.Box+BoxChild
-		this.UIManager.AddUiFromString ("<ui><toolbar name='mainToolbar'><toolitem name='editAction' action='editAction'/><toolitem name='sortAscendingAction' action='sortAscendingAction'/></toolbar></ui>");
+		this.UIManager.AddUiFromString ("<ui><toolbar name='mainToolbar'/></ui>");
 		this.mainToolbar = ((global::Gtk.Toolbar)(this.UIManager.GetWidget ("/mainToolbar")));
 		this.mainToolbar.Name = "mainToolbar";
 		this.mainToolbar.ShowArrow = false;
@@ -127,10 +127,9 @@ public partial class MainWindow
 		this.rightVPaned = new global::Gtk.VPaned ();
 		this.rightVPaned.CanFocus = true;
 		this.rightVPaned.Name = "rightVPaned";
-		this.rightVPaned.Position = 363;
+		this.rightVPaned.Position = 291;
 		// Container child rightVPaned.Gtk.Paned+PanedChild
-		this.reportExplorer = new global::MonoReports.Gui.ReportExplorer ();
-		this.reportExplorer.Events = ((global::Gdk.EventMask)(256));
+		this.reportExplorer = new global::MonoReports.Gui.Widgets.ReportExplorer ();
 		this.reportExplorer.Name = "reportExplorer";
 		this.rightVPaned.Add (this.reportExplorer);
 		global::Gtk.Paned.PanedChild w5 = ((global::Gtk.Paned.PanedChild)(this.rightVPaned [this.reportExplorer]));
