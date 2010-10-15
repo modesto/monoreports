@@ -24,7 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Drawing;
+using MonoReports.Model.Controls;
+
 
 namespace MonoReports.Model
 {
@@ -62,7 +63,7 @@ namespace MonoReports.Model
 			b.RightWidth = RightWidth;
 			b.TopWidth = TopWidth;
 			b.BottomWidth = BottomWidth;
-			b.Color = Color.FromArgb(Color.ToArgb());
+			b.Color =  new Color(Color.R,Color.G,Color.B,Color.A);
 			return b;
 		}
 		#endregion		

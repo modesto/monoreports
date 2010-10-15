@@ -1,10 +1,10 @@
 // 
-// Section.cs
+// PropertyFieldEditor.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki(at)gmail.com>
+//       Tomasz Kubacki <tomasz.kubacki(at)gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,49 +24,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Generic;
 
-
-namespace MonoReports.Model.Controls
+namespace MonoReports.Gui.Widgets
 {
-
-
-	public abstract class Section : Control
+	public partial class PropertyFieldEditor : Gtk.Dialog
 	{
-
-		public Section ():base()
+		 
+		
+		
+		public PropertyFieldEditor ()
 		{
-			Controls = new List<Control>();
-			Size = new Size(double.MaxValue,100);
-			Location = new Point(0,0);
-			CanGrow = true;
-			BackgroundColor =  new Color(1,1,1);
-			
-		}		
-				
-		
-		public List<Control> Controls {get;set;}
-		
-		public string Name {get;set;}
-			
-		public virtual void Format(){}
-		
-		public virtual void BeforePrint(){}
-		
-		public virtual void AfterPrint(){}
-		
-		public void CopyTo(Section s){
-		
-			CopyBasicProperties(s);
-			s.Name = Name;			 		 			
- 
-			foreach (Control ctrl in Controls) {
-				s.Controls.Add( ctrl.Clone() as Control);
-			}
-			
+			this.Build ();
+			buttonOk.Sensitive = false;	
 		}
 		
-		 
+		
+		public String PropertyName{
+			get {return nameEntry.Text;  }
+			set {nameEntry.Text = value;  }
+		}
+		
+		protected virtual void OnNameEntryChanged (object sender, System.EventArgs e)
+		{
+			if(string.IsNullOrEmpty(nameEntry.Text)){
+				buttonOk.Sensitive = false;		
+			}else{
+				buttonOk.Sensitive = true;		
+			}
+		}
+		
+		
 	}
 }
 

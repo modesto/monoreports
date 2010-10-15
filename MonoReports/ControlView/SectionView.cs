@@ -37,10 +37,10 @@ namespace MonoReports.ControlView
 {
 	public class SectionView : ControlViewBase
 	{
-		static Color blackColor = new Color (0, 0, 0);
-		static Color lightGraykColor = new Color (0.67, 0.67, 0.66);
-		static Color yellowColor = new Color (1, 1, 0);
-		public Color SectionGripperColor;
+		static Cairo.Color blackColor = new Cairo.Color (0, 0, 0);
+		static Cairo.Color lightGraykColor = new Cairo.Color (0.67, 0.67, 0.66);
+		static Cairo.Color yellowColor = new Cairo.Color (1, 1, 0);
+		public Cairo.Color SectionGripperColor;
 		public bool IsCollapsed { get; set; }
 		public static double SectionheaderHeight = 20;
 		public static double SectionGripperHeight = 3;
@@ -50,7 +50,7 @@ namespace MonoReports.ControlView
 		public Rectangle GripperAbsoluteBound { get; set; }
 		IControlViewFactory controlViewFactory;
 		Report parentReport;
-		Color sectionHeaderColor = new Color (0.9, 0.9, 0.97);
+		Cairo.Color sectionHeaderColor = new Cairo.Color (0.9, 0.9, 0.97);
 		public bool AllowCrossSectionControl { get; private set; }
 
 		List<ControlViewBase> controls;

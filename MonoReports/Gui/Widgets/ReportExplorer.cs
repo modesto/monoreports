@@ -39,6 +39,7 @@ using Mono.CSharp;
 using MonoReports.Services;
 using Gdk;
 using Gtk;
+using MonoReports.Model.Data;
 
 namespace MonoReports.Gui.Widgets
 {
@@ -48,7 +49,19 @@ namespace MonoReports.Gui.Widgets
 		Gtk.TreeStore theModel;
 		Gtk.TreeIter staticDataFieldsNode;
 		Gtk.TreeIter dataFieldsNode;
-		
+		Gtk.TreeIter groupsNode;
+		DesignService designService;
+
+		public DesignService DesignService {
+
+			get { return designService; }
+
+				
+			set { designService = value; }
+		}
+
+		public IWorkspaceService Workspace {get; set;}
+
 		public ReportExplorer ()
 		{
 			this.Build ();
@@ -60,27 +73,7 @@ namespace MonoReports.Gui.Widgets
 			
 			exporerTreeview.AppendColumn (objectColumn);
 			objectColumn.AddAttribute (cell, "text", 0);
-			
-			
-			Evaluator.MessageOutput = Console.Out;
-			
-			Evaluator.Init (new string[0]);
-			AppDomain.CurrentDomain.AssemblyLoad += AssemblyLoaded;
-			
-			// Add all currently loaded assemblies
-			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
-				try {
-					Evaluator.ReferenceAssembly (a);
-				} catch (Exception exp) {
-					Console.WriteLine (exp.ToString ());
-				}
-			}
-			
-			Evaluate ("using System; using System.Linq; using System.Collections.Generic; using System.Collections;");
-			
-			
-			theModel = new Gtk.TreeStore (typeof(string));
-			
+			theModel = new Gtk.TreeStore (typeof(string));	
 			exporerTreeview.Model = theModel;
 			
 			staticDataFieldsNode = theModel.AppendValues ("Static Fields");
@@ -88,72 +81,67 @@ namespace MonoReports.Gui.Widgets
 			theModel.AppendValues (staticDataFieldsNode, "NumberOfPages");
 			
 			dataFieldsNode = theModel.AppendValues ("Data Fields");
-			exporerTreeview.Selection.Changed += delegate(object sender, EventArgs e) {
-				TreeIter item;
-				exporerTreeview.Selection.GetSelected(out item);
+			
+			groupsNode = theModel.AppendValues ("Groups");
+			
+			exporerTreeview.Selection.Changed += HandleExporerTreeviewSelectionChanged;
+
+			Gtk.Drag.SourceSet (exporerTreeview, 
+				ModifierType.Button1Mask, 
+				new TargetEntry[]{new TargetEntry ("Field", TargetFlags.OtherWidget,2)}, 
+			DragAction.Copy);
+			
+			exporerTreeview.RowActivated += HandleExporerTreeviewRowActivated;
+	
+		}
+
+		void HandleExporerTreeviewRowActivated (object o, RowActivatedArgs args)
+		{
+		 
+				
+					if (args.Path.Indices [0] == 1 && args.Path.Depth == 2) {
+						 var field = DesignService.Report.Fields [args.Path.Indices [1]];
+						
+						Workspace.ShowInPropertyGrid(field);
+						
+					}
+									
+		 
+		}
+
+		void HandleExporerTreeviewSelectionChanged (object sender, EventArgs e)
+		{
+			TreeIter item;
+			exporerTreeview.Selection.GetSelected (out item);
 					
-						if(item.UserData == staticDataFieldsNode.UserData || item.UserData ==  dataFieldsNode.UserData){
-							Gtk.Drag.SourceSet(
-								exporerTreeview,ModifierType.None,new TargetEntry[]{new TargetEntry("Field", TargetFlags.OtherWidget,2)},
+			if (item.UserData == staticDataFieldsNode.UserData || item.UserData == dataFieldsNode.UserData) {
+				Gtk.Drag.SourceSet (
+								exporerTreeview, ModifierType.None, new TargetEntry[]{new TargetEntry ("Field", TargetFlags.OtherWidget,2)}, 
 							DragAction.Copy);
-						}else{
-							Gtk.Drag.SourceSet(
-								exporerTreeview,ModifierType.Button1Mask,new TargetEntry[]{new TargetEntry("Field", TargetFlags.OtherWidget,2)},
+			} else {
+				Gtk.Drag.SourceSet (
+								exporerTreeview, ModifierType.Button1Mask, new TargetEntry[]{new TargetEntry ("Field", TargetFlags.OtherWidget,2)}, 
 							DragAction.Copy);
-						}
+			}
 				
-			};
- 
- 			Gtk.Drag.SourceSet(
-								exporerTreeview,ModifierType.Button1Mask,new TargetEntry[]{new TargetEntry("Field", TargetFlags.OtherWidget,2)},
-							DragAction.Copy);
-			exporerTreeview.DragBegin += HandleExporerTreeviewDragBegin;
-			exporerTreeview.ButtonPressEvent += HandleExporerTreeviewButtonPressEvent;
-		
-		
- 
 		}
-
-		void HandleExporerTreeviewButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
-		{
-		
-		}
-
-		void HandleExporerTreeviewDragBegin (object o, Gtk.DragBeginArgs args)
-		{
-			args.RetVal = true;	
-		}
- 
-
-		StringWriter outputWriter = new StringWriter ();
-		DesignService designService;
-
-		public DesignService DesignService {
-
-			get { return designService; }
-
-				
-			set { designService = value; }
-		}
-
-		static void AssemblyLoaded (object sender, AssemblyLoadEventArgs e)
-		{
-			
-			Evaluator.ReferenceAssembly (e.LoadedAssembly);
-			
-		}
-
-
 
 		void updateTree ()
 		{
- 
+			TreeIter item;
+			if (theModel.IterChildren (out item, dataFieldsNode)) {
+				int depth = theModel.IterDepth (dataFieldsNode);
+	
+				while (theModel.Remove (ref item) && 
+					theModel.IterDepth (item) > depth)
+					;
+			}
+				
 			foreach (var field in designService.Report.Fields) {
 				theModel.AppendValues (dataFieldsNode, field.Name);
 			}
- 
+				
 		}
-
 
 		protected virtual void OnUpdateFieldsFromDataSourceButtonButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
@@ -170,36 +158,96 @@ namespace MonoReports.Gui.Widgets
 			
 		}
 
+		/* 3tk
+			* TODO - Report explorer is not a good place to put REPL, i've to find another place for it
+			
+		void initRepl(){
+			Evaluator.MessageOutput = Console.Out;
+			
+			Evaluator.Init (new string[0]);
+			AppDomain.CurrentDomain.AssemblyLoad += delegate (object sender, AssemblyLoadEventArgs e)
+			{
+			
+				Evaluator.ReferenceAssembly (e.LoadedAssembly);			
+			};
+			
+			// Add all currently loaded assemblies
+			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
+				try {
+					Evaluator.ReferenceAssembly (a);
+				} catch (Exception exp) {
+					Console.WriteLine (exp.ToString ());
+				}
+			}
+			
+			Evaluate ("using System; using System.Linq; using System.Collections.Generic; using System.Collections;");
+			
+		}
+		
+		
+		
 		protected void Evaluate (string input)
 		{
-//			bool result_set;
-//			object result;
-//			
-//			try {
-//				input = Evaluator.Evaluate (input, out result, out result_set);
-//				
-//				if (result_set) {
-//					
-//					outputTextview.Buffer.Text = result.ToString ();
-//					DesignService.Report.DataSource = result;
-//					updateTree ();
-//				}
-//			} catch (Exception e) {
-//				Console.WriteLine (e);
-//				return null;
-//			}
-//			
-//			return input;
+			
+			bool result_set;
+			object result;
+			
+			try {
+				input = Evaluator.Evaluate (input, out result, out result_set);
+				
+				if (result_set) {
+					
+					outputTextview.Buffer.Text = result.ToString ();
+					DesignService.Report.DataSource = result;
+					updateTree ();
+				}
+			} catch (Exception e) {
+				Console.WriteLine (e);
+				return null;
+			}
+			
+			return input;
+			
 		}
+			*/
+		
+		[GLib.ConnectBefore]
+		protected virtual void OnExporerTreeviewButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
+		{
+			TreePath path;
+			exporerTreeview.GetPathAtPos ((int)args.Event.X, (int)args.Event.Y, out path);
+			if (path != null) {
+				if (args.Event.Button == 3) { 					
+					
+					if (path.Indices [0] == 1 && path.Depth == 1) {
+						Gtk.Menu jBox = new Gtk.Menu ();
+						Gtk.MenuItem addNewFieldMenuItem = new MenuItem ("add field");
+						jBox.Add (addNewFieldMenuItem);					
+						addNewFieldMenuItem.Activated += delegate(object sender, EventArgs e) {					
+						PropertyFieldEditor pfe = new PropertyFieldEditor ();
+							pfe.Response += delegate(object oo, ResponseArgs argss) {						
+								if (argss.ResponseId == ResponseType.Ok){
+									DesignService.Report.Fields.Add (new PropertyDataField (){ Name = pfe.PropertyName});
+									updateTree ();
+									pfe.Destroy ();
+									
+								}
+							};
+							pfe.ShowNow ();
+					};
+						
+						jBox.ShowAll ();
+						jBox.Popup ();	
+					
+					}
+ 
+				} 
+ 
+				
+			}
+		
 
-
-		 
-		
-		
-		
-		
-		
-		
+		}
 	}
-}
 
+}

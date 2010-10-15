@@ -24,13 +24,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+
+
 namespace MonoReports.Model.Controls
 {
 	public class CrossSectionLine : Line, ICrossSectionControl
 	{
 		public CrossSectionLine ():base()
 		{
-			BackgroundColor =  System.Drawing.Color.Black;	
+			BackgroundColor =  new Color(0,0,0);	
 			LineWidth = 2;
 		}
 		

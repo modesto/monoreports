@@ -25,13 +25,14 @@
 // THE SOFTWARE.
 using System;
 using MonoReports.Model;
+
 namespace MonoReports.Model.Controls
 {
 	public class Image : MonoReports.Model.Controls.Control
 	{
 		public Image () : base()
 		{
-			Border = new Border { WidthAll = 1, Color = System.Drawing.Color.Black };			
+			Border = new Border { WidthAll = 1, Color = new Color(0,0,0) };			
 		}
 
 		public int ImageIndex { get; set; }

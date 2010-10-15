@@ -54,7 +54,7 @@ namespace MonoReports.Extensions.CairoExtensions
 	public static class CairoExtensions
 	{
 		
-		static Color gripperColor = new Color(0.6,0.4,0.7);
+		static Cairo.Color gripperColor = new Cairo.Color(0.6,0.4,0.7);
 		static int gripperSize = 6;
 		
 		public static PointD ToCairoPointD(this MonoReports.Model.Controls.Point p){
@@ -64,7 +64,7 @@ namespace MonoReports.Extensions.CairoExtensions
 		
 		
 		#region context
-		public static Rectangle DrawRectangle (this Context g, Rectangle r, Color color, double lineWidth)
+		public static Rectangle DrawRectangle (this Context g, Rectangle r, Cairo.Color color, double lineWidth)
 		{			 	
 			g.Save ();
 			
@@ -214,7 +214,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return path;
 		}
 
-		public static Rectangle FillRectangle (this Context g, Rectangle r, Color color)
+		public static Rectangle FillRectangle (this Context g, Rectangle r, Cairo.Color color)
 		{
 			g.Save ();
 			
@@ -253,7 +253,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return dirty;
 		}
 
-		public static Rectangle DrawPolygonal (this Context g, PointD[] points, Color color)
+		public static Rectangle DrawPolygonal (this Context g, PointD[] points, Cairo.Color color)
 		{
 			Random rand=new Random();
 			
@@ -274,7 +274,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return dirty;
 		}
 
-		public static Rectangle FillPolygonal (this Context g, PointD[] points, Color color)
+		public static Rectangle FillPolygonal (this Context g, PointD[] points, Cairo.Color color)
 		{
 			g.Save ();
 			
@@ -292,7 +292,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return dirty;
 		}
 
-		public static Rectangle FillStrokedRectangle (this Context g, Rectangle r, Color fill, Color stroke, int lineWidth)
+		public static Rectangle FillStrokedRectangle (this Context g, Rectangle r, Cairo.Color fill, Cairo.Color stroke, int lineWidth)
 		{
 			double x = r.X;
 			double y = r.Y;
@@ -326,7 +326,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return dirty;
 		}
 
-		public static Rectangle DrawEllipse (this Context g, Rectangle r, Color color, int lineWidth)
+		public static Rectangle DrawEllipse (this Context g, Rectangle r, Cairo.Color color, int lineWidth)
 		{
 			double rx = r.Width / 2;
 			double ry = r.Height / 2;
@@ -356,7 +356,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return dirty;
 		}
 
-		public static Rectangle FillEllipse (this Context g, Rectangle r, Color color)
+		public static Rectangle FillEllipse (this Context g, Rectangle r, Cairo.Color color)
 		{
 			double rx = r.Width / 2;
 			double ry = r.Height / 2;
@@ -411,7 +411,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return path;
 		}
 
-		public static Rectangle FillStrokedEllipse (this Context g, Rectangle r, Color fill, Color stroke, int lineWidth)
+		public static Rectangle FillStrokedEllipse (this Context g, Rectangle r, Cairo.Color fill, Cairo.Color stroke, int lineWidth)
 		{
 			double rx = r.Width / 2;
 			double ry = r.Height / 2;
@@ -444,7 +444,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return dirty;
 		}
 
-		public static Rectangle FillStrokedRoundedRectangle (this Context g, Rectangle r, double radius, Color fill, Color stroke, int lineWidth)
+		public static Rectangle FillStrokedRoundedRectangle (this Context g, Rectangle r, double radius, Cairo.Color fill, Cairo.Color stroke, int lineWidth)
 		{
 			g.Save ();
 
@@ -475,7 +475,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return dirty;
 		}
 
-		public static Rectangle FillRoundedRectangle (this Context g, Rectangle r, double radius, Color fill)
+		public static Rectangle FillRoundedRectangle (this Context g, Rectangle r, double radius, Cairo.Color fill)
 		{
 			g.Save ();
 
@@ -502,7 +502,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return dirty;
 		}
 
-		public static void FillRegion (this Context g, Gdk.Region region, Color color)
+		public static void FillRegion (this Context g, Gdk.Region region, Cairo.Color color)
 		{
 			g.Save ();
 			
@@ -525,7 +525,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			g.Restore ();
 		}
 
-		public static Rectangle DrawRoundedRectangle (this Context g, Rectangle r, double radius, Color stroke, int lineWidth)
+		public static Rectangle DrawRoundedRectangle (this Context g, Rectangle r, double radius, Cairo.Color stroke, int lineWidth)
 		{
 			g.Save ();
 			
@@ -598,7 +598,7 @@ namespace MonoReports.Extensions.CairoExtensions
 		
 		
 
-		public static Rectangle DrawLine (this Context g, PointD p1, PointD p2, Color color, double lineWidth, LineType lineType)
+		public static Rectangle DrawLine (this Context g, PointD p1, PointD p2, Cairo.Color color, double lineWidth, LineType lineType)
 		{
 			g.Save ();
 			var dashesStyle = getDashByLineStyle(lineType);
@@ -672,7 +672,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			}
 		}
 
-		public static Rectangle DrawText (this Context g, PointD p, string family, Cairo.FontSlant slant, Cairo.FontWeight weight, double size, Color color, double width, string text)
+		public static Rectangle DrawText (this Context g, PointD p, string family, Cairo.FontSlant slant, Cairo.FontWeight weight, double size, Cairo.Color color, double width, string text)
 		{
 			g.Save ();
 			g.MoveTo (p.X, p.Y);
@@ -761,7 +761,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			g.Restore ();
 		}
 
-		public static void DrawLinearGradient (this Context g, Surface oldsurface, GradientColorMode mode, Color c1, Color c2, PointD p1, PointD p2)
+		public static void DrawLinearGradient (this Context g, Surface oldsurface, GradientColorMode mode, Cairo.Color c1, Cairo.Color c2, PointD p1, PointD p2)
 		{
 			g.Save ();
 			
@@ -774,8 +774,8 @@ namespace MonoReports.Extensions.CairoExtensions
 				g.Paint ();
 			}
 			else if (mode == GradientColorMode.Transparency) {
-				gradient.AddColorStop (0, new Color (0, 0, 0, 1));
-				gradient.AddColorStop (1, new Color (0, 0, 0, 0));
+				gradient.AddColorStop (0, new Cairo.Color (0, 0, 0, 1));
+				gradient.AddColorStop (1, new Cairo.Color (0, 0, 0, 0));
 				g.Source = new SurfacePattern (oldsurface);
 				g.Mask (gradient);
 			}
@@ -783,7 +783,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			g.Restore ();
 		}
 
-		public static void DrawLinearReflectedGradient (this Context g, Surface oldsurface, GradientColorMode mode, Color c1, Color c2, PointD p1, PointD p2)
+		public static void DrawLinearReflectedGradient (this Context g, Surface oldsurface, GradientColorMode mode, Cairo.Color c1, Cairo.Color c2, PointD p1, PointD p2)
 		{
 			g.Save ();
 			
@@ -797,9 +797,9 @@ namespace MonoReports.Extensions.CairoExtensions
 				g.Paint ();
 			}
 			else if (mode == GradientColorMode.Transparency) {
-				gradient.AddColorStop (0, new Color (0, 0, 0, 1));
-				gradient.AddColorStop (0.5, new Color (0, 0, 0, 0));
-				gradient.AddColorStop (1, new Color (0, 0, 0, 1));
+				gradient.AddColorStop (0, new Cairo.Color (0, 0, 0, 1));
+				gradient.AddColorStop (0.5, new Cairo.Color (0, 0, 0, 0));
+				gradient.AddColorStop (1, new Cairo.Color (0, 0, 0, 1));
 				g.Source = new SurfacePattern (oldsurface);
 				g.Mask (gradient);
 			}
@@ -807,7 +807,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			g.Restore ();
 		}
 
-		public static void DrawRadialGradient (this Context g, Surface oldsurface, GradientColorMode mode, Color c1, Color c2, PointD p1, PointD p2, double r1, double r2)
+		public static void DrawRadialGradient (this Context g, Surface oldsurface, GradientColorMode mode, Cairo.Color c1, Cairo.Color c2, PointD p1, PointD p2, double r1, double r2)
 		{
 			g.Save ();
 			
@@ -820,8 +820,8 @@ namespace MonoReports.Extensions.CairoExtensions
 				g.Paint ();
 			}
 			else if (mode == GradientColorMode.Transparency) {
-				gradient.AddColorStop (0, new Color (0, 0, 0, 1));
-				gradient.AddColorStop (1, new Color (0, 0, 0, 0));
+				gradient.AddColorStop (0, new Cairo.Color (0, 0, 0, 1));
+				gradient.AddColorStop (1, new Cairo.Color (0, 0, 0, 0));
 				g.Source = new SurfacePattern (oldsurface);
 				g.Mask (gradient);
 			}
@@ -967,13 +967,13 @@ namespace MonoReports.Extensions.CairoExtensions
 			return c;
 		}
 		
-		public static Cairo.Color ToCairoColor (this System.Drawing.Color color)
+		public static Cairo.Color ToCairoColor (this MonoReports.Model.Controls.Color color)
 		{
 			Cairo.Color c = new Cairo.Color ();
-			c.A =  (((double)color.A) / 255);
-			c.R = (((double)color.R) / 255);
-			c.G = (((double)color.G) / 255);
-			c.B = (((double)color.B) / 255);
+			c.A =  (((double)color.A) );
+			c.R = (((double)color.R) );
+			c.G = (((double)color.G) );
+			c.B = (((double)color.B) );
 			
 			return c;
 		}

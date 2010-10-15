@@ -53,7 +53,7 @@ namespace MonoReports.Tools
 		public RectTool (DesignService designService) : base(designService)
 		{
 			selectBorder = new Border ();
-			selectBorder.Color = System.Drawing.Color.Black;
+			selectBorder.Color = new MonoReports.Model.Controls.Color(0,0,0);
 			selectBorder.WidthAll = 1;
 		}
 

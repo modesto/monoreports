@@ -31,7 +31,7 @@ namespace MonoReports.Model.Controls
 	{
 		public Line ():base()
 		{			
-			BackgroundColor =  System.Drawing.Color.Black;			
+			BackgroundColor =  new Color(0,0,0);			
 			LineWidth = 2;
 		}				
 		

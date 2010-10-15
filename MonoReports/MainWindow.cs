@@ -55,6 +55,8 @@ public partial class MainWindow : Gtk.Window
 		maindesignview1.WorkSpaceService = workspaceService;
 		workspaceService.InvalidateDesignArea();
 		toolBoxService = new ToolBoxService(designService);
+		reportExplorer.DesignService = designService;
+		reportExplorer.Workspace = workspaceService;
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -68,7 +70,8 @@ public partial class MainWindow : Gtk.Window
 		 
 		var currentReport = new Report ();
 		
-		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock Żection Żecsdfsdfsdfsfsdfsdion Żecsdfsdfsdfs fsdfsdion Żecsdfsdfsdfsfsdfsdion Żection Żecsdfs dfsdfsfsdfs dfs dfsdfsdfsdfsd ftion Żection ŻSection Ż", FontColor = System.Drawing.Color.Red, CanGrow = true, Location = new Controls.Point (3, 3), Size = new Controls.Size (200, 80) });
+		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock Żection Żecsdfsdf dfs dfsdfsdfsdfsd ftion Żection ŻSection Ż", FontColor = new Controls.Color(1,0,0),
+			CanGrow = true, Location = new Controls.Point (3, 3), Size = new Controls.Size (200, 80) });
 		
 		try {
 			//var bytes = System.IO.File.ReadAllBytes ("../../resources/Alfred_Tarski.jpeg");
@@ -77,25 +80,27 @@ public partial class MainWindow : Gtk.Window
 			var img = new MonoReports.Model.Controls.Image { ImageIndex = 0, Location = new Controls.Point (3, 3), Size = new Controls.Size (300, 280) };
 			currentReport.DetailSection.Controls.Add (img);
 		} catch (Exception exp) {
+			Console.WriteLine(exp.ToString());
 			//FIXME image loading os independent
 		}
 		
-		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 24, FontName = "Helvetica", Text = "Second ection Żection Żection Żection Żection ŻSection Ż", FontColor = System.Drawing.Color.LightSeaGreen, Location = new Controls.Point (123, 87), CanGrow = false, Size = new Controls.Size (160, 60) });
+		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 24, FontName = "Helvetica", 
+			Text = "Second ection Żection Żection Żection Żection ŻSection Ż", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (123, 87), CanGrow = false, Size = new Controls.Size (160, 60) });
 		
-		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Third ection Żection Żection Żection Żection ŻSection Ż", FontColor = System.Drawing.Color.Green, Location = new Controls.Point (300, 17), CanGrow = true, Size = new Controls.Size (100, 20) });
+		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Third ection Żection Żection Żection Żection ŻSection Ż", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (300, 17), CanGrow = true, Size = new Controls.Size (100, 20) });
 		
 		currentReport.DetailSection.Size = new Controls.Size (600, 300);
 		
-		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Chars", FontColor = System.Drawing.Color.Blue, Location = new Controls.Point (223, 42), Size = new Controls.Size (200, 30), FieldName = "Name", BackgroundColor = System.Drawing.Color.Transparent, HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
+		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Chars", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (223, 42), Size = new Controls.Size (200, 30), FieldName = "Name", BackgroundColor = new Controls.Color(0,0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
 		CanGrow = true });
 		
-		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Surname", FontColor = System.Drawing.Color.Red, Location = new Controls.Point (223, 12), Size = new Controls.Size (200, 30), FieldName = "Surname", BackgroundColor = System.Drawing.Color.Orange, HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
+		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Surname", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (223, 12), Size = new Controls.Size (200, 30), FieldName = "Surname", BackgroundColor = new Controls.Color(1,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
 		CanGrow = true });
 		
 		
 		
 		
-		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "Deatail section detail section lorem ipsum dolores tratatratrat ", FontColor = System.Drawing.Color.White, Location = new Controls.Point (23, 12), Size = new Controls.Size (400, 70), BackgroundColor = System.Drawing.Color.FromArgb (255, 95, 84, 120), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 }, CanGrow = false });
+		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "Deatail section detail section lorem ipsum dolores tratatratrat ", FontColor = new Controls.Color(1,1,1), Location = new Controls.Point (23, 12), Size = new Controls.Size (400, 70), BackgroundColor = new Controls.Color(0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 }, CanGrow = false });
 		
 		
 		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 20), End = new Controls.Point (420, 10) });

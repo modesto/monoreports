@@ -54,24 +54,19 @@
     </Reference>
     <Reference Include="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Mono.CSharp" />
     <Reference Include="Mono.TextEditor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\Mono.TextEditor.dll</HintPath>
+      <HintPath>..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\Mono.TextEditor.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\MonoDevelop.Core.dll</HintPath>
+      <HintPath>..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\MonoDevelop.Core.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\MonoDevelop.Ide.dll</HintPath>
-    </Reference>
-    <Reference Include="libstetic, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\usr\lib\monodevelop\AddIns\MonoDevelop.GtkCore\libstetic.dll</HintPath>
+      <HintPath>..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\MonoDevelop.Ide.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +95,6 @@
     <Compile Include="Extensions\CairoExtensions\CairoExtensions.cs" />
     <Compile Include="Tools\BaseTool.cs" />
     <Compile Include="Tools\ZoomTool.cs" />
-    <Compile Include="ControlView\ReportView.cs" />
     <Compile Include="ControlView\CrossSectionLineView.cs" />
     <Compile Include="Tools\CrossSectionLineTool.cs" />
     <Compile Include="Core\RenderState.cs" />
@@ -120,6 +114,8 @@
     <Compile Include="Services\WorkspaceService.cs" />
     <Compile Include="Gui\Widgets\ReportExplorer.cs" />
     <Compile Include="gtk-gui\MonoReports.Gui.Widgets.ReportExplorer.cs" />
+    <Compile Include="Gui\Widgets\PropertyFieldEditor.cs" />
+    <Compile Include="gtk-gui\MonoReports.Gui.Widgets.PropertyFieldEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\" />

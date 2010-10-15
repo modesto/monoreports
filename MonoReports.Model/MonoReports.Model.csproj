@@ -31,7 +31,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +68,7 @@
     <Compile Include="LineType.cs" />
     <Compile Include="Data\DataField.cs" />
     <Compile Include="Data\ObjectDataSource.cs" />
+    <Compile Include="Controls\Color.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Engine\" />

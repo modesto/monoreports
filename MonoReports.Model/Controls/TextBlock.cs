@@ -24,9 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Drawing;
 using MonoReports.Model.Data;
 
+	
 namespace MonoReports.Model.Controls
 {
 
@@ -36,9 +36,9 @@ namespace MonoReports.Model.Controls
 
 		public TextBlock ():base()
 		{
-			Border = new Border() {WidthAll = 1, Color = System.Drawing.Color.Black};
+			Border = new Border() {WidthAll = 1, Color = new Color(0,0,0)};
 			FontName = "Helvetica";
-			FontColor = Color.Black;
+			FontColor = new Color(0,0,0);
 			FieldName = String.Empty;
 		}	
 		
@@ -83,7 +83,7 @@ namespace MonoReports.Model.Controls
 			textBlock.FontSize = FontSize;
 			textBlock.FontSlant =   FontSlant;
 			textBlock.FontWeight =   FontWeight;
-			textBlock.FontColor =   Color.FromArgb(FontColor.ToArgb());
+			textBlock.FontColor =   new Color(FontColor.R,FontColor.G,FontColor.B,FontColor.A);
 			textBlock.FieldName =   FieldName;
 			textBlock.HorizontalAlignment =   HorizontalAlignment;
 			textBlock.VerticalAlignment =   VerticalAlignment;

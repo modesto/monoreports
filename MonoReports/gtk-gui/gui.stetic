@@ -6,10 +6,9 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../../../../../../../../opt/monodevelop/lib/monodevelop/bin/Mono.TextEditor.dll" />
-    <widget-library name="../../../../../../../../opt/monodevelop/lib/monodevelop/bin/MonoDevelop.Ide.dll" />
+    <widget-library name="../../../../../../opt/monodevelop/lib/monodevelop/bin/Mono.TextEditor.dll" />
+    <widget-library name="../../../../../../opt/monodevelop/lib/monodevelop/bin/MonoDevelop.Ide.dll" />
     <widget-library name="../bin/Debug/MonoReports.exe" internal="true" />
-    <widget-library name="../../../../../../../../usr/lib/monodevelop/AddIns/MonoDevelop.GtkCore/libstetic.dll" />
   </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="1027 697">
     <action-group name="Default">
@@ -339,10 +338,171 @@
           <widget class="Gtk.TreeView" id="exporerTreeview">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
-            <property name="Events">PointerMotionMask, PointerMotionHintMask, ButtonMotionMask, Button1MotionMask, Button2MotionMask, Button3MotionMask, ButtonPressMask, ButtonReleaseMask, KeyPressMask, KeyReleaseMask, EnterNotifyMask, LeaveNotifyMask, FocusChangeMask, StructureMask, PropertyChangeMask, VisibilityNotifyMask, ProximityInMask, ProximityOutMask, SubstructureMask, ScrollMask</property>
+            <property name="Events">AllEventsMask</property>
             <property name="ExtensionEvents">All</property>
             <property name="ShowScrollbars">True</property>
+            <signal name="ButtonPressEvent" handler="OnExporerTreeviewButtonPressEvent" after="yes" />
           </widget>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="Gtk.Dialog" id="MonoReports.Gui.Widgets.PropertyFieldEditor" design-size="320 145">
+    <property name="MemberName" />
+    <property name="Events">EnterNotifyMask, LeaveNotifyMask, FocusChangeMask, StructureMask, ProximityInMask, ProximityOutMask, SubstructureMask</property>
+    <property name="ExtensionEvents">All</property>
+    <property name="Title" translatable="yes">Edit Property</property>
+    <property name="Icon">stock:gtk-index Menu</property>
+    <property name="WindowPosition">Mouse</property>
+    <property name="Modal">True</property>
+    <property name="BorderWidth">3</property>
+    <property name="Resizable">False</property>
+    <property name="DefaultWidth">200</property>
+    <property name="DestroyWithParent">True</property>
+    <property name="Buttons">2</property>
+    <property name="HelpButton">False</property>
+    <child internal-child="VBox">
+      <widget class="Gtk.VBox" id="dialog1_VBox">
+        <property name="MemberName" />
+        <property name="BorderWidth">2</property>
+        <child>
+          <widget class="Gtk.Table" id="table1">
+            <property name="MemberName" />
+            <property name="NRows">2</property>
+            <property name="NColumns">2</property>
+            <property name="RowSpacing">6</property>
+            <property name="ColumnSpacing">6</property>
+            <child>
+              <widget class="Gtk.ComboBox" id="combobox1">
+                <property name="MemberName" />
+                <property name="IsTextCombo">True</property>
+                <property name="Items" translatable="yes" />
+              </widget>
+              <packing>
+                <property name="TopAttach">1</property>
+                <property name="BottomAttach">2</property>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label1">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Name</property>
+              </widget>
+              <packing>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="label2">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Type</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">1</property>
+                <property name="BottomAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="nameEntry">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Events">PropertyChangeMask</property>
+                <property name="ExtensionEvents">All</property>
+                <property name="IsEditable">True</property>
+                <property name="MaxLength">512</property>
+                <property name="InvisibleChar">•</property>
+                <signal name="Changed" handler="OnNameEntryChanged" />
+              </widget>
+              <packing>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">False</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">True</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">0</property>
+            <property name="AutoSize">True</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+    <child internal-child="ActionArea">
+      <widget class="Gtk.HButtonBox" id="dialog1_ActionArea">
+        <property name="MemberName" />
+        <property name="Spacing">10</property>
+        <property name="BorderWidth">5</property>
+        <property name="Size">2</property>
+        <property name="LayoutStyle">End</property>
+        <child>
+          <widget class="Gtk.Button" id="buttonCancel">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="UseStock">True</property>
+            <property name="Type">StockItem</property>
+            <property name="StockId">gtk-cancel</property>
+            <property name="ResponseId">-6</property>
+            <property name="label">gtk-cancel</property>
+          </widget>
+          <packing>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="buttonOk">
+            <property name="MemberName" />
+            <property name="CanDefault">True</property>
+            <property name="CanFocus">True</property>
+            <property name="UseStock">True</property>
+            <property name="Type">StockItem</property>
+            <property name="StockId">gtk-ok</property>
+            <property name="ResponseId">-5</property>
+            <property name="label">gtk-ok</property>
+          </widget>
+          <packing>
+            <property name="Position">1</property>
+            <property name="Expand">False</property>
+            <property name="Fill">False</property>
+          </packing>
         </child>
       </widget>
     </child>

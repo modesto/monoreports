@@ -33,41 +33,60 @@ namespace MonoReports.Model.Data
 		public DataField ()
 		{
 		}
-		
+
 		public virtual string Name {
 			get;
 			set;
 		}
-		
-		 
-		
-		public abstract string GetValue(object current);
+
+		public abstract string GetValue (object current);
 	}
-	
-	
-	public class PropertyDataField : DataField {
+
+	public class PropertyDataField : DataField
+	{
 		
 		public PropertyInfo propertyInfo;
+
+		public PropertyDataField ()
+		{
 		
-		public PropertyDataField( PropertyInfo pinfo){
+		}
+
+		public PropertyDataField (PropertyInfo pinfo)
+		{
 			propertyInfo = pinfo;
 		}
-		
+
+		private string name;
+
 		public override string Name {
 			get {
-				return propertyInfo.Name;
+				if (IsBound)
+					return propertyInfo.Name;
+				else{
+					return name;
+				}
 			}
 			set {
-				;
+				if (!IsBound) {
+					name = value;
+				}
 			}
 		}
-		
+
+		public bool IsBound {
+			get { 
+				return propertyInfo != null ? true : false;
+			}
+		}
+
 		public override  string GetValue (object current)
 		{
-			
-			 var val = propertyInfo.GetValue(current,null);
-			
-			 return val != null ? val.ToString() : null;
+			object val = null;
+			if (propertyInfo != null) {
+				val = propertyInfo.GetValue (current, null);
+			}
+			return val != null ? val.ToString () : null;
 		}
 		
 	}

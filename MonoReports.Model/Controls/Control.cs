@@ -24,9 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Drawing;
 using MonoReports.Model;
 using MonoReports.Model.Data;
+
+
 
 namespace MonoReports.Model.Controls
 {
@@ -36,7 +37,7 @@ namespace MonoReports.Model.Controls
 
 		public Control ()
 		{
-			BackgroundColor = System.Drawing.Color.Transparent;
+			BackgroundColor = new Color(1,1,1,1);
 			Location = new Point(0,0);
 			Size =  new Size(0,0);
 			IsVisible = true;
@@ -98,7 +99,7 @@ namespace MonoReports.Model.Controls
 			c.CanGrow = CanGrow;
 			c.CanShrink = CanShrink;
 			c.IsVisible = IsVisible;
-			c.BackgroundColor = Color.FromArgb(BackgroundColor.ToArgb());
+			c.BackgroundColor = new Color(BackgroundColor.R,BackgroundColor.G,BackgroundColor.B,BackgroundColor.A);
 			c.TemplateControl = this;
 			
 		}

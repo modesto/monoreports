@@ -20,7 +20,7 @@ namespace MonoReports.Gui.Widgets
 			// Container child GtkScrolledWindow.Gtk.Container+ContainerChild
 			this.exporerTreeview = new global::Gtk.TreeView ();
 			this.exporerTreeview.CanFocus = true;
-			this.exporerTreeview.Events = ((global::Gdk.EventMask)(4194300));
+			this.exporerTreeview.Events = ((global::Gdk.EventMask)(4194302));
 			this.exporerTreeview.ExtensionEvents = ((global::Gdk.ExtensionMode)(1));
 			this.exporerTreeview.Name = "exporerTreeview";
 			this.GtkScrolledWindow.Add (this.exporerTreeview);
@@ -29,6 +29,7 @@ namespace MonoReports.Gui.Widgets
 				this.Child.ShowAll ();
 			}
 			this.Hide ();
+			this.exporerTreeview.ButtonPressEvent += new global::Gtk.ButtonPressEventHandler (this.OnExporerTreeviewButtonPressEvent);
 		}
 	}
 }

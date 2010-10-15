@@ -1,10 +1,10 @@
 // 
-// Section.cs
+// Color.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki(at)gmail.com>
+//       Tomasz Kubacki <tomasz.kubacki(at)gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,49 +24,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Generic;
-
 
 namespace MonoReports.Model.Controls
 {
-
-
-	public abstract class Section : Control
+	public  struct Color
 	{
-
-		public Section ():base()
-		{
-			Controls = new List<Control>();
-			Size = new Size(double.MaxValue,100);
-			Location = new Point(0,0);
-			CanGrow = true;
-			BackgroundColor =  new Color(1,1,1);
-			
-		}		
-				
-		
-		public List<Control> Controls {get;set;}
-		
-		public string Name {get;set;}
-			
-		public virtual void Format(){}
-		
-		public virtual void BeforePrint(){}
-		
-		public virtual void AfterPrint(){}
-		
-		public void CopyTo(Section s){
-		
-			CopyBasicProperties(s);
-			s.Name = Name;			 		 			
  
-			foreach (Control ctrl in Controls) {
-				s.Controls.Add( ctrl.Clone() as Control);
-			}
-			
-		}
-		
-		 
+	public Color (double r, double g, double b):this(r, g, b,1){
+			 
+	}
+
+	public Color (double r, double g, double b, double a){
+			this.r=r;
+			this.b=b;
+			this.g=g;
+			this.a=a;			 
+	}
+
+ 
+	double r;
+	public double R { get { return r; } set { r = value; } }
+
+	double g;
+	public double G { get { return g; } set { g = value; } }
+
+	double b;
+	public double B { get { return b; } set { b = value; } }
+
+	double a;
+	public double A { get { return a; } set { a = value; } }
+
 	}
 }
 

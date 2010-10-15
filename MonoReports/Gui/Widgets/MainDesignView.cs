@@ -51,7 +51,6 @@ namespace MonoReports.Gui.Widgets
 		}
 
 		ReportRenderer reportRenderer;
-		ReportView reportView;
 		int pageNumber = 0;
 		IWorkspaceService workSpaceService;
 
@@ -66,7 +65,6 @@ namespace MonoReports.Gui.Widgets
 
 		ToolBarSpinButton pageSpinButton = null;
 		ReportEngine reportEngine;
-		Report currentReport;
 
 		public DrawingArea DesignDrawingArea { 
 			get { return drawingarea;}
@@ -86,17 +84,7 @@ namespace MonoReports.Gui.Widgets
 		Gtk.Drag.DestSet(DesignDrawingArea,DestDefaults.All,new TargetEntry[]{new TargetEntry("Field", TargetFlags.OtherWidget,2)},DragAction.Copy);
 			//Gtk.Drag.DestSet(DesignDrawingArea, ,Targets,DragAction.Default);
 			
-			DesignDrawingArea.DragDataGet += delegate(object o, DragDataGetArgs args) {
-				Console.WriteLine("asdad");
-			};
-			
-			DesignDrawingArea.DragEnd += delegate(object o, DragEndArgs args) {
-					Console.WriteLine("asdad");
-			};
-				
-			DesignDrawingArea.DragFailed += delegate(object o, DragFailedArgs args) {
-					Console.WriteLine("asdad");
-			};
+		
 			 
 			DesignDrawingArea.DragDrop += delegate(object o, DragDropArgs args) {
 				 var source =    Gtk.Drag.GetSourceWidget(args.Context);
@@ -105,13 +93,11 @@ namespace MonoReports.Gui.Widgets
 						((TreeView) source).Selection.GetSelected(out item);
  						var fieldName = ((TreeView) source).Model.GetValue(item,0).ToString();
 					//TODO add control with field
-					 
+					 	
 						Gtk.Drag.Finish(args.Context,true,false,0);
 					}
 			};
-			DesignDrawingArea.DragDataReceived += delegate(object o, DragDataReceivedArgs args) {
-				Console.WriteLine("asdad");
-			};
+			 
 		}
 
 		void buildPreviewToolbar ()
