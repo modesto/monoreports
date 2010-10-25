@@ -1,10 +1,10 @@
 // 
-// IToolBoxService.cs
+// ToolBarButton.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,19 +23,36 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using MonoReports.ControlView;
+// code copied from Jonathan Pobst Pinta 
 
-namespace MonoReports.Tools
+using System;
+using Gtk;
+using Gdk;
+
+namespace MonoReports.Gui.Widgets
 {
-	public interface IToolBoxService
+	public class ToolBarButton : ToolButton
 	{
-		DesignView DesignView {get;set;}
-		BaseTool SelectedTool{get;}
-		void SetToolByControlView(ControlViewBase control);
-		void SetTool(BaseTool tool);
-		void SetToolByName(string toolName);
-		void UnselectTool();
+		public ToolBarButton (string image, string label, string tooltip) : base (null, label)
+		{
+			Gtk.Image i = new Gtk.Image ( GetIcon (image));
+			i.Show ();
+			this.IconWidget = i;			
+			
+			TooltipText = tooltip;
+			
+			Show ();
+		}
+		
+		public static Pixbuf GetIcon (string name)
+		{
+			// First see if it's a built-in gtk icon, like gtk-new
+			if (Gtk.IconTheme.Default.HasIcon (name))
+				return Gtk.IconTheme.Default.LoadIcon (name, 16, Gtk.IconLookupFlags.UseBuiltin);
+			
+			// Get it from our embedded resources
+			return Gdk.Pixbuf.LoadFromResource (name);
+		}
 	}
 }
 

@@ -32,7 +32,7 @@ using MonoReports.Model.Data;
 namespace MonoReports.Model.Controls
 {
 
-	public abstract class Control  : ICloneable
+	public abstract class Control  
 	{
 
 		public Control ()
@@ -90,7 +90,7 @@ namespace MonoReports.Model.Controls
 			Location = new Point(this.Location.X,this.Location.Y + y);
 		}
 		
-		public abstract object Clone ();
+		public abstract Control CreateControl ();
 		
 		
 		internal void CopyBasicProperties(Control c){

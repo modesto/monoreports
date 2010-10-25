@@ -48,15 +48,16 @@ public partial class MainWindow : Gtk.Window
 
 	public MainWindow () : base(Gtk.WindowType.Toplevel)
 	{
-		Build ();
+		Build ();		
 		workspaceService = new WorkspaceService(this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
 		designService = new DesignService(workspaceService,exampleReport());
+		toolBoxService = new ToolBoxService(designService);
 		maindesignview1.DesignService = designService;
 		maindesignview1.WorkSpaceService = workspaceService;
-		workspaceService.InvalidateDesignArea();
-		toolBoxService = new ToolBoxService(designService);
+		workspaceService.InvalidateDesignArea();		
 		reportExplorer.DesignService = designService;
 		reportExplorer.Workspace = workspaceService;
+		toolBoxService.BuildToolBar(mainToolbar);
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -135,33 +136,7 @@ public partial class MainWindow : Gtk.Window
 
  
 
-	void buildMainToolbar ()
-	{
-		
-		toolBoxService = new ToolBoxService ();
-		
-		
-		
-		ToolBarComboBox zoomCombobox = new ToolBarComboBox (100, 4, true, new string[] { "400%", "300%", "200%", "150%", "100%", "66%", "50%" });
-		zoomCombobox.ComboBox.Changed += delegate(object sender, EventArgs e) {
-			
-			string text = zoomCombobox.ComboBox.ActiveText;
-			
-			text = text.Trim ('%');
-			
-			double percent;
-			
-			if (!double.TryParse (text, out percent))
-				return;
-			percent = Math.Min (percent, 400);
-			designService.ZoomChanged (percent / 100.0);
-		};
-		
-		mainToolbar.Insert (zoomCombobox, 0);
-		
-		
-		
-	}
+ 
 
 	
 	

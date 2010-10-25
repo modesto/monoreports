@@ -61,7 +61,7 @@ namespace MonoReports.Model.Controls
 			s.Name = Name;			 		 			
  
 			foreach (Control ctrl in Controls) {
-				s.Controls.Add( ctrl.Clone() as Control);
+				s.Controls.Add( ctrl.CreateControl() as Control);
 			}
 			
 		}

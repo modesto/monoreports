@@ -38,21 +38,12 @@ namespace MonoReports.Gui.Widgets
 	{
 		public SpinButton SpinButton { get; private set; }
 		 
-		 
-
 		public ToolBarSpinButton (int width,double min, double max, double step )
 		{
-			
-				SpinButton = new SpinButton (min,max,1);
-			 
-
+			SpinButton = new SpinButton (min,max,1);
 			SpinButton.AddEvents ((int)Gdk.EventMask.ButtonPressMask);
-			SpinButton.WidthRequest = width;
-			
-			 
-			
-			SpinButton.Show ();
-			
+			SpinButton.WidthRequest = width;	
+			SpinButton.Show ();		
 			Add (SpinButton);
 			Show ();
 		}

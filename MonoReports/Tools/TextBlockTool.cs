@@ -1,10 +1,10 @@
 // 
-// ZoomTool.cs
+// TextBlockTool.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,41 +24,45 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoReports.ControlView;
 using MonoReports.Services;
 using MonoReports.Gui.Widgets;
+using MonoReports.Model.Controls;
+using MonoReports.ControlView;
+
 namespace MonoReports.Tools
 {
-	public class ZoomTool : BaseTool
+	public class TextBlockTool : RectTool
 	{
-		public ZoomTool(DesignService designService) : base(designService)
-		{
-			
-		}
 		
-		public override string Name {get {return "ZoomTool"; }}
-		
-		public override void BuildToolbar (Gtk.Toolbar toolBar)
-		{
-			
-			ToolBarComboBox zoomCombobox = new ToolBarComboBox (100, 4, true, new string[] { "400%", "300%", "200%", "150%", "100%", "66%", "50%" });
-			zoomCombobox.ComboBox.Changed += delegate(object sender, EventArgs e) {			
-				string text = zoomCombobox.ComboBox.ActiveText;			
-				text = text.Trim ('%');
-			
-				double percent;
-			
-				if (!double.TryParse (text, out percent))
-					return;
-				percent = Math.Min (percent, 400);
-				designService.ZoomChanged (percent / 100.0);											
-			};
-			toolBar.Insert(zoomCombobox,0);		
-			
-			
+		public override string Name {
+			get { return "TextBlockTool"; }
 		}
 
-		
+		public TextBlockTool (DesignService designService) :base(designService)
+		{
+		}
+
+		public override void CreateNewControl (SectionView sectionView)
+		{				
+			var startPoint = sectionView.PointInSectionByAbsolutePoint (designService.StartPressPoint.X, designService.StartPressPoint.Y);
+			
+			var tb = new TextBlock { Location = new MonoReports.Model.Controls.Point (startPoint.X, startPoint.Y), Text="text", FontName="Helvetica", FontSize=12, Size = new Size(50,20) };				
+			TextBlockView textBlockView = sectionView.CreateControlView (tb) as TextBlockView;			
+			sectionView.Section.Controls.Add (tb);				
+			textBlockView.ParentSection = sectionView;
+			designService.SelectedControl = textBlockView;				
+				
+		}
+
+		public override void BuildToolbar (Gtk.Toolbar toolBar)
+		{
+			ToolBarButton textBlockButton = new ToolBarButton ("ToolText.png","Text","Text tool");
+			textBlockButton.Clicked += delegate(object sender, EventArgs e) {
+				designService.SelectedTool = this;
+				this.CreateMode = true;
+			};
+			toolBar.Insert (textBlockButton, 1);		
+		}
 	}
 }
 

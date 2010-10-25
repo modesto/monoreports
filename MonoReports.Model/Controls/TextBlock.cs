@@ -72,7 +72,7 @@ namespace MonoReports.Model.Controls
 			set;
 		}
 		#region implemented abstract members of MonoReports.Model.Controls.Control
-		public override object Clone ()
+		public override Control CreateControl ()
 		{
 			TextBlock textBlock = new TextBlock();
 			CopyBasicProperties(textBlock);			 

@@ -50,6 +50,7 @@ namespace MonoReports.Gui.Widgets
 		Gtk.TreeIter staticDataFieldsNode;
 		Gtk.TreeIter dataFieldsNode;
 		Gtk.TreeIter groupsNode;
+		Gtk.TreeIter parametersNode;
 		DesignService designService;
 
 		public DesignService DesignService {
@@ -82,6 +83,8 @@ namespace MonoReports.Gui.Widgets
 			
 			dataFieldsNode = theModel.AppendValues ("Data Fields");
 			
+			parametersNode = theModel.AppendValues ("Parameters");
+			
 			groupsNode = theModel.AppendValues ("Groups");
 			
 			exporerTreeview.Selection.Changed += HandleExporerTreeviewSelectionChanged;
@@ -97,16 +100,11 @@ namespace MonoReports.Gui.Widgets
 
 		void HandleExporerTreeviewRowActivated (object o, RowActivatedArgs args)
 		{
-		 
-				
-					if (args.Path.Indices [0] == 1 && args.Path.Depth == 2) {
-						 var field = DesignService.Report.Fields [args.Path.Indices [1]];
-						
-						Workspace.ShowInPropertyGrid(field);
-						
-					}
-									
-		 
+			
+			//Indices [0] = Data Fields
+			if (args.Path.Indices [0] == 1 && args.Path.Depth == 2) {
+				var field = DesignService.Report.Fields [args.Path.Indices [1]];										
+			}
 		}
 
 		void HandleExporerTreeviewSelectionChanged (object sender, EventArgs e)
@@ -114,7 +112,7 @@ namespace MonoReports.Gui.Widgets
 			TreeIter item;
 			exporerTreeview.Selection.GetSelected (out item);
 					
-			if (item.UserData == staticDataFieldsNode.UserData || item.UserData == dataFieldsNode.UserData) {
+			if (item.UserData == staticDataFieldsNode.UserData || item.UserData == dataFieldsNode.UserData || item.UserData == parametersNode.UserData) {
 				Gtk.Drag.SourceSet (
 								exporerTreeview, ModifierType.None, new TargetEntry[]{new TargetEntry ("Field", TargetFlags.OtherWidget,2)}, 
 							DragAction.Copy);
@@ -126,7 +124,7 @@ namespace MonoReports.Gui.Widgets
 				
 		}
 
-		void updateTree ()
+		void updateFieldTree ()
 		{
 			TreeIter item;
 			if (theModel.IterChildren (out item, dataFieldsNode)) {
@@ -142,7 +140,27 @@ namespace MonoReports.Gui.Widgets
 			}
 				
 		}
+		
+		
+		void updateParameterTree ()
+		{
+			TreeIter item;
+			if (theModel.IterChildren (out item, parametersNode)) {
+				int depth = theModel.IterDepth (parametersNode);
+	
+				while (theModel.Remove (ref item) && 
+					theModel.IterDepth (item) > depth)
+					;
+			}
+				
+			foreach (var parameter in designService.Report.Parameters) {
+				theModel.AppendValues (parametersNode, parameter.Name);
+			}
+				
+		}
 
+		
+		
 		protected virtual void OnUpdateFieldsFromDataSourceButtonButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
 			
@@ -218,31 +236,45 @@ namespace MonoReports.Gui.Widgets
 			exporerTreeview.GetPathAtPos ((int)args.Event.X, (int)args.Event.Y, out path);
 			if (path != null) {
 				if (args.Event.Button == 3) { 					
-					
-					if (path.Indices [0] == 1 && path.Depth == 1) {
+					Gtk.MenuItem addNewMenuItem = null;
+					int index = path.Indices [0];
+					if (index == 2 || index == 1 && path.Depth == 1) {
 						Gtk.Menu jBox = new Gtk.Menu ();
-						Gtk.MenuItem addNewFieldMenuItem = new MenuItem ("add field");
-						jBox.Add (addNewFieldMenuItem);					
-						addNewFieldMenuItem.Activated += delegate(object sender, EventArgs e) {					
-						PropertyFieldEditor pfe = new PropertyFieldEditor ();
+						if(index == 1){
+							addNewMenuItem = new MenuItem ("add field");
+							 
+						}
+						else{
+							addNewMenuItem = new MenuItem ("add parameter");								
+						}
+						jBox.Add (addNewMenuItem);		
+								
+						addNewMenuItem.Activated += delegate(object sender, EventArgs e) {					
+							PropertyFieldEditor pfe = new PropertyFieldEditor ();
 							pfe.Response += delegate(object oo, ResponseArgs argss) {						
 								if (argss.ResponseId == ResponseType.Ok){
-									DesignService.Report.Fields.Add (new PropertyDataField (){ Name = pfe.PropertyName});
-									updateTree ();
+									if(index == 1){
+										DesignService.Report.Fields.Add (new PropertyDataField (){ Name = pfe.PropertyName});
+										updateFieldTree ();
+									}else{
+										DesignService.Report.Parameters.Add (new PropertyDataField (){ Name = pfe.PropertyName});
+										updateParameterTree();
+									}
+									
 									pfe.Destroy ();
 									
 								}
 							};
 							pfe.ShowNow ();
-					};
+						}; 
 						
 						jBox.ShowAll ();
 						jBox.Popup ();	
 					
-					}
- 
+					} 
+	
 				} 
- 
+	
 				
 			}
 		

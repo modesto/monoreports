@@ -36,7 +36,7 @@ namespace MonoReports.Model.Controls
 			LineWidth = 2;
 		}
 		
-		public override object Clone ()
+		public override Control CreateControl ()
 		{
 			CrossSectionLine line = new CrossSectionLine();
 			CopyBasicProperties(line);		

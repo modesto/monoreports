@@ -38,7 +38,7 @@ namespace MonoReports.Model.Controls
 			set;
 		}
 		
-		public override object Clone ()
+		public override Control CreateControl ()
 		{
 			PageHeaderSection ds = new PageHeaderSection();
 			CopyTo(ds);

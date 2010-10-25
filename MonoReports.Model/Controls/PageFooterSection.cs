@@ -40,7 +40,7 @@ namespace MonoReports.Model.Controls
 			set;
 		}
 		
-		public override object Clone ()
+		public override Control CreateControl ()
 		{
 			PageFooterSection pfs = new PageFooterSection();
 			CopyTo(pfs);

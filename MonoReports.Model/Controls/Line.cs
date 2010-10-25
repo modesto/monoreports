@@ -48,7 +48,7 @@ namespace MonoReports.Model.Controls
 		}
 		
 		#region implemented abstract members of MonoReports.Model.Controls.Control
-		public override object Clone ()
+		public override Control CreateControl ()
 		{
 			Line line = new Line();
 			CopyBasicProperties(line);			 

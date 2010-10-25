@@ -92,7 +92,7 @@ namespace MonoReports.Model.Engine
 
 		void processPageHeader ()
 		{
-			var headerSection = Report.PageHeaderSection.Clone () as PageHeaderSection;
+			var headerSection = Report.PageHeaderSection.CreateControl() as PageHeaderSection;
 			headerSection.Format ();
 			headerSection.Location = new Point (headerSection.Location.X, currentY);
 			double height = processSection (headerSection);
@@ -110,7 +110,7 @@ namespace MonoReports.Model.Engine
 
 		void processGroupHeader (int groupIndex)
 		{
-			var groupHeaderSection = Report.GroupHeaderSections[groupIndex].Clone () as Section;
+			var groupHeaderSection = Report.GroupHeaderSections[groupIndex].CreateControl() as Section;
 			double gh = processSection (groupHeaderSection);
 			processCrossSectionControls(groupHeaderSection);
 			addSection(groupHeaderSection,gh);
@@ -120,7 +120,7 @@ namespace MonoReports.Model.Engine
 		
 		void processGroupFooter (int groupIndex)
 		{
-			var groupFooterSection = Report.GroupFooterSections[groupIndex].Clone () as Section;
+			var groupFooterSection = Report.GroupFooterSections[groupIndex].CreateControl () as Section;
 			double gh = processSection (groupFooterSection);		
 			processCrossSectionControls(groupFooterSection);
 			addSection(groupFooterSection,gh);
@@ -131,7 +131,7 @@ namespace MonoReports.Model.Engine
 		void processCrossSectionControls(Section section){			
 			for (int w = 0; w <= crossSectionRepositoryIndex; w++) {
 					foreach (var crossSectionControl in crossSectionControlsRepository[w]) {
-						section.Controls.Add (crossSectionControl.Clone () as Control);
+						section.Controls.Add (crossSectionControl.CreateControl ());
 					}
 			}
 		}
@@ -192,7 +192,7 @@ namespace MonoReports.Model.Engine
 					}
 				}
 				
-				var detailSection = Report.DetailSection.Clone () as DetailSection;
+				var detailSection = Report.DetailSection.CreateControl () as DetailSection;
 				
 				detailSection.Format ();
 				double height = processSection (detailSection);
@@ -232,13 +232,13 @@ namespace MonoReports.Model.Engine
 		void processPageFooter ()
 		{
 			double footerSectionsHeight = 0;
-			var footerSection = Report.PageFooterSection.Clone () as PageFooterSection;
+			var footerSection = Report.PageFooterSection.CreateControl () as PageFooterSection;
 			footerSection.Format ();
 			
 			double height = processSection (footerSection);
 			
 				foreach (var crossSectionControl in crossSectionControlsRepository[0]) {
-					footerSection.Controls.Add (crossSectionControl.Clone () as Control);
+					footerSection.Controls.Add (crossSectionControl.CreateControl () as Control);
 				}
 		
 			

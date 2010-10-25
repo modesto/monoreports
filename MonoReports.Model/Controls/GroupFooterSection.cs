@@ -34,7 +34,7 @@ namespace MonoReports.Model.Controls
 		}
 		
 		
-		public override object Clone ()
+		public override Control CreateControl ()
 		{
 			GroupFooterSection gfs = new GroupFooterSection();
 			CopyTo(gfs);

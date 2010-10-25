@@ -40,13 +40,16 @@ namespace MonoReports.Tools
 			this.designService = designService;
 		}
 		
-		
-		
+ 
 	    public abstract string Name {get;}
 		
 		public bool CreateMode;
 		
 		public virtual void CreateNewControl (SectionView sectionView){}
+		
+		public virtual void BuildToolbar(Gtk.Toolbar toolBar){
+			
+		}
 				
 
 		public virtual void OnBeforeDraw (Context c)

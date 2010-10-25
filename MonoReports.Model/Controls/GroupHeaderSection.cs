@@ -34,7 +34,7 @@ namespace MonoReports.Model.Controls
 			this.Name = "Group Header";
 		}
 		
-		public override object Clone ()
+		public override Control CreateControl ()
 		{
 			GroupHeaderSection gs = new GroupHeaderSection();
 			CopyTo(gs);

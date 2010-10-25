@@ -73,6 +73,9 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolText.png">
+      <LogicalName>ToolText.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -116,6 +119,8 @@
     <Compile Include="gtk-gui\MonoReports.Gui.Widgets.ReportExplorer.cs" />
     <Compile Include="Gui\Widgets\PropertyFieldEditor.cs" />
     <Compile Include="gtk-gui\MonoReports.Gui.Widgets.PropertyFieldEditor.cs" />
+    <Compile Include="Tools\TextBlockTool.cs" />
+    <Compile Include="Gui\Widgets\ToolBarButton.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\" />
@@ -129,6 +134,7 @@
     <Folder Include="Gui\" />
     <Folder Include="Gui\Widgets\" />
     <Folder Include="Services\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

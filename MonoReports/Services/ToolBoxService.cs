@@ -28,6 +28,7 @@ using MonoReports.ControlView;
 using MonoReports.Services;
 using System.Collections.Generic;
 using MonoReports.Tools;
+using MonoReports.Gui.Widgets;
 
 namespace MonoReports.Services
 {
@@ -44,14 +45,14 @@ namespace MonoReports.Services
 			}
 		}
 
-	BaseTool selectedTool;
+		BaseTool selectedTool;
 		public BaseTool SelectedTool{get { return selectedTool; } 
 			private set { selectedTool = value;
 				if(designService != null)
 					designService.SelectedTool = selectedTool;
 			}}
 		
-		public Dictionary<string,Func<BaseTool>> ToolByNameFactory;
+		public Dictionary<string,BaseTool> ToolDictionary;
 		
 		
 		
@@ -59,22 +60,32 @@ namespace MonoReports.Services
 			
 			this.designService = designService;
 			this.designService.OnSelectedControlChanged += handleSelectedControlChange;
+			ToolDictionary = new Dictionary<string, BaseTool>();
+			var zoomTool = new ZoomTool(designService);
+			var lineTool = new LineTool(designService);
+			var crossSectionLineTool = new CrossSectionLineTool(designService);
+			var textBlockTool = new TextBlockTool(designService);
+			
+			ToolDictionary.Add(zoomTool.Name, zoomTool );
+			ToolDictionary.Add(lineTool.Name, lineTool );
+			ToolDictionary.Add(crossSectionLineTool.Name,  crossSectionLineTool);
+			ToolDictionary.Add(textBlockTool.Name,  textBlockTool);
 			
 		}
-		
-		
+
 		
 		void handleSelectedControlChange(object sender, EventArgs args){
 			SetToolByControlView(designService.SelectedControl);
 		}
 		
-		public ToolBoxService ()
-		{
-			ToolByNameFactory = new Dictionary<string, Func<BaseTool>>();
+		
+		
+		public void BuildToolBar(Gtk.Toolbar mainToolbar){
 			
-			ToolByNameFactory.Add("LineTool", () => { return new LineTool(designService);  });
-			ToolByNameFactory.Add("CrossSectionLineTool", () => { return new CrossSectionLineTool(designService);  });
-			 
+			foreach (var tool in ToolDictionary.Values) {				
+				 tool.BuildToolbar(mainToolbar);				
+			}			
+		
 		}
  
 		
@@ -110,7 +121,7 @@ namespace MonoReports.Services
 		public void SetToolByName (string toolName)
 		{
 			DesignService.SelectedControl = null;
-			SelectedTool = ToolByNameFactory[toolName]();
+			SelectedTool = ToolDictionary[toolName];
 			
 			SelectedTool.CreateMode = true;
 		}

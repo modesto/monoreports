@@ -35,7 +35,7 @@ namespace MonoReports.Model.Controls
 		}
 	
 
-		public override object Clone ()
+		public override Control CreateControl ()
 		{
 			DetailSection ds = new DetailSection();
 			CopyTo(ds);

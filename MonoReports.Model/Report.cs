@@ -42,6 +42,7 @@ namespace MonoReports.Model
 			Height = 800;
 			Groups = new List<Group> ();
 			Fields = new List<DataField> ();
+			Parameters = new List<DataField> ();
 			GroupHeaderSections = new List<GroupHeaderSection> ();
 			GroupFooterSections = new List<GroupFooterSection> ();
 			Pages = new List<Page> ();
@@ -113,6 +114,7 @@ namespace MonoReports.Model
 		
 		
 		public List<DataField> Fields { get; private set; }
+		public List<DataField> Parameters { get; private set; }
 
 		public void FillFieldsFromDataSource ()
 		{
