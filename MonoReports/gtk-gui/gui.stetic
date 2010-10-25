@@ -104,7 +104,7 @@
     </action-group>
     <property name="MemberName" />
     <property name="Title" translatable="yes">MonoReports</property>
-    <property name="WindowPosition">CenterOnParent</property>
+    <property name="WindowPosition">Center</property>
     <property name="AllowShrink">True</property>
     <signal name="DeleteEvent" handler="OnDeleteEvent" />
     <child>
@@ -154,7 +154,7 @@
               <widget class="Gtk.HPaned" id="mainHPaned">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
-                <property name="Position">789</property>
+                <property name="Position">606</property>
                 <child>
                   <widget class="MonoReports.Gui.Widgets.MainDesignView" id="maindesignview1">
                     <property name="MemberName" />

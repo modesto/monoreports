@@ -59,9 +59,7 @@ namespace MonoReports.Tools
 
 		public override void OnBeforeDraw (Context c)
 		{
-			
-			
-			
+ 
 			
 		}
 		
@@ -105,7 +103,13 @@ namespace MonoReports.Tools
 		}
 		
 		public override string Name {get {return "RectTool"; }}
-
+		
+		public override bool IsToolbarTool {
+			get {
+				return false;
+			}
+		}
+		 
 		public override void OnAfterDraw (Context c)
 		{
 			if (designService.SelectedControl != null && designService.IsDesign) {

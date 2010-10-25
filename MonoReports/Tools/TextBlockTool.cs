@@ -37,6 +37,8 @@ namespace MonoReports.Tools
 		public override string Name {
 			get { return "TextBlockTool"; }
 		}
+		
+		
 
 		public TextBlockTool (DesignService designService) :base(designService)
 		{

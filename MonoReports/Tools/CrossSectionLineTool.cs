@@ -126,6 +126,18 @@ namespace MonoReports.Tools
 			get { return "CrossSectionLineTool"; }
 		}
 		
+		public override bool IsToolbarTool {
+			get {
+				return true;
+			}
+		}
+		
+		public override string ToolbarImageName {
+			get {
+				return "ToolCrossSectionLine.png";
+			}
+		}
+		
 		#endregion
 		
 		

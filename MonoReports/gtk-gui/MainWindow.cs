@@ -81,7 +81,7 @@ public partial class MainWindow
 		this.AddAccelGroup (this.UIManager.AccelGroup);
 		this.Name = "MainWindow";
 		this.Title = global::Mono.Unix.Catalog.GetString ("MonoReports");
-		this.WindowPosition = ((global::Gtk.WindowPosition)(4));
+		this.WindowPosition = ((global::Gtk.WindowPosition)(1));
 		this.AllowShrink = true;
 		// Container child MainWindow.Gtk.Container+ContainerChild
 		this.mainVbox = new global::Gtk.VBox ();
@@ -115,7 +115,7 @@ public partial class MainWindow
 		this.mainHPaned = new global::Gtk.HPaned ();
 		this.mainHPaned.CanFocus = true;
 		this.mainHPaned.Name = "mainHPaned";
-		this.mainHPaned.Position = 789;
+		this.mainHPaned.Position = 606;
 		// Container child mainHPaned.Gtk.Paned+PanedChild
 		this.maindesignview1 = new global::MonoReports.Gui.Widgets.MainDesignView ();
 		this.maindesignview1.Events = ((global::Gdk.EventMask)(256));

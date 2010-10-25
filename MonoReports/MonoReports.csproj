@@ -76,6 +76,12 @@
     <EmbeddedResource Include="Resources\ToolText.png">
       <LogicalName>ToolText.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolLine.png">
+      <LogicalName>ToolLine.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolCrossSectionLine.png">
+      <LogicalName>ToolCrossSectionLine.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />

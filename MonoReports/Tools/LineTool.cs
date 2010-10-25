@@ -30,6 +30,7 @@ using MonoReports.ControlView;
 using Cairo;
 using MonoReports.Model.Controls;
 using MonoReports.Services;
+using MonoReports.Gui.Widgets;
 
 namespace MonoReports.Tools
 {
@@ -91,6 +92,18 @@ namespace MonoReports.Tools
 		public override string Name {
 			get { return "LineTool"; }
 		}
+		
+		public override bool IsToolbarTool {
+			get {
+				return true;
+			}
+		}
+		
+		public override string ToolbarImageName {
+			get {
+				return "ToolLine.png";
+			}
+		}
 
 		public override void OnAfterDraw (Context c)
 		{
@@ -135,6 +148,9 @@ namespace MonoReports.Tools
 			startPointHit = false;
 			endPointHit = false;
 		}
+		
+		
+		
 		
 		
 	}

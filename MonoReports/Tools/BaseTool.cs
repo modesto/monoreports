@@ -29,6 +29,7 @@ using Cairo;
 using MonoReports.Model.Controls;
 using Gtk;
 using MonoReports.Services;
+using MonoReports.Gui.Widgets;
 namespace MonoReports.Tools
 {
 	public abstract class BaseTool
@@ -43,12 +44,24 @@ namespace MonoReports.Tools
  
 	    public abstract string Name {get;}
 		
+		public virtual string ToolbarImageName {get { return  String.Empty; }}
+		
+		public abstract bool IsToolbarTool {get;}
+		
 		public bool CreateMode;
 		
 		public virtual void CreateNewControl (SectionView sectionView){}
 		
 		public virtual void BuildToolbar(Gtk.Toolbar toolBar){
-			
+			if(IsToolbarTool){
+			ToolBarButton toolButton = new ToolBarButton (ToolbarImageName,Name,Name);
+			toolButton.Clicked += delegate(object sender, EventArgs e) {
+				designService.SelectedControl = null;
+				designService.SelectedTool = this;
+				this.CreateMode = true;
+			};
+			toolBar.Insert (toolButton, 1);		
+			}
 		}
 				
 

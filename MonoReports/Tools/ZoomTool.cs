@@ -38,6 +38,13 @@ namespace MonoReports.Tools
 		
 		public override string Name {get {return "ZoomTool"; }}
 		
+		public override bool IsToolbarTool {
+			get {
+				return true;
+			}
+		}
+
+		
 		public override void BuildToolbar (Gtk.Toolbar toolBar)
 		{
 			
