@@ -25,69 +25,99 @@
 // THE SOFTWARE.
 using System;
 using MonoReports.Model.Controls;
+using Newtonsoft.Json.Converters;
 namespace MonoReports.Extensions
 {
-//	public class PointConverter : CustomCreationConverter<Point>
-//	{
-//		public override Point Create (Type objectType)
-//		{
-//			return new Point (0, 0);
-//		}
-//		
-//		public override object ReadJson (Newtonsoft.Json.JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
-//		{
-//			
-//			reader.Read();
-//			reader.Read();
-//			reader.Read();
-//			reader.Read();
-//			
-//			double x = double.Parse( reader.Value.ToString());
-//			
-//			reader.Read();
-//			
-//			reader.Read();
-//			double y = double.Parse( reader.Value.ToString());
-//			 
-//			reader.Read();
-//			return new Point(x,y);
-//		}
-//		
-//		
-//		
-//	
-//	}
-//	
-//	
-//	public class SizeConverter : CustomCreationConverter<Size>
-//	{
-//		public override Size Create (Type objectType)
-//		{
-//			return new Size (0, 0);
-//		}
-//		
-//		public override object ReadJson (Newtonsoft.Json.JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
-//		{
-//			
-//			reader.Read();
-//			reader.Read();
-//			reader.Read();
-//			reader.Read();
-//			
-//			double w = double.Parse( reader.Value.ToString());
-//			
-//			reader.Read();
-//			
-//			reader.Read();
-//			double h = double.Parse( reader.Value.ToString());
-//			 
-//			reader.Read();
-//			return new Size(w,h);
-//		}
-//		
-//		
-//		
-//	
-//	}
+	public class PointConverter : CustomCreationConverter<Point>
+	{
+		public override Point Create (Type objectType)
+		{
+			return new Point (0, 0);
+		}
+		
+		public override object ReadJson (Newtonsoft.Json.JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
+		{
+			
+			reader.Read();
+			reader.Read();
+			reader.Read();
+			reader.Read();
+			
+			double x = double.Parse( reader.Value.ToString());
+			
+			reader.Read();
+			
+			reader.Read();
+			double y = double.Parse( reader.Value.ToString());
+			 
+			reader.Read();
+			return new Point(x,y);
+		}
+		
+		
+		
+	
+	}
+	
+	
+	public class SizeConverter : CustomCreationConverter<Size>
+	{
+		public override Size Create (Type objectType)
+		{
+			return new Size (0, 0);
+		}
+		
+		public override object ReadJson (Newtonsoft.Json.JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
+		{
+			
+			reader.Read();
+			reader.Read();
+			reader.Read();
+			reader.Read();
+			
+			double w = double.Parse( reader.Value.ToString());
+			
+			reader.Read();
+			
+			reader.Read();
+			double h = double.Parse( reader.Value.ToString());
+			 
+			reader.Read();
+			return new Size(w,h);
+		}
+	
+	}
+	
+	
+	public class ColorConverter : CustomCreationConverter<MonoReports.Model.Controls.Color>
+	{
+		public override MonoReports.Model.Controls.Color Create (Type objectType)
+		{
+			return new MonoReports.Model.Controls.Color (0, 0,0);
+		}
+		
+		public override object ReadJson (Newtonsoft.Json.JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
+		{			
+			reader.Read();
+			reader.Read();
+			reader.Read();
+			reader.Read();
+			
+			double r = double.Parse( reader.Value.ToString());
+			reader.Read();	
+			reader.Read();
+			double g = double.Parse( reader.Value.ToString());
+			reader.Read();	
+			reader.Read();
+			double b = double.Parse( reader.Value.ToString());
+			
+			reader.Read();
+			reader.Read();
+			double a = double.Parse( reader.Value.ToString());
+			reader.Read();
+			return new MonoReports.Model.Controls.Color(r,g,b,a);
+		}
+	
+	}
 }
 

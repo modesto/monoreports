@@ -39,8 +39,7 @@ namespace MonoReports.Gui.Widgets
 	public partial class MainDesignView : Gtk.Bin
 	{
 		DesignService designService;
-		
-		
+
 		public DesignService DesignService {
 			get {
 				return this.designService;
@@ -73,31 +72,29 @@ namespace MonoReports.Gui.Widgets
 		public DrawingArea PreviewDrawingArea { 
 			get { return previewDrawingArea;}
 		}
-		
-		
 
 		public MainDesignView ()
 		{
 			this.Build ();			
 			buildPreviewToolbar ();
 			
-		Gtk.Drag.DestSet(DesignDrawingArea,DestDefaults.All,new TargetEntry[]{new TargetEntry("Field", TargetFlags.OtherWidget,2)},DragAction.Copy);
-			//Gtk.Drag.DestSet(DesignDrawingArea, ,Targets,DragAction.Default);
+			Gtk.Drag.DestSet (DesignDrawingArea, DestDefaults.All, new TargetEntry[]{new TargetEntry ("Field", TargetFlags.OtherWidget,2)}, DragAction.Copy);
 			
 		
-			 
+				
 			DesignDrawingArea.DragDrop += delegate(object o, DragDropArgs args) {
-				 var source =    Gtk.Drag.GetSourceWidget(args.Context);
-			 		if(source.GetType() == typeof(TreeView)){
+					var source = Gtk.Drag.GetSourceWidget (args.Context);
+						if (source.GetType () == typeof(TreeView)){
 						TreeIter item;
-						((TreeView) source).Selection.GetSelected(out item);
- 						var fieldName = ((TreeView) source).Model.GetValue(item,0).ToString();
-					//TODO add control with field
-					 	
-						Gtk.Drag.Finish(args.Context,true,false,0);
+						((TreeView)source).Selection.GetSelected (out item);
+							var fieldName = ((TreeView)source).Model.GetValue (item, 0).ToString ();											
+						Gtk.Drag.Finish (args.Context, true, false, 0);
+						designService.DropedField (fieldName, args.X, args.Y);
+					
 					}
 			};
-			 
+			
+				
 		}
 
 		void buildPreviewToolbar ()
@@ -148,6 +145,7 @@ namespace MonoReports.Gui.Widgets
 		{
 			
 			if (designService.IsDesign) {
+				DesignDrawingArea.GrabFocus();
 				workSpaceService.Status (String.Format ("press x:{0} y:{1} | xroot:{2} yroot:{3}", args.Event.X, args.Event.Y, args.Event.XRoot, args.Event.YRoot));
 				designService.ButtonPress (args.Event.X, args.Event.Y);
 			}
@@ -195,6 +193,17 @@ namespace MonoReports.Gui.Widgets
 				}
 			}
 		}
+		protected virtual void OnDrawingareaKeyPressEvent (object o, Gtk.KeyPressEventArgs args)
+		{			 
+			DesignService.KeyPress(args.Event.Key);
+		}
+		
+		protected virtual void OnDrawingareaKeyReleaseEvent (object o, Gtk.KeyReleaseEventArgs args)
+		{
+		}
+		
+		
+		
 	}
 }
 

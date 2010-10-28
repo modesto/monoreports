@@ -44,8 +44,10 @@ namespace MonoReports.ControlView
 				base.ControlModel = value;
 				if (image != value) {
 					image = value as Image;	
-					if(designService != null){
-						pixbuf = new Gdk.Pixbuf (designService.Report.ResourceRepository[image.ImageIndex]);
+					if(image != null){
+						if(designService != null){
+							pixbuf = new Gdk.Pixbuf (designService.Report.ResourceRepository[image.ImageIndex]);
+						}
 					}
 				}
 			}
@@ -54,7 +56,7 @@ namespace MonoReports.ControlView
 		public Model.Controls.Image Image {
 			get { return image; }
 		}
-
+				
 
 		private Gdk.Pixbuf pixbuf;
 
@@ -69,7 +71,12 @@ namespace MonoReports.ControlView
 		}
 
 		#region implemented abstract members of MonoReport.ControlView.ControlViewBase
-
+		
+		public override string DefaultToolName {
+			get {
+				return "RectTool";
+			}
+		}
 
 		public override Size Render (Context c, RenderState renderState)
 		{

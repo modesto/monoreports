@@ -43,7 +43,7 @@ namespace MonoReports.ControlView
 		public Cairo.Color SectionGripperColor;
 		public bool IsCollapsed { get; set; }
 		public static double SectionheaderHeight = 20;
-		public static double SectionGripperHeight = 3;
+		public static double SectionGripperHeight = 5;
 		public Cairo.PointD SectionSpan { get; set; }
 		public Cairo.PointD AbsoluteDrawingStartPoint { get; set; }
 	 	public Rectangle HeaderAbsoluteBound { get; set; }
@@ -121,6 +121,11 @@ namespace MonoReports.ControlView
 			AddControlView (controlView);
 			return controlView;
 		}
+		
+		public void RemoveControlView(ControlViewBase controlView){
+			Section.Controls.Remove( controlView.ControlModel);
+			controls.Remove(controlView);
+		}
 
 		public void AddControls (IList<Control> controlsToAdd)
 		{
@@ -138,6 +143,12 @@ namespace MonoReports.ControlView
 		}
 
 		#region implemented abstract members of MonoReport.ControlView.ControlViewBase
+		
+		public override string DefaultToolName {
+			get {
+				return "SectionTool";
+			}
+		}
 
 		public override Size Render (Cairo.Context c, RenderState renderState)
 		{

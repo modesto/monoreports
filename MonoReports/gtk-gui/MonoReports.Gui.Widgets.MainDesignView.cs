@@ -40,7 +40,8 @@ namespace MonoReports.Gui.Widgets
 			w3.ShadowType = ((global::Gtk.ShadowType)(0));
 			// Container child GtkViewport.Gtk.Container+ContainerChild
 			this.drawingarea = new global::Gtk.DrawingArea ();
-			this.drawingarea.Events = ((global::Gdk.EventMask)(66310));
+			this.drawingarea.CanFocus = true;
+			this.drawingarea.Events = ((global::Gdk.EventMask)(69382));
 			this.drawingarea.ExtensionEvents = ((global::Gdk.ExtensionMode)(1));
 			this.drawingarea.Name = "drawingarea";
 			w3.Add (this.drawingarea);
@@ -103,6 +104,8 @@ namespace MonoReports.Gui.Widgets
 			this.drawingarea.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler (this.OnDrawingareaButtonReleaseEvent);
 			this.drawingarea.MotionNotifyEvent += new global::Gtk.MotionNotifyEventHandler (this.OnDrawingareaMotionNotifyEvent);
 			this.drawingarea.ExposeEvent += new global::Gtk.ExposeEventHandler (this.OnDrawingareaExposeEvent);
+			this.drawingarea.KeyPressEvent += new global::Gtk.KeyPressEventHandler (this.OnDrawingareaKeyPressEvent);
+			this.drawingarea.KeyReleaseEvent += new global::Gtk.KeyReleaseEventHandler (this.OnDrawingareaKeyReleaseEvent);
 			this.previewDrawingArea.ExposeEvent += new global::Gtk.ExposeEventHandler (this.OnPreviewDrawingareaExposeEvent);
 			this.previewDrawingArea.ButtonPressEvent += new global::Gtk.ButtonPressEventHandler (this.OnDrawingareaButtonPressEvent);
 			this.previewDrawingArea.ButtonReleaseEvent += new global::Gtk.ButtonReleaseEventHandler (this.OnDrawingareaButtonReleaseEvent);

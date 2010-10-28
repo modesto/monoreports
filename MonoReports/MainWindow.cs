@@ -38,6 +38,7 @@ using MonoReports.ControlView;
 using MonoReports.Tools;
 using MonoReports.Gui;
 using MonoReports.Services;
+using Newtonsoft.Json;
 
 public partial class MainWindow : Gtk.Window
 {
@@ -51,12 +52,19 @@ public partial class MainWindow : Gtk.Window
 		Build ();		
 		workspaceService = new WorkspaceService(this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
 		designService = new DesignService(workspaceService,exampleReport());
-		toolBoxService = new ToolBoxService(designService);
+		toolBoxService = new ToolBoxService();
+		designService.ToolBoxService = toolBoxService;
 		maindesignview1.DesignService = designService;
 		maindesignview1.WorkSpaceService = workspaceService;
 		workspaceService.InvalidateDesignArea();		
 		reportExplorer.DesignService = designService;
 		reportExplorer.Workspace = workspaceService;
+		toolBoxService.AddTool( new ZoomTool(designService));		
+		toolBoxService.AddTool( new LineTool(designService));
+		toolBoxService.AddTool( new CrossSectionLineTool(designService));
+		toolBoxService.AddTool( new TextBlockTool(designService));
+		toolBoxService.AddTool( new SectionTool(designService));
+		toolBoxService.AddTool( new RectTool(designService));
 		toolBoxService.BuildToolBar(mainToolbar);
 	}
 
@@ -71,7 +79,7 @@ public partial class MainWindow : Gtk.Window
 		 
 		var currentReport = new Report ();
 		
-		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock Żection Żecsdfsdf dfs dfsdfsdfsdfsd ftion Żection ŻSection Ż", FontColor = new Controls.Color(1,0,0),
+		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock - mono zelot", FontColor = new Controls.Color(1,0,0),
 			CanGrow = true, Location = new Controls.Point (3, 3), Size = new Controls.Size (200, 80) });
 		
 		try {
@@ -86,9 +94,9 @@ public partial class MainWindow : Gtk.Window
 		}
 		
 		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 24, FontName = "Helvetica", 
-			Text = "Second ection Żection Żection Żection Żection ŻSection Ż", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (123, 87), CanGrow = false, Size = new Controls.Size (160, 60) });
+			Text = "Second example section - żwawy żółw", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (123, 87), CanGrow = false, Size = new Controls.Size (160, 60) });
 		
-		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Third ection Żection Żection Żection Żection ŻSection Ż", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (300, 17), CanGrow = true, Size = new Controls.Size (100, 20) });
+		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "third example text - chyży ślimak", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (300, 17), CanGrow = true, Size = new Controls.Size (100, 20) });
 		
 		currentReport.DetailSection.Size = new Controls.Size (600, 300);
 		
@@ -98,10 +106,7 @@ public partial class MainWindow : Gtk.Window
 		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Surname", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (223, 12), Size = new Controls.Size (200, 30), FieldName = "Surname", BackgroundColor = new Controls.Color(1,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
 		CanGrow = true });
 		
-		
-		
-		
-		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "Deatail section detail section lorem ipsum dolores tratatratrat ", FontColor = new Controls.Color(1,1,1), Location = new Controls.Point (23, 12), Size = new Controls.Size (400, 70), BackgroundColor = new Controls.Color(0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 }, CanGrow = false });
+		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "fourth text - szybki jeż", FontColor = new Controls.Color(1,1,1), Location = new Controls.Point (23, 12), Size = new Controls.Size (400, 70), BackgroundColor = new Controls.Color(0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 }, CanGrow = false });
 		
 		
 		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 20), End = new Controls.Point (420, 10) });
@@ -113,10 +118,6 @@ public partial class MainWindow : Gtk.Window
 	{
 		Application.Quit ();
 	}
-
-
-	
-
 
 	public void Status (string message)
 	{
@@ -134,33 +135,22 @@ public partial class MainWindow : Gtk.Window
 		this.GdkWindow.Cursor = new Gdk.Cursor (cursorType);
 	}
 
- 
-
- 
-
-	
-	
-	
-
 	protected virtual void OnEditActionActivated (object sender, System.EventArgs e)
 	{
-		
 		toolBoxService.SetToolByName ("LineTool");
-		
 	}
 
 
 	protected virtual void OnSaveActionActivated (object sender, System.EventArgs e)
 	{
-		
 		using (System.IO.FileStream file = System.IO.File.OpenWrite ("test.mrp")) {
 			
+			var serializedProject = JsonConvert.SerializeObject (designService.Report, Formatting.None, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
+			byte[] bytes = System.Text.Encoding.UTF8.GetBytes (serializedProject);
+			file.SetLength(bytes.Length);
+			file.Write (bytes, 0, bytes.Length);
 			
-//			var serializedProject = JsonConvert.SerializeObject (reportView.Report, Formatting.None, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
-//			byte[] bytes = System.Text.Encoding.UTF8.GetBytes (serializedProject);
-//			file.Write (bytes, 0, bytes.Length);
-//			
-//			file.Close ();
+			file.Close ();
 		}
 		
 	}
@@ -177,29 +167,29 @@ public partial class MainWindow : Gtk.Window
 			byte[] bytes = new byte[file.Length];
 			file.Read (bytes, 0, (int)file.Length);
 			ShowInPropertyGrid(null);
-			
-			
-			//var report = JsonConvert.DeserializeObject<Report> (System.Text.Encoding.UTF8.GetString (bytes), new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects, Converters = new List<JsonConverter> (new JsonConverter[] { new MonoReports.Extensions.PointConverter (), new MonoReports.Extensions.SizeConverter () }) });
-			//CurrentReport = report;
-			//var reportView = new ReportView (currentReport);
-			//designService = new DesignService (reportView, this, toolBoxService);
+			var report = JsonConvert.DeserializeObject<Report> (System.Text.Encoding.UTF8.GetString (bytes), 
+				new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects,
+				Converters = new List<JsonConverter> (
+					new JsonConverter[] { 
+					new MonoReports.Extensions.PointConverter (), 
+					new MonoReports.Extensions.SizeConverter (),
+					new MonoReports.Extensions.ColorConverter (),
+				}) 
+			});
+			designService.Report = report;
 			file.Close ();
 		}
 		
 		fc.Destroy ();
-		 
+		workspaceService.InvalidateDesignArea();
 	}
 
  
 	protected virtual void OnSortAscendingActionActivated (object sender, System.EventArgs e)
 	{
 		toolBoxService.SetToolByName ("CrossSectionLineTool");
-		
 	}
 
- 
-	 
-	 
 	
 }
 

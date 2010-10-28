@@ -46,6 +46,10 @@ namespace MonoReports.Tools
 		public override void OnBeforeDraw (Context c)
 		{
 			
+			
+		}
+		
+		public override void OnMouseMove(){
 			if (designService.IsPressed) {			
 				 
 				if (designService.IsMoving && designService.SelectedControl != null) {

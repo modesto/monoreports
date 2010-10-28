@@ -245,12 +245,15 @@
                 <child>
                   <widget class="Gtk.DrawingArea" id="drawingarea">
                     <property name="MemberName" />
-                    <property name="Events">ExposureMask, PointerMotionMask, ButtonPressMask, ButtonReleaseMask, PropertyChangeMask</property>
+                    <property name="CanFocus">True</property>
+                    <property name="Events">ExposureMask, PointerMotionMask, ButtonPressMask, ButtonReleaseMask, KeyPressMask, KeyReleaseMask, PropertyChangeMask</property>
                     <property name="ExtensionEvents">All</property>
                     <signal name="ButtonPressEvent" handler="OnDrawingareaButtonPressEvent" />
                     <signal name="ButtonReleaseEvent" handler="OnDrawingareaButtonReleaseEvent" />
                     <signal name="MotionNotifyEvent" handler="OnDrawingareaMotionNotifyEvent" />
                     <signal name="ExposeEvent" handler="OnDrawingareaExposeEvent" />
+                    <signal name="KeyPressEvent" handler="OnDrawingareaKeyPressEvent" />
+                    <signal name="KeyReleaseEvent" handler="OnDrawingareaKeyReleaseEvent" />
                   </widget>
                 </child>
               </widget>

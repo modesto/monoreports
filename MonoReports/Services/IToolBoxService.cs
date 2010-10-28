@@ -32,12 +32,13 @@ namespace MonoReports.Services
 {
 	public interface IToolBoxService
 	{
-		DesignService DesignService {get;set;}
+		void AddTool(BaseTool tool);
 		BaseTool SelectedTool{get;}
 		void SetToolByControlView(ControlViewBase control);
 		void SetTool(BaseTool tool);
 		void SetToolByName(string toolName);
 		void UnselectTool();
+		
 	}
 }
 

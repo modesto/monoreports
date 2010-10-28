@@ -31,8 +31,6 @@ using System.Collections;
 
 namespace MonoReports.Model
 {
-
-
 	public class Report
 	{
 
@@ -55,15 +53,25 @@ namespace MonoReports.Model
 		public string Title { get; set; }
 
 		public PageHeaderSection PageHeaderSection { get; set; }
+
 		public PageFooterSection PageFooterSection { get; set; }
+
 		public DetailSection DetailSection { get; internal set; }
+
 		public List<GroupHeaderSection> GroupHeaderSections { get; set; }
+
 		public List<GroupFooterSection> GroupFooterSections { get; set; }
+
 		public List<Page> Pages { get; internal set; }
+
 		public List<Group> Groups { get; internal set; }
+
 		public List<byte[]> ResourceRepository { get; set; }
+
 		public double Height { get; set; }
+
 		public double Width { get; set; }
+
 		public UnitType Unit { get; set; }
 
 		public void AddGroup (string fieldName)
@@ -87,44 +95,47 @@ namespace MonoReports.Model
 		}
 
 		object dataSource;
+
 		public object DataSource { 
 			get { return dataSource; } 
 			set {
 				dataSource = value;
-				Type r =  dataSource.GetType();
-				Type r2 = r.GetElementType();
-				if(r2 == null){
-					Type t =  r.GetGenericArguments()[0];
-					Type genericType = typeof(ObjectDataSource<>); 
-					var ttt =  genericType.MakeGenericType( new Type[]{t});
-					_dataSource = (Activator.CreateInstance(ttt, dataSource))  as IDataSource;
-				}else{
+				if (dataSource != null) {
+					Type r = dataSource.GetType ();
+					Type r2 = r.GetElementType ();
+					if (r2 == null) {
+						Type t = r.GetGenericArguments () [0];
+						Type genericType = typeof(ObjectDataSource<>); 
+						var ttt = genericType.MakeGenericType (new Type[]{t});
+						_dataSource = (Activator.CreateInstance (ttt, dataSource))  as IDataSource;
+					} else {
 					
-					Type genericType = typeof(ObjectDataSource<>); 
-					var ttt =  genericType.MakeGenericType( new Type[]{r2});
-					_dataSource = (Activator.CreateInstance(ttt, dataSource))  as IDataSource;
+						Type genericType = typeof(ObjectDataSource<>); 
+						var ttt = genericType.MakeGenericType (new Type[]{r2});
+						_dataSource = (Activator.CreateInstance (ttt, dataSource))  as IDataSource;
+					}
 				}
-				FillFieldsFromDataSource();
+				FillFieldsFromDataSource ();
 			} 
 		
 		}
-		
-		
-		internal IDataSource _dataSource {get;set;}
-		
-		
+
+		internal IDataSource _dataSource {get; set;}
+
 		public List<DataField> Fields { get; private set; }
+
 		public List<DataField> Parameters { get; private set; }
 
 		public void FillFieldsFromDataSource ()
 		{
+			Fields = new List<DataField> ();				
 			if (DataSource != null) {
-				 Fields = new List<DataField>( _dataSource.DiscoverFields());				 
+				Fields.AddRange( _dataSource.DiscoverFields ());				 
 			}
 		}
 
-		 
+			
 
-		 
+			
 	}
 }

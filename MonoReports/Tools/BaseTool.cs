@@ -91,7 +91,15 @@ namespace MonoReports.Tools
 			
 		}
 		
-		public virtual void OnKeyDown(Key key){
+		public virtual void KeyPress(Gdk.Key key){
+			switch (key) {
+				case Gdk.Key.Delete:				
+					designService.DeleteSelectedControl();
+				break;
+			default:
+			break;
+			}
+			
 			
 		}
 		

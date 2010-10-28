@@ -96,7 +96,7 @@ namespace MonoReports.Model.Controls
 		
 		public override void AssignValue (IDataSource dataSource)
 		{		
-			if(!string.IsNullOrEmpty(this.FieldName)){
+			if(!string.IsNullOrEmpty(this.FieldName) && dataSource != null){
 				 			
 				this.Text =  dataSource.GetValue(this.FieldName,FieldTextFormat);
 			}

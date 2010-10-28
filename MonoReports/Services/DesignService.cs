@@ -34,49 +34,80 @@ using System.Collections.ObjectModel;
 using MonoReports.Tools;
 using MonoReports.ControlView;
 
-
 namespace MonoReports.Services
 {
-	
 	public class DesignService
 	{
 		public double Zoom { get; set; }
+
 		public int Width { get; private set; }
+
 		public int Height { get; private set; }
-		public BaseTool SelectedTool {get;set;}
-		public Cairo.PointD StartPressPoint { get; private set; }
+
+		public BaseTool SelectedTool {
+			get { return ToolBoxService.SelectedTool; } 
+			set {
+				ToolBoxService.SelectedTool = value; 
+			}
+		}
+
+		public Cairo.PointD StartPressPoint {
+			get;
+			private set;
+		}
+
 		public Cairo.PointD EndPressPoint { get; private set; }
+
 		public Cairo.PointD MousePoint { get; private set; }
+
 		public Cairo.PointD PreviousMousePoint { get; private set; }
+
 		public Cairo.PointD DeltaPoint { get; private set; }
+
 		public bool IsPressed { get; private set; }
+
 		public bool IsMoving { get; private set; }
+
 		public bool IsDesign { get; set; }
+
 		public bool Render { get; private set; }
+
 		public IWorkspaceService WorkspaceService { get; set; }
-	 	public event SelectedControlChanged OnSelectedControlChanged;
+
+		public ToolBoxService ToolBoxService{get; set;}
+
+		public event SelectedControlChanged OnSelectedControlChanged;
+		public event ReportChanged OnReportChanged;
+
 		ControlViewBase selectedControl;
-		
+
 		public ControlViewBase SelectedControl { 
 			get { return selectedControl; } 
 			set { 
 				selectedControl = value; 
-				if(OnSelectedControlChanged != null)
-					OnSelectedControlChanged(this,new EventArgs());
+				if (selectedControl != null){
+					ToolBoxService.SetToolByControlView (selectedControl);
+				}else{
+					ToolBoxService.UnselectTool ();
+				}
+				if (OnSelectedControlChanged != null)
+					OnSelectedControlChanged (this, new EventArgs ());
 			} 
 		}
- 
+
 		internal Context CurrentContext;				
-			
+
 		public DesignService (IWorkspaceService workspaceService, Report report)
 		{		
 			this.WorkspaceService = workspaceService;
-			Report = report;
 			controlViewFactory = new ControlViewFactory (this);
 			IsDesign = true;
 			Zoom = 1;
-			Render = true;			
-
+			Render = true;		
+			Report = report;
+		}
+		
+		void initReport(){
 			sectionViews = new List<SectionView> ();
 			addSectionView (report.PageHeaderSection);
 			foreach (var groupHeader in report.GroupHeaderSections) {
@@ -91,9 +122,9 @@ namespace MonoReports.Services
 
 		public void RedrawReport (Context c)
 		{
-			RenderState renderState = new RenderState(){ IsDesign = true, Render = true};
+			RenderState renderState = new RenderState (){ IsDesign = true, Render = true};
 			CurrentContext = c;
-		 
+			
 			if (Zoom != 1) {
 				CurrentContext.Scale (Zoom, Zoom);
 				Width = (int)(Report.Width * Zoom);
@@ -105,20 +136,62 @@ namespace MonoReports.Services
 				SelectedTool.OnBeforeDraw (CurrentContext);
 			}
 			for (int i = 0; i < SectionViews.Count; i++) {
-				var renderedSection = SectionViews[i];
+				var renderedSection = SectionViews [i];
 				renderState.SectionView = renderedSection;
 				renderState.Section = renderedSection.Section;
 				
-				foreach(var crossControlView in renderedSection.DesignCrossSectionControlsToAdd)
-					renderState.CrossSectionControls.Add(crossControlView);
+				foreach (var crossControlView in renderedSection.DesignCrossSectionControlsToAdd)
+					renderState.CrossSectionControls.Add (crossControlView);
 				renderedSection.Render (CurrentContext, renderState);				
-				foreach(var crossControlView in renderedSection.DesignCrossSectionControlsToRemove)
-					renderState.CrossSectionControls.Remove(crossControlView);
+				foreach (var crossControlView in renderedSection.DesignCrossSectionControlsToRemove)
+					renderState.CrossSectionControls.Remove (crossControlView);
 			}
 			if (SelectedTool != null) {
 				SelectedTool.OnAfterDraw (CurrentContext);
 			}
 			
+		}
+
+		public void DropedField (string fieldName, double x, double y)
+		{
+			var point = new Cairo.PointD (x / Zoom, y / Zoom);
+			
+			
+			for (int i = 0; i < SectionViews.Count; i++) {
+				var sectionView = SectionViews [i];
+					
+				if (sectionView.AbsoluteBound.ContainsPoint (point.X, point.Y)) {
+						
+					if (sectionView.HeaderAbsoluteBound.ContainsPoint (point.X, point.Y)) {
+						SelectedControl = sectionView;
+						continue;
+					}
+					point = sectionView.PointInSectionByAbsolutePoint (point);	
+					ToolBoxService.SetToolByName ("TextBlockTool");							
+					SelectedTool.CreateNewControl (sectionView);
+					(SelectedControl.ControlModel as TextBlock).Text = fieldName;
+					(SelectedControl.ControlModel as TextBlock).FieldName = fieldName;
+					(SelectedControl.ControlModel as TextBlock).Location = new MonoReports.Model.Controls.Point (point.X,point.Y);
+					SelectedTool.CreateMode = false;
+					
+				}
+			}
+		}
+		
+		public void KeyPress (Gdk.Key key){
+			if(SelectedTool != null){
+				SelectedTool.KeyPress(key);
+			}
+		}
+		
+		public void DeleteSelectedControl(){
+			if(selectedControl != null){
+				SelectedControl.ParentSection.RemoveControlView(selectedControl);
+				WorkspaceService.InvalidateDesignArea ();
+				SelectedControl.ControlModel = null;
+				SelectedControl = null;
+				
+			}
 		}
 
 		public void ButtonPress (double x, double y)
@@ -133,50 +206,47 @@ namespace MonoReports.Services
 				PreviousMousePoint = StartPressPoint;
 				DeltaPoint = new PointD (0, 0);
 				for (int i = 0; i < SectionViews.Count; i++) {
-					var sectionView = SectionViews[i];
-					
-					
-					
+					var sectionView = SectionViews [i];
+	
 					if (sectionView.AbsoluteBound.ContainsPoint (StartPressPoint.X, StartPressPoint.Y)) {
 						
-						if(sectionView.HeaderAbsoluteBound.ContainsPoint(StartPressPoint.X, StartPressPoint.Y)){
+						if (sectionView.HeaderAbsoluteBound.ContainsPoint (StartPressPoint.X, StartPressPoint.Y)) {
 							SelectedControl = sectionView;
+							SelectedTool = null;
 							continue;
-						}else{
-							SelectedControl = null;
-						}
-						
-						if (SelectedTool != null && SelectedTool.CreateMode) {
-							SelectedTool.CreateNewControl (sectionView);
-							SelectedTool.CreateMode = false;
+						} else if (sectionView.GripperAbsoluteBound.ContainsPoint (StartPressPoint.X, StartPressPoint.Y)) {
+							SelectedControl = sectionView;
+									
 						} else {
 							
-							if (sectionView.GripperAbsoluteBound.ContainsPoint (StartPressPoint.X, StartPressPoint.Y)) {
-								SelectedControl = sectionView;
-								 
+							if (SelectedTool != null && SelectedTool.CreateMode) {
+								SelectedTool.CreateNewControl (sectionView);
+								SelectedTool.CreateMode = false;
 							} else {
-								
+							
+								SelectedControl = null;
+							
 								for (int j = 0; j < sectionView.Controls.Count; j++) {
-									var controlView = sectionView.Controls[j];
+									var controlView = sectionView.Controls [j];
 									if (controlView.ContainsPoint (StartPressPoint.X, StartPressPoint.Y)) {
 										SelectedControl = controlView;										 
 										break;
 									}
 								}
-								
 							}
-							
 						}
-					}
 					
+							
+					}
 				}
+					
 			}
-			
+
 			
 			if (SelectedTool != null)
 				SelectedTool.OnMouseDown ();
 			
-			WorkspaceService.InvalidateDesignArea();
+			WorkspaceService.InvalidateDesignArea ();
 			
 		}
 
@@ -208,14 +278,14 @@ namespace MonoReports.Services
 			}
 			
 			
-			WorkspaceService.InvalidateDesignArea(); 
+			WorkspaceService.InvalidateDesignArea (); 
 			PreviousMousePoint = MousePoint;
 		}
 
 		public void ZoomChanged (double zoom)
 		{
 			Zoom = zoom;
-			WorkspaceService.InvalidateDesignArea(); 
+			WorkspaceService.InvalidateDesignArea (); 
 		}
 
 		public void ButtonRelease (double x, double y)
@@ -225,11 +295,14 @@ namespace MonoReports.Services
 			IsMoving = false;
 			if (SelectedTool != null) {
 				SelectedTool.OnMouseUp ();
-				if (SelectedControl != null) {
-					WorkspaceService.ShowInPropertyGrid (SelectedControl.ControlModel);
-				}
+				
 			}
-			WorkspaceService.InvalidateDesignArea(); 
+			
+			if (SelectedControl != null) {
+					WorkspaceService.ShowInPropertyGrid (SelectedControl.ControlModel);
+			}
+			
+			WorkspaceService.InvalidateDesignArea (); 
 			
 		}
 
@@ -237,12 +310,21 @@ namespace MonoReports.Services
 		{
 			CurrentContext.ShowPage ();
 		}
+
+		ControlViewFactory controlViewFactory;
+
+		Report report;
 		
-				ControlViewFactory controlViewFactory;
-		public Report Report {get;set;}
-		
-		 
-		
+		public Report Report {
+			get { return report;} 
+			set {
+				report = value;
+				initReport();
+				if(OnReportChanged != null)
+					OnReportChanged(this,new EventArgs());
+			}
+		}
+
 		private List<SectionView> sectionViews;
 
 		public IList<SectionView> SectionViews {
@@ -251,16 +333,12 @@ namespace MonoReports.Services
 				;
 			}
 		}
-		
-		
-		 
-		
-		
+
 		private void addSectionView (Section section)
 		{
 			Cairo.PointD sectionSpan;
 			if (sectionViews.Count > 0) {
-				var previousSection = sectionViews[sectionViews.Count - 1];
+				var previousSection = sectionViews [sectionViews.Count - 1];
 				sectionSpan = new Cairo.PointD (0, previousSection.AbsoluteBound.Y + previousSection.AbsoluteBound.Height);
 			} else {
 				sectionSpan = new Cairo.PointD (0, 0);

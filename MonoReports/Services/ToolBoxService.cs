@@ -34,58 +34,32 @@ namespace MonoReports.Services
 {
 	public class ToolBoxService : IToolBoxService
 	{
-		DesignService designService;
-		
-		public DesignService DesignService {
-			get {
-				return this.designService;
-			}
-			set {
-				designService = value;
-			}
-		}
+		 
 
 		BaseTool selectedTool;
-		public BaseTool SelectedTool{get { return selectedTool; } 
-			private set { selectedTool = value;
-				if(designService != null)
-					designService.SelectedTool = selectedTool;
-			}}
+		public BaseTool SelectedTool {
+			
+			get { return selectedTool; } 
+			set { selectedTool = value; }
+		}
 		
 		public Dictionary<string,BaseTool> ToolDictionary;
 		
-		
-		
-		public ToolBoxService(DesignService designService){
-			
-			this.designService = designService;
-			this.designService.OnSelectedControlChanged += handleSelectedControlChange;
+		public ToolBoxService(){
+
 			ToolDictionary = new Dictionary<string, BaseTool>();
-			var zoomTool = new ZoomTool(designService);
-			var lineTool = new LineTool(designService);
-			var crossSectionLineTool = new CrossSectionLineTool(designService);
-			var textBlockTool = new TextBlockTool(designService);
-			
-			ToolDictionary.Add(zoomTool.Name, zoomTool );
-			ToolDictionary.Add(lineTool.Name, lineTool );
-			ToolDictionary.Add(crossSectionLineTool.Name,  crossSectionLineTool);
-			ToolDictionary.Add(textBlockTool.Name,  textBlockTool);
 			
 		}
 
-		
-		void handleSelectedControlChange(object sender, EventArgs args){
-			SetToolByControlView(designService.SelectedControl);
-		}
-		
-		
-		
 		public void BuildToolBar(Gtk.Toolbar mainToolbar){
 			
 			foreach (var tool in ToolDictionary.Values) {				
 				 tool.BuildToolbar(mainToolbar);				
 			}			
+		}
 		
+		public void AddTool(BaseTool tool){
+			ToolDictionary.Add(tool.Name,tool);
 		}
  
 		
@@ -97,20 +71,8 @@ namespace MonoReports.Services
  
 	
 		public void SetToolByControlView(ControlViewBase control){
-			if(control is TextBlockView){
-				SelectedTool = new RectTool(designService);				
-			}else if(control is CrossSectionLineView){
-				SelectedTool = new CrossSectionLineTool(designService);
-			}else if(control is LineView){
-				SelectedTool = new LineTool(designService);
-			}else if(control is ImageView){
-				SelectedTool = new RectTool(designService);
-			}else if(control is SectionView){
-				SelectedTool = new SectionTool(designService);
-			}else if(control is CrossSectionLineView){
-				SelectedTool = new CrossSectionLineTool(designService);
-			}
-			
+		 	if(ToolDictionary.ContainsKey(control.DefaultToolName))
+				SelectedTool = ToolDictionary[control.DefaultToolName];
 		}
 		
 		public void SetTool (BaseTool tool)
@@ -119,10 +81,8 @@ namespace MonoReports.Services
 		}
 
 		public void SetToolByName (string toolName)
-		{
-			DesignService.SelectedControl = null;
-			SelectedTool = ToolDictionary[toolName];
-			
+		{			 
+			SelectedTool = ToolDictionary[toolName]; 
 			SelectedTool.CreateMode = true;
 		}
 		#endregion

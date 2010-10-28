@@ -62,6 +62,12 @@ namespace MonoReports.ControlView
 		}
 		
 		#region implemented abstract members of MonoReport.ControlView.ControlViewBase
+		
+		public override string DefaultToolName {
+			get {
+				return "TextBlockTool";
+			}
+		}
 
 		public override Size Render (Context c,RenderState renderState)
 		{

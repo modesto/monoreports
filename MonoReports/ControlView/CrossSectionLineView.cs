@@ -56,6 +56,12 @@ namespace MonoReports.ControlView
 			this.startSection = startSection;
 			this.endSection = endSection;
 		}
+		
+		public override string DefaultToolName {
+			get {
+				return "CrossSectionLineTool";
+			}
+		}
 
 		public override Size Render (Cairo.Context c, RenderState renderState)
 		{

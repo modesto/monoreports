@@ -51,6 +51,7 @@ namespace MonoReports.ControlView
 			ControlModel = controlModel;
 		}
 		
+		public abstract string DefaultToolName {get;}
 	
 		public abstract bool ContainsPoint(double x, double y);
 		
