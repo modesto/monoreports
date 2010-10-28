@@ -50,22 +50,22 @@ public partial class MainWindow : Gtk.Window
 	public MainWindow () : base(Gtk.WindowType.Toplevel)
 	{
 		Build ();		
-		workspaceService = new WorkspaceService(this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
-		designService = new DesignService(workspaceService,exampleReport());
-		toolBoxService = new ToolBoxService();
+		workspaceService = new WorkspaceService (this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
+		designService = new DesignService (workspaceService,exampleReport ());
+		toolBoxService = new ToolBoxService ();
 		designService.ToolBoxService = toolBoxService;
 		maindesignview1.DesignService = designService;
 		maindesignview1.WorkSpaceService = workspaceService;
-		workspaceService.InvalidateDesignArea();		
+		workspaceService.InvalidateDesignArea ();		
 		reportExplorer.DesignService = designService;
 		reportExplorer.Workspace = workspaceService;
-		toolBoxService.AddTool( new ZoomTool(designService));		
-		toolBoxService.AddTool( new LineTool(designService));
-		toolBoxService.AddTool( new CrossSectionLineTool(designService));
-		toolBoxService.AddTool( new TextBlockTool(designService));
-		toolBoxService.AddTool( new SectionTool(designService));
-		toolBoxService.AddTool( new RectTool(designService));
-		toolBoxService.BuildToolBar(mainToolbar);
+		toolBoxService.AddTool (new ZoomTool (designService));		
+		toolBoxService.AddTool (new LineTool (designService));
+		toolBoxService.AddTool (new CrossSectionLineTool (designService));
+		toolBoxService.AddTool (new TextBlockTool (designService));
+		toolBoxService.AddTool (new SectionTool (designService));
+		toolBoxService.AddTool (new RectTool (designService));
+		toolBoxService.BuildToolBar (mainToolbar);
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -76,7 +76,7 @@ public partial class MainWindow : Gtk.Window
 
 	Report exampleReport ()
 	{
-		 
+			
 		var currentReport = new Report ();
 		
 		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock - mono zelot", FontColor = new Controls.Color(1,0,0),
@@ -89,7 +89,7 @@ public partial class MainWindow : Gtk.Window
 			var img = new MonoReports.Model.Controls.Image { ImageIndex = 0, Location = new Controls.Point (3, 3), Size = new Controls.Size (300, 280) };
 			currentReport.DetailSection.Controls.Add (img);
 		} catch (Exception exp) {
-			Console.WriteLine(exp.ToString());
+			Console.WriteLine (exp.ToString ());
 			//FIXME image loading os independent
 		}
 		
@@ -106,7 +106,7 @@ public partial class MainWindow : Gtk.Window
 		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Surname", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (223, 12), Size = new Controls.Size (200, 30), FieldName = "Surname", BackgroundColor = new Controls.Color(1,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
 		CanGrow = true });
 		
-		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "fourth text - szybki jeż", FontColor = new Controls.Color(1,1,1), Location = new Controls.Point (23, 12), Size = new Controls.Size (400, 70), BackgroundColor = new Controls.Color(0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 }, CanGrow = false });
+		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "fourth text - szybki jeż", FontColor = new Controls.Color(1,1,1), Location = new Controls.Point (23, 12), Size = new Controls.Size (400,70), BackgroundColor = new Controls.Color(0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 }, CanGrow = false });
 		
 		
 		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 20), End = new Controls.Point (420, 10) });
@@ -124,7 +124,6 @@ public partial class MainWindow : Gtk.Window
 		bottomStatusbar.Push (1, message);
 	}
 
-
 	public void ShowInPropertyGrid (object o)
 	{
 		mainPropertygrid.CurrentObject = o;
@@ -140,24 +139,32 @@ public partial class MainWindow : Gtk.Window
 		toolBoxService.SetToolByName ("LineTool");
 	}
 
-
 	protected virtual void OnSaveActionActivated (object sender, System.EventArgs e)
 	{
-		using (System.IO.FileStream file = System.IO.File.OpenWrite ("test.mrp")) {
+		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose the Monoreports file to save", this, FileChooserAction.Save, "Cancel", ResponseType.Cancel, "Save", ResponseType.Accept);
+		var fileFilter = new FileFilter { Name = "Monoreports project" };
+		fileFilter.AddPattern ("*.mrp");
+		fc.AddFilter (fileFilter);
+		
+		if (fc.Run () == (int)ResponseType.Accept) {
+			using (System.IO.FileStream file = System.IO.File.OpenWrite (fc.Filename)) {
 			
-			var serializedProject = JsonConvert.SerializeObject (designService.Report, Formatting.None, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
-			byte[] bytes = System.Text.Encoding.UTF8.GetBytes (serializedProject);
-			file.SetLength(bytes.Length);
-			file.Write (bytes, 0, bytes.Length);
+				var serializedProject = JsonConvert.SerializeObject (designService.Report, Formatting.None, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
+				byte[] bytes = System.Text.Encoding.UTF8.GetBytes (serializedProject);
+				file.SetLength (bytes.Length);
+				file.Write (bytes, 0, bytes.Length);
 			
-			file.Close ();
+				file.Close ();
+			}
 		}
+		
+		fc.Destroy ();
 		
 	}
 
 	protected virtual void OnOpenActionActivated (object sender, System.EventArgs e)
 	{
-		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose the file to open", this, FileChooserAction.Open, "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
+		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose the Monoreports file to open", this, FileChooserAction.Open, "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
 		var fileFilter = new FileFilter { Name = "Monoreports project" };
 		fileFilter.AddPattern ("*.mrp");
 		fc.AddFilter (fileFilter);
@@ -166,7 +173,7 @@ public partial class MainWindow : Gtk.Window
 			System.IO.FileStream file = System.IO.File.OpenRead (fc.Filename);
 			byte[] bytes = new byte[file.Length];
 			file.Read (bytes, 0, (int)file.Length);
-			ShowInPropertyGrid(null);
+			ShowInPropertyGrid (null);
 			var report = JsonConvert.DeserializeObject<Report> (System.Text.Encoding.UTF8.GetString (bytes), 
 				new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects,
 				Converters = new List<JsonConverter> (
@@ -181,10 +188,9 @@ public partial class MainWindow : Gtk.Window
 		}
 		
 		fc.Destroy ();
-		workspaceService.InvalidateDesignArea();
+		workspaceService.InvalidateDesignArea ();
 	}
 
- 
 	protected virtual void OnSortAscendingActionActivated (object sender, System.EventArgs e)
 	{
 		toolBoxService.SetToolByName ("CrossSectionLineTool");

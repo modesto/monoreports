@@ -30,11 +30,11 @@ using MonoReports.Core;
 
 namespace MonoReports.ControlView
 {
-	public class CrossSectionLineView : LineView
+	public class CrossSectionLineView : LineView, ICrossSectionControlView
 	{
 		
 		SectionView startSection;
-		
+
 		public SectionView StartSection {
 			get {
 				return this.startSection;
@@ -51,12 +51,12 @@ namespace MonoReports.ControlView
 			set { endSection = value; }
 		}
 
-		public CrossSectionLineView (Line line, SectionView startSection, SectionView endSection) : base(line, startSection)
+		public CrossSectionLineView (Line line,SectionView startSection,SectionView endSection) : base(line, startSection)
 		{
 			this.startSection = startSection;
 			this.endSection = endSection;
 		}
-		
+
 		public override string DefaultToolName {
 			get {
 				return "CrossSectionLineTool";
@@ -65,32 +65,25 @@ namespace MonoReports.ControlView
 
 		public override Size Render (Cairo.Context c, RenderState renderState)
 		{
-			c.Save ();
-			//renderState.IsDesign &&
-			if ( renderState.Render) {
-				if(renderState.SectionView == StartSection){
+			c.Save ();	 
+			if (renderState.Render) {
+				if (renderState.SectionView == StartSection) {
 					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, line.Location.Y);
 					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, renderState.Section.Height);
-					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth,line.LineType);
-					
-				
-				}else if(renderState.SectionView == EndSection){
+					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth, line.LineType);
+				} else if (renderState.SectionView == EndSection) {
 					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, line.End.Y);
 					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, 0);
-					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth,line.LineType);
-					
-				}else{
-					//if(isActive){
+					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth, line.LineType);					
+				} else {					 
 					Cairo.PointD p1 = new Cairo.PointD (line.Location.X, 0);
 					Cairo.PointD p2 = new Cairo.PointD (line.Location.X, renderState.Section.Height);
-					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth,line.LineType);
-					//}
+					c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth, line.LineType);					 
 				}
 			}
 			c.Restore ();
 			return new MonoReports.Model.Controls.Size (0, 0);
 		}
-
 
 		public override bool ContainsPoint (double x, double y)
 		{

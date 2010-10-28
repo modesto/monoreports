@@ -131,6 +131,7 @@
     <Compile Include="gtk-gui\MonoReports.Gui.Widgets.PropertyFieldEditor.cs" />
     <Compile Include="Tools\TextBlockTool.cs" />
     <Compile Include="Gui\Widgets\ToolBarButton.cs" />
+    <Compile Include="Core\ICrossSectionControlView.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\" />

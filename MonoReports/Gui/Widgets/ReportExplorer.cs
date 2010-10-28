@@ -58,7 +58,23 @@ namespace MonoReports.Gui.Widgets
 			get { return designService; }
 
 				
-			set { designService = value; }
+			set { 	
+				
+				if(designService != null)
+					designService.OnReportChanged -= HandleDesignServiceOnReportChanged;
+				
+				designService = value; 
+				
+				if(designService != null)
+					designService.OnReportChanged += HandleDesignServiceOnReportChanged;
+			}
+		}
+
+		void HandleDesignServiceOnReportChanged (object sender, EventArgs e)
+		{
+			updateFieldTree();
+			updateParameterTree();
+			updateGroupTree();
 		}
 
 		public IWorkspaceService Workspace {get; set;}
@@ -102,9 +118,9 @@ namespace MonoReports.Gui.Widgets
 		{
 			
 			//Indices [0] = Data Fields
-			if (args.Path.Indices [0] == 1 && args.Path.Depth == 2) {
-				var field = DesignService.Report.Fields [args.Path.Indices [1]];										
-			}
+			//if (args.Path.Indices [0] == 1 && args.Path.Depth == 2) {
+			//	var field = DesignService.Report.Fields [args.Path.Indices [1]];										
+			//}
 		}
 
 		void HandleExporerTreeviewSelectionChanged (object sender, EventArgs e)
@@ -155,6 +171,23 @@ namespace MonoReports.Gui.Widgets
 				
 			foreach (var parameter in designService.Report.Parameters) {
 				theModel.AppendValues (parametersNode, parameter.Name);
+			}
+				
+		}
+		
+		void updateGroupTree ()
+		{
+			TreeIter item;
+			if (theModel.IterChildren (out item, groupsNode)) {
+				int depth = theModel.IterDepth (groupsNode);
+	
+				while (theModel.Remove (ref item) && 
+					theModel.IterDepth (item) > depth)
+					;
+			}
+				
+			foreach (var gr in designService.Report.Groups) {
+				theModel.AppendValues (groupsNode, gr.GroupingFieldName);
 			}
 				
 		}

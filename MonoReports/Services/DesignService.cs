@@ -187,10 +187,16 @@ namespace MonoReports.Services
 		public void DeleteSelectedControl(){
 			if(selectedControl != null){
 				SelectedControl.ParentSection.RemoveControlView(selectedControl);
-				WorkspaceService.InvalidateDesignArea ();
+				if(SelectedControl is ICrossSectionControlView){
+				   	var crossSectionControl =  SelectedControl as ICrossSectionControlView;
+				   	crossSectionControl.StartSection.DesignCrossSectionControlsToAdd.Remove(SelectedControl);
+					crossSectionControl.StartSection.RemoveControlView(SelectedControl);
+					crossSectionControl.EndSection.DesignCrossSectionControlsToRemove.Remove(SelectedControl);
+					crossSectionControl.EndSection.RemoveControlView(SelectedControl);
+				}
 				SelectedControl.ControlModel = null;
 				SelectedControl = null;
-				
+				WorkspaceService.InvalidateDesignArea ();			
 			}
 		}
 
