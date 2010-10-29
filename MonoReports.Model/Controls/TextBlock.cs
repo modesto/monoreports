@@ -40,6 +40,7 @@ namespace MonoReports.Model.Controls
 			FontName = "Helvetica";
 			FontColor = new Color(0,0,0);
 			FieldName = String.Empty;
+			Span = 2;
 		}	
 		
 		
