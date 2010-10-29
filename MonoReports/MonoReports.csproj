@@ -55,7 +55,6 @@
     <Reference Include="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Mono.CSharp" />
     <Reference Include="Mono.TextEditor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\Mono.TextEditor.dll</HintPath>
@@ -85,6 +84,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\ToolCrossSectionLine.png">
       <LogicalName>ToolCrossSectionLine.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\tarski.png">
+      <LogicalName>tarski.png</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -132,13 +134,14 @@
     <Compile Include="Tools\TextBlockTool.cs" />
     <Compile Include="Gui\Widgets\ToolBarButton.cs" />
     <Compile Include="Core\ICrossSectionControlView.cs" />
+    <Compile Include="Gui\Widgets\PropertyEditor.cs" />
+    <Compile Include="gtk-gui\MonoReports.Gui.Widgets.PropertyEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Core\" />
     <Folder Include="ControlView\" />
     <Folder Include="ControlView\" />
     <Folder Include="Tools\" />
-    <Folder Include="resources\" />
     <Folder Include="Extensions\" />
     <Folder Include="Extensions\CairoExtensions\" />
     <Folder Include="Extensions\" />
@@ -157,9 +160,6 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
-  <ItemGroup>
-    <None Include="resources\Alfred_Tarski.jpeg" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoReports.Model\MonoReports.Model.csproj">
       <Project>{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}</Project>

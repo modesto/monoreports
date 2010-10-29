@@ -29,26 +29,26 @@ namespace MonoReports.Model.Controls
 	public struct Size 
 	{
 		public Size(double width, double height){
-			this.width = width;
-			this.Height = height;
+			w = width;
+			h = height;
 		}
 
-		double width;
+		double w;
 		public double Width {
-			get { return width; }
-			set { width = value; }
+			get { return w; }
+			set { w = value; }
 		}
 		
-		double height;
+		double h;
 		public double Height
 		{
-			get { return height; }
-			set { height = value; }
+			get { return h; }
+			set { h = value; }
 		}
 		
-		 public override string ToString ()
+		public override string ToString ()
 		{
-			return string.Format ("[Size: Width={0}, Height={1}]", Width, Height); 
+			return string.Format ("[Size: Width={0}, Height={1}]", w, h); 
 		}
 	}
 }

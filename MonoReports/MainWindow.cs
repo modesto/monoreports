@@ -39,6 +39,8 @@ using MonoReports.Tools;
 using MonoReports.Gui;
 using MonoReports.Services;
 using Newtonsoft.Json;
+using System.IO;
+using System.Reflection;
 
 public partial class MainWindow : Gtk.Window
 {
@@ -82,16 +84,15 @@ public partial class MainWindow : Gtk.Window
 		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock - mono zelot", FontColor = new Controls.Color(1,0,0),
 			CanGrow = true, Location = new Controls.Point (3, 3), Size = new Controls.Size (200, 80) });
 		
-		try {
-			//var bytes = System.IO.File.ReadAllBytes ("../../resources/Alfred_Tarski.jpeg");
-			var bytes = System.IO.File.ReadAllBytes ("Alfred_Tarski.jpeg");
-			currentReport.ResourceRepository.Add (bytes);
-			var img = new MonoReports.Model.Controls.Image { ImageIndex = 0, Location = new Controls.Point (3, 3), Size = new Controls.Size (300, 280) };
-			currentReport.DetailSection.Controls.Add (img);
-		} catch (Exception exp) {
-			Console.WriteLine (exp.ToString ());
-			//FIXME image loading os independent
-		}
+		
+		var _assembly = Assembly.GetExecutingAssembly ();				
+		var _imageStream = _assembly.GetManifestResourceStream ("tarski.png");
+		byte[] bytes = new byte[_imageStream.Length];
+		_imageStream.Read (bytes, 0, (int)_imageStream.Length);		
+		currentReport.ResourceRepository.Add (bytes);
+		var img = new MonoReports.Model.Controls.Image { ImageIndex = 0, Location = new Controls.Point (3, 3), Size = new Controls.Size (300, 280) };
+		currentReport.DetailSection.Controls.Add (img);
+			
 		
 		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 24, FontName = "Helvetica", 
 			Text = "Second example section - żwawy żółw", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (123, 87), CanGrow = false, Size = new Controls.Size (160, 60) });
@@ -195,7 +196,6 @@ public partial class MainWindow : Gtk.Window
 	{
 		toolBoxService.SetToolByName ("CrossSectionLineTool");
 	}
-
 	
 }
 

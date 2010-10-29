@@ -1,10 +1,10 @@
 // 
-// MyClass.cs
+// PropertyEditor.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,28 +24,50 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using NUnit.Framework;
-using MonoReports.Model.Engine;
-using MonoReports.Model;
-using Moq;
-namespace MonoReports.Tests
+using System.Collections.Generic;
+using System.Reflection;
+
+namespace MonoReports.Gui.Widgets
 {
-	
-	[TestFixture]
-	public class ReportEngineTest
+	[System.ComponentModel.ToolboxItem(true)]
+	public partial class PropertyEditor : Gtk.Bin
 	{
-		public ReportEngineTest ()
+		public PropertyEditor ()
 		{
+			this.Build ();
 		}
 		
-		[Test]
-		public void EmptyDataSourceDoesNotCrashReportEngine(){
-			Report report = new Report();
-			Mock mock = new Mock<IReportRenderer>();		
-			ReportEngine engine = new ReportEngine(report,mock.Object as IReportRenderer);
-			engine.Process();
-			 
+		List<IPropertyEditorRow> PropertyRows {get; set;}
+ 	 
+		 
+		object currentObject;
+		public object CurrentObject {
+			get { return currentObject; }
+			set { 
+				
+				if(currentObject != value){
+					currentObject = value;
+				}							
+			}
+		}
+		
+		void addRow(IPropertyEditorRow row){
+			PropertyRows.Add(row);
 		}
 	}
+	
+	
+	 
+	
+	public interface IPropertyEditorRow 
+	{		
+		string DisplayName {get;}
+		object Value {get;set;}		
+		 	
+	}
+			
+	public delegate void EditorValueChanged(object sender,EventArgs args);
+		
+	
 }
 

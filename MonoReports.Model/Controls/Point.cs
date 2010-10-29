@@ -30,20 +30,20 @@ namespace MonoReports.Model.Controls
 	{
 		 
 		public Point(double x, double y){
-			this.x = x;
-			this.y = y;
+			_x = x;
+			_y = y;
 		}
 	 
 		
 		
-		double x;
-		public double X {get { return x; }set { x = value; }}
-		double y;
-		public double Y {get { return y; }set { y = value; }}
+		double _x;
+		public double X {get { return _x; }set { _x = value; }}
+		double _y;
+		public double Y {get { return _y; }set { _y = value; }}
 		
 		public override string ToString ()
 		{
-			return string.Format ("[Point: X={0}, Y={1}]", X, Y);
+			return string.Format ("[Point: X={0}, Y={1}]", _x, _y);
 		}
 	}
 }
