@@ -55,18 +55,6 @@
     <Reference Include="Mono.Cairo, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Mono.TextEditor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\Mono.TextEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoDevelop.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\MonoDevelop.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\opt\monodevelop\lib\monodevelop\bin\MonoDevelop.Ide.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
@@ -78,6 +66,18 @@
     <Reference Include="Mono.Addins, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Mono.Addins.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\MonoDevelop.Ide.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.TextEditor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Mono.TextEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoDevelop.Core, Version=2.4.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\MonoDevelop.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
