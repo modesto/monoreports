@@ -31,7 +31,7 @@ namespace MonoReports.Model.Controls
 {
 
 
-	public class TextBlock : Control
+	public class TextBlock : Control,IResizable
 	{	
 
 		public TextBlock ():base()
@@ -48,6 +48,11 @@ namespace MonoReports.Model.Controls
 		
 		public string FontName {get;set;}
 		
+		public bool CanGrow {get;set;}		
+		
+		public bool CanShrink {get;set;}
+
+        public bool KeepTogether { get; set; }
 		
 		public double Span {get;set;}
 		
@@ -76,7 +81,9 @@ namespace MonoReports.Model.Controls
 		public override Control CreateControl ()
 		{
 			TextBlock textBlock = new TextBlock();
-			CopyBasicProperties(textBlock);			 
+			CopyBasicProperties(textBlock);		
+			textBlock.CanGrow = CanGrow;
+			textBlock.CanShrink = CanShrink;
 			textBlock.Border = (Border) Border.Clone();
 			textBlock.FontName = FontName;
 			textBlock.LineSpan = LineSpan;

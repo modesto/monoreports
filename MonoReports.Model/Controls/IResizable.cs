@@ -1,10 +1,10 @@
 // 
-// CrossSectionLine.cs
+// IResizable.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,39 +25,15 @@
 // THE SOFTWARE.
 using System;
 
-
 namespace MonoReports.Model.Controls
 {
-	public class CrossSectionLine : Line, ICrossSectionControl
-	{
-		public CrossSectionLine ():base()
-		{
-			BackgroundColor =  new Color(0,0,0);	
-			LineWidth = 2;
-		}
-		
-		public override Control CreateControl ()
-		{
-			CrossSectionLine line = new CrossSectionLine();
-			CopyBasicProperties(line);		
-			line.LineType = LineType;
-			line.End = new Point(End.X,End.Y);
-			line.LineWidth = LineWidth;
-			return line;
-		}
-	
-		#region ICrossSectionControl implementation
-		public Section StartSection {
-			get;
-			set;
-		}
+	public interface IResizable
+	{		
+		bool CanGrow {get;set;}
 
-		public Section EndSection {
-			get;
-			set;
-		}
-		#endregion
-		 
-}
+		bool CanShrink {get;set;}
+
+        bool KeepTogether { get; set; }
+	}
 }
 

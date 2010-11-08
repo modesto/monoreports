@@ -41,6 +41,8 @@ using MonoReports.Services;
 using Newtonsoft.Json;
 using System.IO;
 using System.Reflection;
+using MonoReports.Renderers;
+using MonoReports.Model.Controls;
 
 public partial class MainWindow : Gtk.Window
 {
@@ -58,12 +60,19 @@ public partial class MainWindow : Gtk.Window
 		designService.ToolBoxService = toolBoxService;
 		maindesignview1.DesignService = designService;
 		maindesignview1.WorkSpaceService = workspaceService;
+		var reportRenderer = new ReportRenderer(designService);
+        reportRenderer.RegisterRenderer(typeof(TextBlock), new TextBlockRenderer());
+        reportRenderer.RegisterRenderer(typeof(Line), new LineRenderer());
+			
+		maindesignview1.ReportRenderer = reportRenderer;
+		
+		
+		
 		workspaceService.InvalidateDesignArea ();		
 		reportExplorer.DesignService = designService;
 		reportExplorer.Workspace = workspaceService;
 		toolBoxService.AddTool (new ZoomTool (designService));		
-		toolBoxService.AddTool (new LineTool (designService));
-		toolBoxService.AddTool (new CrossSectionLineTool (designService));
+		toolBoxService.AddTool (new LineTool (designService));		
 		toolBoxService.AddTool (new TextBlockTool (designService));
 		toolBoxService.AddTool (new SectionTool (designService));
 		toolBoxService.AddTool (new RectTool (designService));

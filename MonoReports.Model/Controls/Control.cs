@@ -26,13 +26,14 @@
 using System;
 using MonoReports.Model;
 using MonoReports.Model.Data;
+using System.Collections.Generic;
 
 
 
 namespace MonoReports.Model.Controls
 {
 
-	public abstract class Control  
+	public abstract class Control
 	{
 
 		public Control ()
@@ -61,10 +62,10 @@ namespace MonoReports.Model.Controls
 
 			get { return Size.Width; }
 		}
-			
 
-		public double Top {
 
+        public virtual double Top
+        {
 			get { return Location.Y; }
 		}
 
@@ -72,11 +73,13 @@ namespace MonoReports.Model.Controls
 
 			get { return Location.X; }
 		}
-		
-		public bool CanGrow {get;set;}
-		
-		public bool CanShrink {get;set;}
 
+        public virtual double Bottom
+        {
+            get { return Location.Y + Size.Height; }
+        }
+		
+		
 		public bool IsVisible { get; set; }
 		
 		 
@@ -95,18 +98,21 @@ namespace MonoReports.Model.Controls
 		
 		internal void CopyBasicProperties(Control c){
 			c.Location = new Point(Location.X,Location.Y);
-			c.Size = new Size(Size.Width,Size.Height);
-			c.CanGrow = CanGrow;
-			c.CanShrink = CanShrink;
+			c.Size = new Size(Size.Width,Size.Height);			
 			c.IsVisible = IsVisible;
 			c.BackgroundColor = new Color(BackgroundColor.R,BackgroundColor.G,BackgroundColor.B,BackgroundColor.A);
 			c.TemplateControl = this;
 			
 		}
+
+        public virtual IEnumerable<Control> SplitControlAt(double y)
+        { 
+            return new Control[0];
+        }
 		
 		public virtual void AssignValue(IDataSource dataSource){
 			
 		}
-		
-	}
+        
+    }
 }

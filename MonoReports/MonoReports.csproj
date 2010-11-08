@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -90,9 +90,6 @@
     <EmbeddedResource Include="Resources\ToolLine.png">
       <LogicalName>ToolLine.png</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\ToolCrossSectionLine.png">
-      <LogicalName>ToolCrossSectionLine.png</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources\tarski.png">
       <LogicalName>tarski.png</LogicalName>
     </EmbeddedResource>
@@ -118,8 +115,6 @@
     <Compile Include="Extensions\CairoExtensions\CairoExtensions.cs" />
     <Compile Include="Tools\BaseTool.cs" />
     <Compile Include="Tools\ZoomTool.cs" />
-    <Compile Include="ControlView\CrossSectionLineView.cs" />
-    <Compile Include="Tools\CrossSectionLineTool.cs" />
     <Compile Include="Core\RenderState.cs" />
     <Compile Include="Core\UndoRedoService.cs" />
     <Compile Include="Gui\Widgets\ToolBarComboBox.cs" />
@@ -141,23 +136,11 @@
     <Compile Include="gtk-gui\MonoReports.Gui.Widgets.PropertyFieldEditor.cs" />
     <Compile Include="Tools\TextBlockTool.cs" />
     <Compile Include="Gui\Widgets\ToolBarButton.cs" />
-    <Compile Include="Core\ICrossSectionControlView.cs" />
-    <Compile Include="Gui\Widgets\PropertyEditor.cs" />
-    <Compile Include="gtk-gui\MonoReports.Gui.Widgets.PropertyEditor.cs" />
+    <Compile Include="Renderers\TextBlockRenderer.cs" />
+    <Compile Include="Core\IControlRenderer.cs" />
+    <Compile Include="Renderers\LineRenderer.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\" />
-    <Folder Include="ControlView\" />
-    <Folder Include="ControlView\" />
-    <Folder Include="Tools\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="Extensions\CairoExtensions\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="Gui\" />
-    <Folder Include="Gui\Widgets\" />
-    <Folder Include="Services\" />
-    <Folder Include="Resources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <MonoDevelop>

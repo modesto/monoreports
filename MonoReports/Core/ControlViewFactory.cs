@@ -69,24 +69,6 @@ namespace MonoReports.Core
 						}
 				);
 			
-			controlViewDictionary
-				.Add(
-				     typeof(CrossSectionLine),
-				     	(ctrl, section) => {
-								if(section.ControlModel is PageHeaderSection){
-									SectionView fs = designService
-									.SectionViews
-									.FirstOrDefault(s => s.ControlModel  is PageFooterSection);
-			                    	return new CrossSectionLineView(ctrl as CrossSectionLine,section,fs);
-								}else if(section.ControlModel is GroupHeaderSection){
-									SectionView fs = designService
-									.SectionViews
-									.FirstOrDefault(s => s.ControlModel  is GroupFooterSection);
-			                    	return new CrossSectionLineView(ctrl as CrossSectionLine,section,fs);
-								}
-								throw new Exception("Unimplemented");
-						}
-				);
 		}
 		
 		private Dictionary<System.Type, Func<MonoReports.Model.Controls.Control,SectionView,ControlViewBase> > controlViewDictionary;

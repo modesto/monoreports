@@ -50,6 +50,16 @@ namespace MonoReports.Gui.Widgets
 		}
 
 		ReportRenderer reportRenderer;
+
+		public ReportRenderer ReportRenderer {
+			get {
+				return this.reportRenderer;
+			}
+			set {
+				reportRenderer = value;
+			}
+		}
+
 		int pageNumber = 0;
 		IWorkspaceService workSpaceService;
 
@@ -174,10 +184,10 @@ namespace MonoReports.Gui.Widgets
 			if (designService != null) {
 				if (args.PageNum == 1) {
 					designService.IsDesign = false;
-					reportRenderer = new ReportRenderer (designService);
-				
+					
 				
 					reportEngine = new ReportEngine (designService.Report, reportRenderer);
+					 
 					ImageSurface imagesSurface = new ImageSurface (Format.Argb32, (int)designService.Report.Width, (int)designService.Report.Height);
 					Cairo.Context cr = new Cairo.Context (imagesSurface);
 					designService.CurrentContext = cr;

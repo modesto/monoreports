@@ -28,7 +28,7 @@ using MonoReports.Model;
 
 namespace MonoReports.Model.Controls
 {
-	public class Image : MonoReports.Model.Controls.Control
+	public class Image : Control
 	{
 		public Image () : base()
 		{

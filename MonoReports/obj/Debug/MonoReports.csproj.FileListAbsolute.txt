@@ -1,0 +1,16 @@
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\MonoReports.exe
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\MonoReports.pdb
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\Mono.Addins.dll
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\Mono.CSharp.dll
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\Mono.TextEditor.dll
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\MonoDevelop.Core.dll
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\MonoDevelop.Ide.dll
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\MonoReports.Model.dll
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\Newtonsoft.Json.dll
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\MonoDevelop.Projects.Formats.MSBuild.exe
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\Mono.Cecil.dll
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\Mono.Cecil.Mdb.dll
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\bin\Debug\MonoReports.Model.pdb
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\obj\Debug\MonoReports.exe
+C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports\obj\Debug\MonoReports.pdb

@@ -34,89 +34,56 @@ namespace MonoReports.Core
 {
 	public class ReportRenderer : IReportRenderer
 	{
-		Dictionary<Control, ControlViewBase> controlRenderersDictionary;
+		Dictionary<Type, object> renderersDictionary;
 		DesignService designService;		
-		RenderState renderState;
+		
+		public void RegisterRenderer(Type t,IControlRenderer renderer){
+			renderersDictionary.Add(t,renderer);
+		}
 		
 		public ReportRenderer (DesignService designService)
 		{
 			this.designService = designService;
-			
-			controlRenderersDictionary = new Dictionary<Control, ControlViewBase> ();
-			
-			foreach (var sectionView in designService.SectionViews) {
-				controlRenderersDictionary.Add (sectionView.ControlModel, sectionView);
-				foreach (var controlView in sectionView.Controls) {
-					if(!controlRenderersDictionary.ContainsKey(controlView.ControlModel))
-						controlRenderersDictionary.Add (controlView.ControlModel, controlView);
-				}
+			renderersDictionary = new Dictionary<Type, object>();
+		} 
+
+		public void RenderPage (Page p)
+		{			 			
+			for (int i = 0; i < p.Controls.Count; i++) {
+				var control = p.Controls[i];
+ 					if(control.IsVisible)
+						RenderControl (control);				 				
 			}
+			 
 		}
-
-
-
-		public void RenderPage ( Page p)
-		{
-			renderState = new RenderState(){ IsDesign = false, Render = true };
-			for (int i = 0; i < p.Sections.Count; i++) {
-				var section = p.Sections[i];
-				var sectionView = controlRenderersDictionary[section.TemplateControl] as SectionView;			 				
-			 	renderState.SectionView = sectionView;	
-				renderState.Section  = section;
-				designService.CurrentContext.Save();	
-				RenderControl (section);
-				designService.CurrentContext.Translate(0,section.Location.Y);
  
-				for (int j = 0; j < section.Controls.Count; j++) {
-					var ctrl = section.Controls[j];
-					if(ctrl.IsVisible)
-						RenderControl (ctrl);
-				}
-				designService.CurrentContext.Restore();
-			}
-		}
-
-		#region IReportRenderer implementation
 		public Size MeasureControl (Control control)
 		{
-			ControlViewBase controlView = null;
-			try {
-				controlView = controlRenderersDictionary[control.TemplateControl];			 				
-			} catch (Exception exp) {
-				throw new Exception ("No template control found", exp);
+            Type controlType = control.GetType();
+			if(renderersDictionary.ContainsKey(controlType)){
+				var renderer = renderersDictionary[controlType] as IControlRenderer;
+                
+				return renderer.Measure(designService.CurrentContext,control);								
 			}
-			controlView.ControlModel = control;
-			RenderState renderState = new RenderState(){ IsDesign = false, Render = false,
-				SectionView = controlView.ParentSection };
-			var result = controlView.Render (designService.CurrentContext, renderState);
-			controlView.ControlModel = control.TemplateControl;
-			return result;
+			return default(Size);
+ 
 		}
 
-		public void RenderControl (Control control)
+        public void RenderControl(Control control)
 		{
-			ControlViewBase controlView = null;
-			
-			try {
-				controlView = controlRenderersDictionary[control.TemplateControl];
-			} catch (Exception exp) {
-				throw new Exception ("No template control found", exp);
+
+            Type controlType = control.GetType();
+			if(renderersDictionary.ContainsKey(controlType)){
+				var renderer = renderersDictionary[controlType] as IControlRenderer;
+				renderer.Render(designService.CurrentContext,control);								
 			}
-			controlView.ControlModel = control;
-			
-			controlView.Render (designService.CurrentContext, renderState);
-			controlView.ControlModel = control.TemplateControl;
+ 
 		}
 
 		public void NextPage ()
 		{
 			designService.NextPage ();
 		}
-
-		
-  
-		#endregion
- 
 		
 	}
 }

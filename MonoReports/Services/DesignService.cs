@@ -109,6 +109,7 @@ namespace MonoReports.Services
 		
 		void initReport(){
 			sectionViews = new List<SectionView> ();
+			addSectionView (report.ReportHeaderSection);
 			addSectionView (report.PageHeaderSection);
 			foreach (var groupHeader in report.GroupHeaderSections) {
 				addSectionView (groupHeader);
@@ -117,7 +118,9 @@ namespace MonoReports.Services
 			foreach (var groupFooter in report.GroupFooterSections) {
 				addSectionView (groupFooter);
 			}
+			
 			addSectionView (report.PageFooterSection);
+			addSectionView (report.ReportFooterSection);
 		}
 
 		public void RedrawReport (Context c)
@@ -186,14 +189,7 @@ namespace MonoReports.Services
 		
 		public void DeleteSelectedControl(){
 			if(selectedControl != null){
-				SelectedControl.ParentSection.RemoveControlView(selectedControl);
-				if(SelectedControl is ICrossSectionControlView){
-				   	var crossSectionControl =  SelectedControl as ICrossSectionControlView;
-				   	crossSectionControl.StartSection.DesignCrossSectionControlsToAdd.Remove(SelectedControl);
-					crossSectionControl.StartSection.RemoveControlView(SelectedControl);
-					crossSectionControl.EndSection.DesignCrossSectionControlsToRemove.Remove(SelectedControl);
-					crossSectionControl.EndSection.RemoveControlView(SelectedControl);
-				}
+				SelectedControl.ParentSection.RemoveControlView(selectedControl);				
 				SelectedControl.ControlModel = null;
 				SelectedControl = null;
 				WorkspaceService.InvalidateDesignArea ();			

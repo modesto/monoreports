@@ -31,7 +31,7 @@ namespace MonoReports.Model.Controls
 {
 
 
-	public abstract class Section : Control
+	public abstract class Section : Control, IResizable
 	{
 
 		public Section ():base()
@@ -42,9 +42,14 @@ namespace MonoReports.Model.Controls
 			CanGrow = true;
 			BackgroundColor =  new Color(1,1,1);
 			
-		}		
+		}	
 				
+		public bool CanGrow {get;set;}		
 		
+		public bool CanShrink {get;set;}
+
+        public bool KeepTogether { get; set; }		
+						
 		public List<Control> Controls {get;set;}
 		
 		public string Name {get;set;}
@@ -59,7 +64,8 @@ namespace MonoReports.Model.Controls
 		
 			CopyBasicProperties(s);
 			s.Name = Name;			 		 			
- 
+ 			s.CanGrow = CanGrow;
+			s.CanShrink = CanShrink;
 			foreach (Control ctrl in Controls) {
 				s.Controls.Add( ctrl.CreateControl() as Control);
 			}

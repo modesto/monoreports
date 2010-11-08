@@ -1,10 +1,10 @@
 // 
-// PropertyEditor.cs
+// HeaderSection.cs
 //  
 // Author:
-//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
+//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki
+// Copyright (c) 2010 Tomasz Kubacki 2010
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,50 +24,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Generic;
-using System.Reflection;
-
-namespace MonoReports.Gui.Widgets
+namespace MonoReports.Model.Controls
 {
-	[System.ComponentModel.ToolboxItem(true)]
-	public partial class PropertyEditor : Gtk.Bin
+	public class ReportHeaderSection : Section
 	{
-		public PropertyEditor ()
+		public ReportHeaderSection ():base()
 		{
-			this.Build ();
+			this.Name = "Report Header";
 		}
-		
-		List<IPropertyEditorRow> PropertyRows {get; set;}
- 	 
 		 
-		object currentObject;
-		public object CurrentObject {
-			get { return currentObject; }
-			set { 
-				
-				if(currentObject != value){
-					currentObject = value;
-				}							
-			}
-		}
 		
-		void addRow(IPropertyEditorRow row){
-			PropertyRows.Add(row);
+		public override Control CreateControl ()
+		{
+			ReportHeaderSection rhs = new ReportHeaderSection();
+			CopyTo(rhs);			 
+			return rhs;
 		}
 	}
-	
-	
-	 
-	
-	public interface IPropertyEditorRow 
-	{		
-		string DisplayName {get;}
-		object Value {get;set;}		
-		 	
-	}
-			
-	public delegate void EditorValueChanged(object sender,EventArgs args);
-		
-	
 }
 

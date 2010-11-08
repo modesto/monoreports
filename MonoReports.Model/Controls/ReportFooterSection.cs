@@ -1,10 +1,10 @@
 // 
-// ICrossSectionView.cs
+// FooterSection.cs
 //  
 // Author:
-//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
+//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki
+// Copyright (c) 2010 Tomasz Kubacki 2010
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoReports.ControlView;
+ 
 
-namespace MonoReports.Core
+namespace MonoReports.Model.Controls
 {
-	public interface ICrossSectionControlView
+	public class ReportFooterSection : Section
 	{
-		SectionView StartSection {get;set;}
-		SectionView EndSection {get;set;}
+		public ReportFooterSection ():base()
+		{
+			this.Name = "Report Footter";
+		}	 
+		
+		public override Control CreateControl ()
+		{
+			ReportFooterSection rfs = new ReportFooterSection();
+			CopyTo(rfs);			 
+			return rfs;
+		}
 	}
 }
 

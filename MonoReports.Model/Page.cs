@@ -32,7 +32,7 @@ namespace MonoReports.Model
 	{
 		public Page ()
 		{
-			Sections = new List<Section>();
+			Controls = new List<Control>();
 		}
 		
 		
@@ -41,7 +41,7 @@ namespace MonoReports.Model
 			set;
 		}
 		
-		public List<Section> Sections {
+		public List<Control> Controls {
 			get;
 			set;
 		}

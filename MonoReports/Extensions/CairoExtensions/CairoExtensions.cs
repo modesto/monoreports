@@ -598,7 +598,7 @@ namespace MonoReports.Extensions.CairoExtensions
 		
 		
 
-		public static Rectangle DrawLine (this Context g, PointD p1, PointD p2, Cairo.Color color, double lineWidth, LineType lineType)
+		public static Rectangle DrawLine (this Context g, PointD p1, PointD p2, Cairo.Color color, double lineWidth, LineType lineType, bool render)
 		{
 			g.Save ();
 			var dashesStyle = getDashByLineStyle(lineType);
@@ -613,7 +613,8 @@ namespace MonoReports.Extensions.CairoExtensions
 			g.LineCap = LineCap.Butt;
 
 			Rectangle dirty = g.StrokeExtents ();
-			g.Stroke ();
+			if(render)
+				g.Stroke ();
 			
 			g.Restore ();
 

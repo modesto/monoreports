@@ -28,10 +28,10 @@ using MonoReports.Model.Controls;
 
 namespace MonoReports.Model
 {
-	public interface IReportRenderer
+	public interface IReportRenderer 
 	{
-		Size MeasureControl (Control control);
-		void RenderControl (Control control);
+        Size MeasureControl(Control control);
+        void RenderControl(Control control);
 		void NextPage ();
 	}
 }

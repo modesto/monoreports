@@ -46,6 +46,22 @@ namespace MonoReports.Model.Controls
 			Location = new Point(this.Location.X,this.Location.Y + y);
 			End = new Point(this.End.X,this.End.Y + y);
 		}
+
+        public override double Top
+        {
+            get
+            {
+                return Math.Min(Location.Y, End.Y);
+            }
+        }
+
+        public override double Bottom
+        {
+            get
+            {
+                return Math.Min(Location.Y,End.Y) + Size.Height;
+            }
+        }
 		
 		#region implemented abstract members of MonoReports.Model.Controls.Control
 		public override Control CreateControl ()
@@ -60,6 +76,8 @@ namespace MonoReports.Model.Controls
 		}
 		
 		#endregion
-	}
+
+         
+    }
 }
 

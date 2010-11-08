@@ -74,7 +74,7 @@ namespace MonoReports.ControlView
 			if(renderState.Render){
 				Cairo.PointD p1 = new Cairo.PointD(line.Location.X ,line.Location.Y);
 				Cairo.PointD p2 = new Cairo.PointD(line.End.X, line.End.Y);
-		 		c.DrawLine(p1,p2,line.BackgroundColor.ToCairoColor(), line.LineWidth,line.LineType);
+		 		c.DrawLine(p1,p2,line.BackgroundColor.ToCairoColor(), line.LineWidth,line.LineType,renderState.Render);
 			}
 			c.Restore();
 			return new MonoReports.Model.Controls.Size(0,0);
