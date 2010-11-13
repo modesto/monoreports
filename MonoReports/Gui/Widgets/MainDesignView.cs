@@ -32,6 +32,7 @@ using MonoReports.Model.Engine;
 using MonoReports.Model;
 using Cairo;
 using Gdk;
+using MonoReports.Extensions.CairoExtensions;
 
 namespace MonoReports.Gui.Widgets
 {
@@ -82,6 +83,8 @@ namespace MonoReports.Gui.Widgets
 		public DrawingArea PreviewDrawingArea { 
 			get { return previewDrawingArea;}
 		}
+		
+		static Cairo.Color backgroundPageColor = new Cairo.Color(1,1,1);
 
 		public MainDesignView ()
 		{
@@ -130,7 +133,7 @@ namespace MonoReports.Gui.Widgets
 				Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
 				cr.Antialias = Cairo.Antialias.Gray;
 				designService.RedrawReport (cr);
-				area.SetSizeRequest (designService.Width, designService.Height);
+				area.SetSizeRequest ((int)designService.Width, (int)designService.Height);
 				(cr as IDisposable).Dispose ();
 			}
 		}
@@ -144,8 +147,10 @@ namespace MonoReports.Gui.Widgets
 			//Cairo.Context cr = new Cairo.Context (pdfSurface);
 				cr.Antialias = Cairo.Antialias.Gray;
 				designService.CurrentContext = cr;
+				Cairo.Rectangle r = new Cairo.Rectangle(0,0,designService.Report.Width,designService.Report.Height);
+				cr.FillRectangle(r,backgroundPageColor);
 				reportRenderer.RenderPage (designService.Report.Pages [pageNumber]);
-				area.SetSizeRequest (designService.Width, designService.Height);
+				area.SetSizeRequest ((int)designService.Report.Width,(int) designService.Report.Height + 10);
 			
 				(cr as IDisposable).Dispose ();
 			}
@@ -183,16 +188,21 @@ namespace MonoReports.Gui.Widgets
 		{
 			if (designService != null) {
 				if (args.PageNum == 1) {
-					designService.IsDesign = false;
+					designService.IsDesign = false;				
 					
-				
+					 var logicians = new[] { new { Name = "Alfred", Surname = "Tarski", Age = 33 }, 
+                		new { Name = "Gotlob", Surname = "Frege", Age = 42 }, 
+                		new { Name = "Kurt", Surname = "Gödel", Age = 22 }, 
+                		new { Name = "Unknown ", Surname = "Logican", Age = 33 }, 
+                		new { Name = "Józef", Surname = "Bocheński", Age = 22 }, 
+                		new { Name = "Stanisław", Surname = "Leśniewski", Age = 79 }, 
+                		new { Name = "Saul", Surname = "Kripke", Age = 40 }, 
+                		new { Name = "George", Surname = "Boolos", Age = 79 } };
+					designService.Report.DataSource = logicians;
 					reportEngine = new ReportEngine (designService.Report, reportRenderer);
-					 
 					ImageSurface imagesSurface = new ImageSurface (Format.Argb32, (int)designService.Report.Width, (int)designService.Report.Height);
 					Cairo.Context cr = new Cairo.Context (imagesSurface);
 					designService.CurrentContext = cr;
-				//reportEngine.DataSource = logicians;
-				
 					reportEngine.Process ();
 					(cr as IDisposable).Dispose ();
 					pageSpinButton.SpinButton.SetRange (1, designService.Report.Pages.Count);

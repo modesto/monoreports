@@ -1,5 +1,5 @@
 // 
-// Image.cs
+// SelectAndResizeTool.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,46 +24,58 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using MonoReports.ControlView;
+using Cairo;
 using MonoReports.Model;
+using MonoReports.Core;
+using MonoReports.Extensions.CairoExtensions;
+using MonoReports.Model.Controls;
+using MonoReports.Services;
 
-namespace MonoReports.Model.Controls
+namespace MonoReports.Tools
 {
-	public class Image : Control, IResizable
+	public class SubreportTool : BaseTool
 	{
-		public Image () : base()
+		 
+			
+		public SubreportTool (DesignService designService) : base(designService)
 		{
-			Border = new Border { WidthAll = 1, Color = new Color(0,0,0) };			
+			
 		}
 
-		public int ImageIndex { get; set; }
-		public Border Border { get; set; }
+		public override string Name {get {return "SubreportTool"; }}
+		
+		public override string ToolbarImageName {
+			get {
+				return "ToolSubreport.png";
+			}
+		}
+		
+		public override bool IsToolbarTool {
+			get {
+				return true;
+			}
+		}
+		
+		
+		public override void CreateNewControl (SectionView sectionView)
+		{				
+			var startPoint = sectionView.PointInSectionByAbsolutePoint (designService.StartPressPoint.X, designService.StartPressPoint.Y);
+			
+			var subreport = new SubReport { 
+				Location = new MonoReports.Model.Controls.Point (startPoint.X, startPoint.Y),
+				Size = new Size(50,20),
+				BackgroundColor = new MonoReports.Model.Controls.Color(0.5,0.5,0.5)
+			};				
+			SubreportView subreportView = sectionView.CreateControlView (subreport) as SubreportView;			
+			sectionView.Section.Controls.Add (subreport);				
+			subreportView.ParentSection = sectionView;
+			designService.SelectedControl = subreportView;				
+				
+		}
+		
+	 
 
-		
-		public override Control CreateControl ()
-		{
-			Image img = new Image ();
-			CopyBasicProperties (img);			
-			img.ImageIndex = ImageIndex;
-			img.Border = (Border)Border.Clone ();
-			return img;
-		}
-		
-		
-		public bool CanGrow {
-			get;
-			set;
-		}
-
-		public bool CanShrink {
-			get;
-			set;
-		}
-
-		public bool KeepTogether {
-			get;
-			set;
-		}
-		
 	}
 }
 

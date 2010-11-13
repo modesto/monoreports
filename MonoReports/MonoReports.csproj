@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -93,6 +93,9 @@
     <EmbeddedResource Include="Resources\tarski.png">
       <LogicalName>tarski.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolSubreport.png">
+      <LogicalName>ToolSubreport.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -115,7 +118,6 @@
     <Compile Include="Extensions\CairoExtensions\CairoExtensions.cs" />
     <Compile Include="Tools\BaseTool.cs" />
     <Compile Include="Tools\ZoomTool.cs" />
-    <Compile Include="Core\RenderState.cs" />
     <Compile Include="Core\UndoRedoService.cs" />
     <Compile Include="Gui\Widgets\ToolBarComboBox.cs" />
     <Compile Include="Gui\Widgets\ToolBarLabel.cs" />
@@ -139,6 +141,12 @@
     <Compile Include="Renderers\TextBlockRenderer.cs" />
     <Compile Include="Core\IControlRenderer.cs" />
     <Compile Include="Renderers\LineRenderer.cs" />
+    <Compile Include="Core\ControlRendererBase.cs" />
+    <Compile Include="Renderers\ImageRenderer.cs" />
+    <Compile Include="Core\PixbufRepository.cs" />
+    <Compile Include="ControlView\SubreportView.cs" />
+    <Compile Include="Renderers\SubreportRenderer.cs" />
+    <Compile Include="Tools\SubreportTool.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

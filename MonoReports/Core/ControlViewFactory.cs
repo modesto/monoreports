@@ -65,7 +65,20 @@ namespace MonoReports.Core
 				.Add(
 				     typeof(Image),
 				     	(ctrl, section) => {
-			                    return new ImageView(ctrl as Image,section,this.designService);
+								var image = ctrl as Image;					
+								designService.PixbufRepository.AddOrUpdatePixbufAtIndex(image.ImageIndex);
+								
+					
+			                    return new ImageView(image,section,designService.PixbufRepository);
+						}
+				);
+			
+			controlViewDictionary
+				.Add(
+				     typeof(SubReport),
+				     	(ctrl, section) => {
+								var subreport = ctrl as SubReport;					
+								return new SubreportView(subreport,section);
 						}
 				);
 			

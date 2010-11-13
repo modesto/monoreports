@@ -71,7 +71,12 @@ namespace MonoReports.Tools
 				
 				if (designService.IsMoving) {
 					if (!isResizing) {
-						var point = new MonoReports.Model.Controls.Point (Math.Max(0, location.X + designService.DeltaPoint.X), Math.Max(0, location.Y + designService.DeltaPoint.Y));
+						double x = Math.Max(0, location.X + designService.DeltaPoint.X);
+						double y = Math.Max(0, location.Y + designService.DeltaPoint.Y);
+						x = Math.Min(control.ParentSection.Section.Width - control.ControlModel.Width, x);
+						y = Math.Min(control.ParentSection.Section.Height - control.ControlModel.Height,y);
+						
+						var point = new MonoReports.Model.Controls.Point (x,y);
 						control.ControlModel.Location = point;
 					} else {
 						
@@ -114,7 +119,7 @@ namespace MonoReports.Tools
 		{
 			if (designService.SelectedControl != null && designService.IsDesign) {
 				c.Save ();
-				c.SetDash (new double[] { 1.0 }, 1);
+				c.SetDash (new double[] { 1.0 ,3,2}, 5);
 				c.DrawInsideBorder (designService.SelectedControl.AbsoluteBound, selectBorder, true);
 				c.DrawSelectBox (designService.SelectedControl.AbsoluteBound);
 				c.Restore ();

@@ -32,7 +32,8 @@ namespace MonoReports.Model.Controls
 	{
 		public ReportFooterSection ():base()
 		{
-			this.Name = "Report Footter";
+			this.Name = "Report Footer";
+			sectionType = SectionType.ReportFooter;
 		}	 
 		
 		public override Control CreateControl ()

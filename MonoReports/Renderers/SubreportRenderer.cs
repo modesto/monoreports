@@ -1,5 +1,5 @@
 // 
-// LineRenderer.cs
+// ImageRenderer.cs
 //  
 // Author:
 //       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
@@ -32,30 +32,34 @@ using MonoReports.Model;
 
 namespace MonoReports.Renderers
 {
-	public class LineRenderer: ControlRendererBase, IControlRenderer
+	public class SubreportRenderer: ControlRendererBase, IControlRenderer
 	{
-		public LineRenderer ()
+		public SubreportRenderer ()
 		{
 		}
-
 		
-		public void Render (Cairo.Context c, Control control)
+		
+		 
+
+		public void Render (Cairo.Context c, MonoReports.Model.Controls.Control control)
 		{
-            Line line = control as Line;
-			Cairo.PointD p1 = new Cairo.PointD (line.Location.X ,line.Location.Y);
-			Cairo.PointD p2 = new Cairo.PointD (line.End.X, line.End.Y);
-			c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth, line.LineType,true);
+			SubReport subreport = control as SubReport;
+			Rectangle borderRect;
+			c.Save ();
+			borderRect = new Rectangle (subreport.Location.X, subreport.Location.Y, subreport.Width, subreport.Height);
+			c.ClipRectangle (borderRect);
+			borderRect = new Rectangle (subreport.Location.X, subreport.Location.Y, subreport.Width, subreport.Height);
+			c.FillRectangle (borderRect, subreport.BackgroundColor.ToCairoColor ());			
+			c.Restore (); 
 		}
 
-		public Size Measure (Cairo.Context c,Control control)
+		public MonoReports.Model.Controls.Size Measure (Cairo.Context c, MonoReports.Model.Controls.Control control)
 		{
-            Line line = control as Line;
-			Cairo.PointD p1 = new Cairo.PointD (line.Location.X ,line.Location.Y);
-			Cairo.PointD p2 = new Cairo.PointD (line.End.X, line.End.Y);
-			var r = c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth, line.LineType,false);
-            return new Size(r.Width, r.Height);
+			SubReport subreport = control as SubReport;
+			Rectangle borderRect = new Rectangle (subreport.Location.X, subreport.Location.Y, subreport.Width, subreport.Height);
+			return new MonoReports.Model.Controls.Size(borderRect.Width,borderRect.Height);
 		}
-  
-    }
+		 
+	}
 }
 

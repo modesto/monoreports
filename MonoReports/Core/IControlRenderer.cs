@@ -32,6 +32,7 @@ namespace MonoReports.Core
 	{
 		void Render(Cairo.Context c, Control control);
         Size Measure(Cairo.Context c, Control control);
+		bool DesignMode {get;set;}
 	}
 }
 

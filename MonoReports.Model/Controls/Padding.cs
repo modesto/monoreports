@@ -1,10 +1,10 @@
 // 
-// Section.cs
+// Padding.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki(at)gmail.com>
+//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,66 +24,49 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Collections.Generic;
-
 
 namespace MonoReports.Model.Controls
 {
-
-
-	public abstract class Section : Control, IResizable
+	public struct Padding
 	{
+		public Padding(double left, double top, double right, double bottom){
+			l = left;
+			t = top;
+			r = right;
+			b = bottom;
+		}
 
-		public Section ():base()
+		double l;
+		public double Left {
+			get { return l; }
+			set { l = value; }
+		}
+		
+		double t;
+		public double Top
 		{
-			Controls = new List<Control>();
-			Size = new Size(double.MaxValue,100);
-			Location = new Point(0,0);
-			CanGrow = true;
-			BackgroundColor =  new Color(1,1,1);
-			
-		}	
-		
-		protected SectionType sectionType;
-		
-		public SectionType SectionType {
-			get { 
-				return sectionType;
-			}
-			private set { 
-				sectionType = value;
-			}
-		}
-				
-		public bool CanGrow {get;set;}		
-		
-		public bool CanShrink {get;set;}
-
-        public bool KeepTogether { get; set; }		
-						
-		public List<Control> Controls {get;set;}
-		
-		public string Name {get;set;}
-			
-		public virtual void Format(){}
-		
-		public virtual void BeforePrint(){}
-		
-		public virtual void AfterPrint(){}
-		
-		public void CopyTo(Section s){
-		
-			CopyBasicProperties(s);
-			s.Name = Name;			 		 			
- 			s.CanGrow = CanGrow;
-			s.CanShrink = CanShrink;
-			foreach (Control ctrl in Controls) {
-				s.Controls.Add( ctrl.CreateControl() as Control);
-			}
-			
+			get { return t; }
+			set { t = value; }
 		}
 		
-		 
+		
+		double r;
+		public double Right {
+			get { return r; }
+			set { r = value; }
+		}
+		
+		double b;
+		public double Bottom
+		{
+			get { return b; }
+			set { b = value; }
+		}
+		
+		public override string ToString ()
+		{
+			return string.Format ("[Padding: Left={0}, Top={1},Right={2}, Bottom={3}]", l, t, r, b); 
+		}
 	}
 }
 

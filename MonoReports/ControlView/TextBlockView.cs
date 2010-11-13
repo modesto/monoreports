@@ -29,6 +29,7 @@ using MonoReports.Core;
 using MonoReports.Extensions.CairoExtensions;
 using Cairo;
 using MonoReports.Model;
+using MonoReports.Renderers;
 
 
 namespace MonoReports.ControlView
@@ -53,12 +54,15 @@ namespace MonoReports.ControlView
 				return textBlock;
 			}			 
 		}		
+		
+		public TextBlockRenderer TextBlockRenderer {get;set;}
 
 		public TextBlockView (TextBlock textBlock,SectionView parentSection):base(textBlock)
 		{
 			this.ParentSection = parentSection;
 			AbsoluteBound = new Rectangle (parentSection.AbsoluteDrawingStartPoint.X + textBlock.Location.X,
 			                                parentSection.AbsoluteDrawingStartPoint.Y + textBlock.Location.Y, textBlock.Width, textBlock.Height);
+			TextBlockRenderer = new TextBlockRenderer(){ DesignMode = true};
 		}
 		
 		#region implemented abstract members of MonoReport.ControlView.ControlViewBase
@@ -69,34 +73,12 @@ namespace MonoReports.ControlView
 			}
 		}
 
-		public override Size Render (Context c,RenderState renderState)
+		public override void Render (Context c)
 		{
-			Rectangle borderRect;
-			c.Save();
-			borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, textBlock.Height);	 
-			if(!textBlock.CanGrow || renderState.IsDesign)
-				c.ClipRectangle(borderRect);
-			
-			var rect = c.DrawTextBlock (textBlock,renderState.Render);
-				
-			if(textBlock.CanGrow & !renderState.IsDesign){
-				borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, Math.Max( rect.Height, textBlock.Height));				
-			}else{
-				borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, textBlock.Height);								
-			}
-			if(renderState.Render){
-				c.FillRectangle(borderRect,textBlock.BackgroundColor.ToCairoColor());
-				c.DrawTextBlock (textBlock,renderState.Render);
-				c.DrawInsideBorder  (borderRect, textBlock.Border,renderState.Render);	
-			}else{
-				c.DrawTextBlock (textBlock,renderState.Render);
-			}
+	
+			TextBlockRenderer.Render(c,textBlock);
 			AbsoluteBound = new Rectangle (ParentSection.AbsoluteDrawingStartPoint.X + textBlock.Location.X , 
-			                               ParentSection.AbsoluteDrawingStartPoint.Y + textBlock.Location.Y, borderRect.Width, borderRect.Height);
-			
-			c.Restore();
-
-			return new Size(borderRect.Width,borderRect.Height);
+			                               ParentSection.AbsoluteDrawingStartPoint.Y + textBlock.Location.Y, textBlock.Width, textBlock.Height);		
 		}
 
 		 

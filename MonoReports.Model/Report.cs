@@ -45,7 +45,7 @@ namespace MonoReports.Model
 			GroupFooterSections = new List<GroupFooterSection> ();
 			Pages = new List<Page> ();
 			ResourceRepository = new List<byte[]> ();
-			ReportHeaderSection = new Controls.ReportHeaderSection { Location = new Controls.Point (0, 0), Size = new Controls.Size (Width, 30) };
+			ReportHeaderSection = new Controls.ReportHeaderSection { Location = new Controls.Point (0, 0), Size = new Controls.Size (Width, 150) };
 			PageHeaderSection = new Controls.PageHeaderSection { Location = new Controls.Point (0, 0), Size = new Controls.Size (Width, 30) };
 			DetailSection = new Controls.DetailSection { Location = new Controls.Point (0, 150), Size = new Controls.Size (Width, 150) };
 			PageFooterSection = new Controls.PageFooterSection { Location = new Controls.Point (0, 300), Size = new Controls.Size (Width, 30) };

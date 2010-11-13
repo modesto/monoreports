@@ -31,15 +31,19 @@ namespace MonoReports.Model.Controls
 		public ReportHeaderSection ():base()
 		{
 			this.Name = "Report Header";
+			sectionType = SectionType.ReportHeader;
 		}
 		 
 		
 		public override Control CreateControl ()
 		{
 			ReportHeaderSection rhs = new ReportHeaderSection();
-			CopyTo(rhs);			 
+			CopyTo(rhs);		
+			rhs.BreakPageAfter = BreakPageAfter;
 			return rhs;
 		}
+		
+		public bool BreakPageAfter {get;set;}
 	}
 }
 

@@ -24,25 +24,25 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using MonoReports.Model;
+
 namespace MonoReports.Model.Controls
 {
 	public class PageHeaderSection : Section
 	{
+	
 		public PageHeaderSection ():base()
 		{
 			this.Name = "Page Header";
+			sectionType = MonoReports.Model.SectionType.PageHeader;
 		}
 		
-		public bool DrawOnFirstPage {
-			get;
-			set;
-		}
+		
 		
 		public override Control CreateControl ()
 		{
 			PageHeaderSection ds = new PageHeaderSection();
 			CopyTo(ds);
-			ds.DrawOnFirstPage = this.DrawOnFirstPage;
 			return ds;
 		}
 	}

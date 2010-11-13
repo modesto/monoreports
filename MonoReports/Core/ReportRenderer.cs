@@ -29,6 +29,7 @@ using MonoReports.ControlView;
 using System.Collections.Generic;
 using MonoReports.Model;
 using MonoReports.Services;
+using Cairo;
 
 namespace MonoReports.Core
 {
@@ -69,21 +70,17 @@ namespace MonoReports.Core
  
 		}
 
-        public void RenderControl(Control control)
+        public void RenderControl(Control control )
 		{
-
             Type controlType = control.GetType();
 			if(renderersDictionary.ContainsKey(controlType)){
-				var renderer = renderersDictionary[controlType] as IControlRenderer;
+				var renderer = renderersDictionary[controlType] as IControlRenderer;							
 				renderer.Render(designService.CurrentContext,control);								
 			}
  
 		}
 
-		public void NextPage ()
-		{
-			designService.NextPage ();
-		}
+		
 		
 	}
 }

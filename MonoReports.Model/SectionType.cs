@@ -1,10 +1,10 @@
 // 
-// GroupFooterSection.cs
+// SectionType.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,23 +24,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace MonoReports.Model.Controls
+
+namespace MonoReports.Model
 {
-	public class GroupFooterSection: Section
+	public enum SectionType
 	{
-		public GroupFooterSection ():base()
-		{
-		 	this.Name = "Group Footer";
-			sectionType = SectionType.GroupFooter;
-		}
-		
-		
-		public override Control CreateControl ()
-		{
-			GroupFooterSection gfs = new GroupFooterSection();
-			CopyTo(gfs);
-			return gfs;
-		}
+		ReportHeader, PageHeader, GroupHeader, Details, GroupFooter, PageFooter, ReportFooter
 	}
 }
 

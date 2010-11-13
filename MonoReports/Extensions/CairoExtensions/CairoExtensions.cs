@@ -54,7 +54,7 @@ namespace MonoReports.Extensions.CairoExtensions
 	public static class CairoExtensions
 	{
 		
-		static Cairo.Color gripperColor = new Cairo.Color(0.6,0.4,0.7);
+		static Cairo.Color gripperColor = new Cairo.Color(1,0.2,0.2);
 		static int gripperSize = 6;
 		
 		public static PointD ToCairoPointD(this MonoReports.Model.Controls.Point p){
@@ -711,16 +711,17 @@ namespace MonoReports.Extensions.CairoExtensions
 		}
 		
 		
-		public static Rectangle DrawTextBlock (this Context g, TextBlock tb, bool render)
-		{
-		 	double doubleSpan = tb.Span * 2;
+		public static Rectangle DrawTextBlock (this Context g, TextBlock tb, bool render) {
+			
+		 	double topBottomSpan = tb.Padding.Top + tb.Padding.Bottom;
+			double leftRightSpan = tb.Padding.Left + tb.Padding.Right;
 			g.Save ();
-			g.MoveTo (tb.Left + tb.Span, tb.Top + tb.Span);
+			g.MoveTo (tb.Left + tb.Padding.Left, tb.Top + tb.Padding.Top);
 			g.Color = tb.FontColor.ToCairoColor();
 			Pango.Layout layout = Pango.CairoHelper.CreateLayout (g);
 			
 			layout.Wrap = Pango.WrapMode.Word;
-			layout.Width = (int)((tb.Width - doubleSpan) * Pango.Scale.PangoScale);
+			layout.Width = (int)((tb.Width - leftRightSpan) * Pango.Scale.PangoScale);
 			Pango.FontDescription fd = new Pango.FontDescription ();			
 			fd.Family = tb.FontName;
 		
@@ -738,9 +739,18 @@ namespace MonoReports.Extensions.CairoExtensions
 		
 			Pango.Rectangle unused = Pango.Rectangle.Zero;
 			Pango.Rectangle te = Pango.Rectangle.Zero;
-			layout.GetExtents (out unused, out te);			
-			if(render){
-				Pango.CairoHelper.ShowLayout(g, layout);			
+			layout.GetExtents (out unused, out te);		
+			
+			if (tb.VerticalAlignment == VerticalAlignment.Center) {
+					double height = te.Height / Pango.Scale.PangoScale;
+					if(height < tb.Height){
+						double sp = ((tb.Height  - (height + (tb.FontSize/2))) / 2) ;
+						g.MoveTo (tb.Left + tb.Padding.Left, tb.Top + tb.Padding.Top + sp);
+					}
+			}
+			
+			if (render) {
+				Pango.CairoHelper.ShowLayout(g, layout);						
 			}
 			
 			layout.GetExtents (out unused, out te);
@@ -749,7 +759,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			
 			g.Restore ();
 		
-			return new Rectangle( tb.Left - tb.Span + te.X / Pango.Scale.PangoScale, tb.Top - tb.Span + te.Y / Pango.Scale.PangoScale, (te.Width / Pango.Scale.PangoScale) + doubleSpan , (te.Height/ Pango.Scale.PangoScale) + doubleSpan);
+			return new Rectangle( tb.Left - tb.Padding.Left + te.X / Pango.Scale.PangoScale, tb.Top - tb.Padding.Top + te.Y / Pango.Scale.PangoScale, (te.Width / Pango.Scale.PangoScale) + leftRightSpan , (te.Height/ Pango.Scale.PangoScale) + topBottomSpan);
 						
 		}
 

@@ -41,73 +41,50 @@ namespace MonoReports.Model.Engine
 		IDataSource source;
 		ReportContext ReportContext;
 		Page currentPage = null;
-		double spaceLeftOnCurrentPage = 0;
+		double heightLeftOnCurrentPage = 0;
+		double heightUsedOnCurrentPage = 0;
 		double currentY = 0;
-		List<int> groupColumnIndeces = null;
-		List<string> groupCurrentKey = null;
-		Section currentSection = null;
-		Section lastFooterSection = null;
+	    int currentGroupIndex = -1;
+		Section currentSection = null;		
 		List<SpanInfo> currentSectionSpans = null;
 		List<Control> currentSectionOrderedControls = null;
-        List<Control> currentSectionControlsBuffer = null;
+		List<Control> currentSectionControlsBuffer = null;
+		List<Control> currentPageFooterSectionControlsBuffer = null;
 		List<Line> currentSectionExtendedLines = null;
 		int currentSectionControlIndex = 0;
-
+		double spanCorrection = 0;
 		bool IsSubreport {get; set;}
-
+		bool dataSourceHasNextRow = true;
 		bool stop = false;
 
-		public ReportEngine (Report report,IReportRenderer renderer)
+		public ReportEngine (Report report, IReportRenderer renderer)
 		{			
 			Report = report;
-			source = Report._dataSource;
+			source = Report._dataSource;	
+			if(source == null)
+				source = new DummyDataSource();
 			ReportRenderer = renderer;
 			currentSectionSpans = new List<SpanInfo> ();
 			currentSectionOrderedControls = new List<Control> ();
 			currentSectionExtendedLines = new List<Line> ();
-            currentSectionControlsBuffer = new List<Control>();
-            ReportContext = new ReportContext { CurrentPageIndex = 0, DataSource = null, Parameters = new Dictionary<string, string>(), ReportMode = ReportMode.Preview };
-            Report.Pages = new List<Page>();
-
-            if (Report.ReportHeaderSection.IsVisible)
-            {
-                selectCurrentSectionByTemplateSection( Report.ReportHeaderSection);
-            }
-            else if (!IsSubreport && Report.PageHeaderSection.IsVisible)
-            {
-                selectCurrentSectionByTemplateSection(  Report.PageHeaderSection);
-            }
-            else
-            {
-                 selectCurrentSectionByTemplateSection(  Report.DetailSection);
-            }
+			currentSectionControlsBuffer = new List<Control> ();
+			currentPageFooterSectionControlsBuffer = new List<Control>();
+			ReportContext = new ReportContext { CurrentPageIndex = 0, DataSource = null, Parameters = new Dictionary<string, string>(), ReportMode = ReportMode.Preview };
+			Report.Pages = new List<Page> ();			
+			nextPage();			
+			selectCurrentSectionByTemplateSection(Report.ReportHeaderSection);
 		}
 
 		public void Process ()
-		{
-            while (!ProcessReportUpToHeightTreshold(Report.Height))
-                ;
+		{				
+			while (!ProcessReportPage ()){
+				nextPage();
+			}				
 			onAfterReportProcess ();
 		}
-          
 
-        public bool ProcessReportUpToHeightTreshold(double treshold)
-        {
-            bool result = processSectionUpToHeightTreshold(treshold);
-            if (result) {
-                ;//TODO 3tk
-            }
-            else {
+		
 
-            }
-            return result;
-        }
-
-		void init ()
-		{
-			
-						
-		}
 
 		T selectCurrentSectionByTemplateSection<T> (T s) where T:Section
 		{
@@ -116,13 +93,16 @@ namespace MonoReports.Model.Engine
 			newSection.Format ();
 			newSection.Location = new Point (s.Location.X, currentY);				
 			currentSection = newSection;
-			currentSectionExtendedLines = new List<Line> ();
-			currentSectionOrderedControls = currentSection.Controls.OrderBy (ctrl => ctrl.Location.Y).ToList ();
-            currentSectionControlsBuffer = new List<Control>();
+			currentSectionExtendedLines.Clear();
+			currentSectionOrderedControls = currentSection.Controls.OrderBy (ctrl => ctrl.Top).ToList ();
+			currentSectionControlsBuffer.Clear();
+			
 			currentSectionControlIndex = 0;
 			return newSection;
 		}
-
+		
+		#region old processing details code
+		 /*
 		void processDetails ()
 		{
 			
@@ -195,38 +175,36 @@ namespace MonoReports.Model.Engine
 			}
 			
 		}
-
-	/*	void addSection(Section s, double height){
-			
-				
-				if (height > spaceLeftOnCurrentPage) {
-					
-						if (s is DetailSection){
-							lastFooterSection.Location = new  Point(lastFooterSection.Location.X, lastFooterSection.Location.Y - spaceLeftOnCurrentPage);
-							lastFooterSection.Size = new Size(lastFooterSection.Width,lastFooterSection.Height + spaceLeftOnCurrentPage);
-						}
-					if(s.KeepTogether){
-						newPage ();
-					}
-				}
-				s.Location = new Point (s.Location.X, currentY);
-				s.Size = new Size (s.Size.Width, height);
-				currentPage.Controls.Add (s);
-				spaceLeftOnCurrentPage -= height;
-				currentY += height;						
-		}
-	*/
+		*/
+		#endregion
 		
-		void addControl (Control c)
-		{ 
-			double height = c.Height;			 
-			currentPage.Controls.Add (c);
-			spaceLeftOnCurrentPage -= height;
-			currentY += height;	
+		
+		
+		public bool ProcessReportPage ()
+		{
+			bool result = false;		
+			stop = false;
+			
+			do {
+				
+				result = processSectionUpToHeightTreshold (heightLeftOnCurrentPage);						
+				addControlsToCurrentPage (heightUsedOnCurrentPage);
+				
+				heightLeftOnCurrentPage -= currentSection.Height;
+				heightUsedOnCurrentPage += currentSection.Height;
+				
+				if (result) {
+					nextSection();
+				} else {
+					return false;
+				}
+			} while (!stop);
+				
+			return result;
 		}
-
+	
 		/// <summary>
-        /// Processes the section up to heightTreshold.
+		/// Processes the section up to heightTreshold.
 		/// </summary>
 		/// <returns>
 		///  returns <c>true</c> if finished processig section and <c>false</c> while not
@@ -234,7 +212,7 @@ namespace MonoReports.Model.Engine
 		/// <param name='pageBreakTreshold'>
 		/// maxiumum height (starting from current section Location.Y) after which page will break
 		/// </param>
-		bool processSectionUpToHeightTreshold (double heightTreshold)
+		bool processSectionUpToHeightTreshold ( double heightTreshold)
 		{
 			double span = 0;
 			double y = 0;
@@ -244,7 +222,7 @@ namespace MonoReports.Model.Engine
 			double tmpSpan = 0;
 			double ungrowedControlBottom = 0;
 			marginBottom = double.MaxValue;
-				
+		
 			for (int i = currentSectionControlIndex; i <  currentSectionOrderedControls.Count; i++) {
 					
 				var control = currentSectionOrderedControls [i];				        
@@ -256,14 +234,14 @@ namespace MonoReports.Model.Engine
 					currentSectionExtendedLines.Add (control as Line);	
 				}
 				
-                if(source != null)
-				    control.AssignValue (source);
+				if (source != null)
+					control.AssignValue (source);
 					
 					
 				y = control.Top + span;
 
-                
-				var controlSize = ReportRenderer.MeasureControl(control);
+				
+				var controlSize = ReportRenderer.MeasureControl (control);
 					
 					
 				foreach (SpanInfo item in currentSectionSpans) {
@@ -276,49 +254,55 @@ namespace MonoReports.Model.Engine
 				ungrowedControlBottom = control.Bottom + span;
 				marginBottom = Math.Min (marginBottom, currentSection.Height - control.Bottom);
 
-                if (control.Bottom + span <= heightTreshold)
-                {
-                    currentSectionControlsBuffer.Add (control);
-                }
-                else
-                {
-                    
-                    currentSectionControlIndex = i;
-                    
-                    if (control.Top > heightTreshold)
-                        return false;
-
-                    if (control is IResizable)
-                    {
-                        if ((control as IResizable).KeepTogether)
-                        {
-                            return false;
-                        }
-                        else
-                        {
-                          currentSectionControlsBuffer.AddRange ( control.SplitControlAt(heightTreshold));
-                        }
-
-                    }
-                }
-
+				if (control.Bottom + span <= heightTreshold) {
+					currentSectionControlsBuffer.Add (control);
 					
+				} else {
+				
+					currentSectionControlIndex = i;
+				
+					if (control.Top > heightTreshold)
+						return false;
+
+					if (control is IResizable) {
+						if ((control as IResizable).KeepTogether) {
+							return false;
+						} else {
+							currentSectionControlsBuffer.AddRange (control.SplitControlAt (heightTreshold));
+						}
+
+					}else{
+						return false;
+					}
+				}
+
 				control.MoveControlByY (span);
 				control.Size = controlSize;								
 				maxControlBottom = Math.Max (maxControlBottom, control.Bottom);
-
-                if (maxHeight <= control.Bottom)
-                {
-                    maxHeight = control.Bottom;
+   			
+				if (maxHeight <= control.Bottom) {
+					maxHeight = control.Bottom;
 				}						
 				currentSectionSpans.Add (
-                    new SpanInfo { 
-                        Treshold = ungrowedControlBottom,
-                        Span = span + control.Bottom - ungrowedControlBottom 
-                    });
+				new SpanInfo { 
+					Treshold = ungrowedControlBottom,
+					Span = span + control.Bottom - ungrowedControlBottom 
+				});
 			}
 				
-				
+			
+			var heighWithMargin =  maxControlBottom + marginBottom;
+			
+			if (!currentSection.CanGrow && !currentSection.CanShrink || !currentSection.CanShrink && heighWithMargin < currentSection.Height) {
+				;
+			}
+			else if(heighWithMargin <= heightTreshold){
+				currentSection.Height = heighWithMargin;
+			}
+ 
+			/* 3tk TODO extending line should be done in smarter way
+			 * e.g. handling page break
+			 * */
 			foreach (Line lineItem in currentSectionExtendedLines) {
 				if (lineItem.Location.Y == lineItem.End.Y) {
 					lineItem.Location = new Point (lineItem.Location.X,maxControlBottom + marginBottom - lineItem.LineWidth / 2);
@@ -330,31 +314,106 @@ namespace MonoReports.Model.Engine
 				}
 			}
 			
-			/*
-			double currentSectionHight = 0;
-			
-			if (!currentSection.CanGrow)
-				currentSectionHight = currentSection.Height;
-			else {
-				currentSectionHight =  (maxControlBottom + marginBottom);
-			}
-			*/
 			
 			return true;
 		}
+	
+		 
+		
+		void nextRecord(){			
+	 		dataSourceHasNextRow = source.MoveNext();					
+		}
+		
+		void nextSection(){
+		
+				switch (currentSection.SectionType) {
+				
+					case SectionType.ReportHeader:	
+						if (Report.ReportHeaderSection.BreakPageAfter)
+							nextPage();				
+						nextRecord();
+						selectCurrentSectionByTemplateSection(Report.PageHeaderSection);
+						break;
+					case SectionType.PageHeader:
+					
+						selectCurrentSectionByTemplateSection(Report.PageFooterSection);					
+						break;
+					case SectionType.PageFooter:
+				
+						if (Report.Groups.Count > 0) {
+							currentGroupIndex = 0;						
+							selectCurrentSectionByTemplateSection(Report.GroupHeaderSections[currentGroupIndex]);					
+						} else {
+							selectCurrentSectionByTemplateSection(Report.DetailSection);		
+						}
+						break;
+					case SectionType.GroupHeader:				
+					
+						if(currentGroupIndex < Report.Groups.Count -1) {
+							currentGroupIndex++;
+							selectCurrentSectionByTemplateSection(Report.GroupHeaderSections[currentGroupIndex]);	
+						} else {
+							selectCurrentSectionByTemplateSection(Report.DetailSection);
+						}								
+						break;
+				
+					case SectionType.Details:
+						if (dataSourceHasNextRow) {
+							nextRecord();
+							selectCurrentSectionByTemplateSection(Report.DetailSection);
+						} else {
+							selectCurrentSectionByTemplateSection(Report.ReportFooterSection);
+						}
+						break;
+				
+					case SectionType.GroupFooter:
+				
+				
+						break;
+				
+					case SectionType.ReportFooter:
+						addControlsToCurrentPage(Report.Height - Report.PageFooterSection.Height,currentPageFooterSectionControlsBuffer);					
+						stop = true;
+						break;
+					default:
+						break;
+				}
+		
+			if(!currentSection.IsVisible)
+					nextSection();
+		}
 
-		void newPage ()
+		void addControlsToCurrentPage (double span)
+		{		
+			if(currentSection.SectionType != SectionType.PageFooter){ 
+				addControlsToCurrentPage(span + spanCorrection,currentSectionControlsBuffer);
+			}else{
+				currentPageFooterSectionControlsBuffer.AddRange(currentSectionControlsBuffer);
+				spanCorrection -= currentSection.Height;
+			}
+			currentSectionControlsBuffer.Clear ();					
+		}
+
+	 
+		void addControlsToCurrentPage(double span, List<Control> controls) {
+			foreach (var control in controls ) {
+					control.MoveControlByY(span);
+					currentPage.Controls.Add(control);
+			}
+		}
+
+		void nextPage ()
 		{
-			
-			if (ReportContext.CurrentPageIndex > 0) {				
-				ReportRenderer.NextPage ();
-			}				
+			addControlsToCurrentPage(Report.Height - Report.PageFooterSection.Height,currentPageFooterSectionControlsBuffer);	
+			spanCorrection = 0;
 			currentY = 0;
 			ReportContext.CurrentPageIndex++;
 			currentPage = new Page { PageNumber = ReportContext.CurrentPageIndex };
-			spaceLeftOnCurrentPage = Report.Height;
+			heightLeftOnCurrentPage = Report.Height;
+			heightUsedOnCurrentPage = 0;			
+			currentPageFooterSectionControlsBuffer.Clear();			
 			Report.Pages.Add (currentPage);		
-			
+			selectCurrentSectionByTemplateSection(Report.PageHeaderSection);
 		}
 
 		private void onAfterReportProcess ()

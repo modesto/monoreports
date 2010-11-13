@@ -38,20 +38,11 @@ namespace MonoReports.Model.Controls
 			set;
 		}
 		
-		#region implemented abstract members of MonoReports.Model.Controls.Control
-		public override Control CreateControl ()
-		{
-			var subreport = new SubReport();			
-			CopyBasicProperties(subreport);
-			subreport.CanGrow = CanGrow;
-			subreport.CanShrink = CanShrink;
-			subreport.ParentReport = ParentReport;
-			return subreport;
+		public Report Report {
+			get;
+			set;
 		}
 		
-		#endregion
-		
-
 		public bool CanGrow {get;set;}		
 		
 		public bool CanShrink {get;set;}		
@@ -60,6 +51,20 @@ namespace MonoReports.Model.Controls
             get;
             set;
         }
+		
+	
+		public override Control CreateControl ()
+		{
+			var subreport = new SubReport();			
+			CopyBasicProperties(subreport);
+			subreport.CanGrow = CanGrow;
+			subreport.CanShrink = CanShrink;
+			subreport.ParentReport = ParentReport;
+			subreport.Report = Report;
+			return subreport;
+		}
+ 
+		
     }
 }
 

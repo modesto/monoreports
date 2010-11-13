@@ -53,9 +53,9 @@ namespace MonoReports.ControlView
 		
 		public abstract string DefaultToolName {get;}
 	
-		public abstract bool ContainsPoint(double x, double y);
+		public abstract bool ContainsPoint (double x, double y);
 		
-		public abstract Size Render( Context c,RenderState renderState);		
+		public abstract void Render (Context c);		
 	}
 	
 }

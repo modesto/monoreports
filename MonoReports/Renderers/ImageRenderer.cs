@@ -1,5 +1,5 @@
 // 
-// LineRenderer.cs
+// ImageRenderer.cs
 //  
 // Author:
 //       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
@@ -32,30 +32,38 @@ using MonoReports.Model;
 
 namespace MonoReports.Renderers
 {
-	public class LineRenderer: ControlRendererBase, IControlRenderer
+	public class ImageRenderer: ControlRendererBase, IControlRenderer
 	{
-		public LineRenderer ()
+		public ImageRenderer ()
 		{
 		}
-
 		
-		public void Render (Cairo.Context c, Control control)
+		public PixbufRepository PixbufRepository {get;set;}
+		
+		 
+
+		public void Render (Cairo.Context c, MonoReports.Model.Controls.Control control)
 		{
-            Line line = control as Line;
-			Cairo.PointD p1 = new Cairo.PointD (line.Location.X ,line.Location.Y);
-			Cairo.PointD p2 = new Cairo.PointD (line.End.X, line.End.Y);
-			c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth, line.LineType,true);
+			Image image = control as Image;
+			Rectangle borderRect;
+			c.Save ();
+			borderRect = new Rectangle (image.Location.X, image.Location.Y, image.Width, image.Height);
+			c.ClipRectangle (borderRect);
+			borderRect = new Rectangle (image.Location.X, image.Location.Y, image.Width, image.Height);
+			c.FillRectangle (borderRect, image.BackgroundColor.ToCairoColor ());
+			var pixbuf = PixbufRepository[image.ImageIndex];
+			c.DrawPixbuf (pixbuf, image.Location.ToCairoPointD ());
+			c.DrawInsideBorder (borderRect, image.Border, true);
+			c.Restore (); 
 		}
 
-		public Size Measure (Cairo.Context c,Control control)
+		public MonoReports.Model.Controls.Size Measure (Cairo.Context c, MonoReports.Model.Controls.Control control)
 		{
-            Line line = control as Line;
-			Cairo.PointD p1 = new Cairo.PointD (line.Location.X ,line.Location.Y);
-			Cairo.PointD p2 = new Cairo.PointD (line.End.X, line.End.Y);
-			var r = c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth, line.LineType,false);
-            return new Size(r.Width, r.Height);
+			Image image = control as Image;
+			Rectangle borderRect = new Rectangle (image.Location.X, image.Location.Y, image.Width, image.Height);
+			return new MonoReports.Model.Controls.Size(borderRect.Width,borderRect.Height);
 		}
-  
-    }
+		 
+	}
 }
 

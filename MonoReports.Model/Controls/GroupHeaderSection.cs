@@ -32,6 +32,7 @@ namespace MonoReports.Model.Controls
 		public GroupHeaderSection():base()
 		{
 			this.Name = "Group Header";
+			sectionType = SectionType.GroupHeader;
 		}
 		
 		public override Control CreateControl ()

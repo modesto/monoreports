@@ -30,9 +30,8 @@ namespace MonoReports.Model
 {
 	public interface IReportRenderer 
 	{
-        Size MeasureControl(Control control);
-        void RenderControl(Control control);
-		void NextPage ();
+        Size MeasureControl (Control control);
+        void RenderControl (Control control);
 	}
 }
 

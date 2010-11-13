@@ -150,22 +150,22 @@ namespace MonoReports.ControlView
 			}
 		}
 
-		public override Size Render (Cairo.Context c, RenderState renderState)
+		public override void Render (Cairo.Context c)
 		{
 			
 			
 			Size size = new Size (parentReport.Width, section.Height);
-			if (renderState.IsDesign) {
+			if (true) {
 				InvalidateBound ();
 			} else {
 				AbsoluteBound = new Rectangle (section.Location.X, section.Location.Y, section.Width, section.Height);
 			}
-			if (renderState.Render) {
+			if (true) {
 				c.Save ();
 				c.FillRectangle (AbsoluteBound, section.BackgroundColor.ToCairoColor ());
 				
 				
-				if (renderState.IsDesign) {
+				if (true) {
 					Rectangle r = new Rectangle (AbsoluteBound.X, AbsoluteBound.Y, parentReport.Width, SectionheaderHeight);
 					c.FillRectangle (r, sectionHeaderColor);
 					c.DrawText (new Cairo.PointD (r.X + 3, r.Y + 3), "Arial", Cairo.FontSlant.Normal, Cairo.FontWeight.Normal, 12, blackColor, 600, Section.Name);
@@ -173,14 +173,9 @@ namespace MonoReports.ControlView
 					c.Translate (AbsoluteDrawingStartPoint.X, AbsoluteDrawingStartPoint.Y);
 					for (int j = 0; j < Controls.Count; j++) {
 						var ctrl = Controls[j];
-						ctrl.Render (c, renderState);
+						ctrl.Render (c);
 					}
-					
-					
-					for (int w = 0; w < renderState.CrossSectionControls.Count; w++) {
-						var crossCtrl = renderState.CrossSectionControls[w];
-						crossCtrl.Render (c, renderState);
-					}
+										
 					
 				}
 				
@@ -189,7 +184,7 @@ namespace MonoReports.ControlView
 				c.Restore ();
 			}
 			
-			return size;
+			 
 		}
 
 

@@ -72,16 +72,25 @@ namespace MonoReports.Tools
 		public override void OnMouseMove ()
 		{
 			if (designService.IsPressed) {
+				var control = designService.SelectedControl;
 				
-				if (designService.IsMoving && designService.SelectedControl != null) {
-														
+				if (designService.IsMoving && control != null) {
+					double x = Math.Max (0, line.Location.X + designService.DeltaPoint.X);
+					double y = Math.Max (0, line.Location.Y + designService.DeltaPoint.Y);
+					double x1 = Math.Max (0, line.End.X + designService.DeltaPoint.X);
+					double y1 = Math.Max (0, line.End.Y + designService.DeltaPoint.Y);
+					x = Math.Min(x,control.ParentSection.Section.Width);
+					y = Math.Min(y,control.ParentSection.Section.Height);
+					x1 = Math.Min(x1,control.ParentSection.Section.Width);
+					y1 = Math.Min(y1,control.ParentSection.Section.Height);
+ 
 					if (startPointHit) {
-						line.Location = new MonoReports.Model.Controls.Point ( Math.Max (0, line.Location.X + designService.DeltaPoint.X), Math.Max (0, line.Location.Y + designService.DeltaPoint.Y));						
+						line.Location = new MonoReports.Model.Controls.Point (x,y);						
 					} else if (endPointHit) {
-						line.End = new MonoReports.Model.Controls.Point ( Math.Max (0, line.End.X + designService.DeltaPoint.X), Math.Max (0, line.End.Y + designService.DeltaPoint.Y));
+						line.End = new MonoReports.Model.Controls.Point (x1,y1);
 					} else {
-						line.Location = new MonoReports.Model.Controls.Point ( Math.Max (0, line.Location.X + designService.DeltaPoint.X), Math.Max (0, line.Location.Y + designService.DeltaPoint.Y));						
-						line.End = new MonoReports.Model.Controls.Point ( Math.Max (0, line.End.X + designService.DeltaPoint.X), Math.Max (0, line.End.Y + designService.DeltaPoint.Y));
+						line.Location = new MonoReports.Model.Controls.Point (x,y);						
+						line.End = new MonoReports.Model.Controls.Point (x1,y1);
 					}
 
 				}

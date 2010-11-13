@@ -1,10 +1,10 @@
 // 
-// GroupFooterSection.cs
+// ControlRendererBase.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,23 +24,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace MonoReports.Model.Controls
+
+namespace MonoReports.Core
 {
-	public class GroupFooterSection: Section
+	public class ControlRendererBase
 	{
-		public GroupFooterSection ():base()
+		public ControlRendererBase ()
 		{
-		 	this.Name = "Group Footer";
-			sectionType = SectionType.GroupFooter;
 		}
 		
-		
-		public override Control CreateControl ()
-		{
-			GroupFooterSection gfs = new GroupFooterSection();
-			CopyTo(gfs);
-			return gfs;
-		}
+		public bool DesignMode {get;set;}
 	}
 }
 

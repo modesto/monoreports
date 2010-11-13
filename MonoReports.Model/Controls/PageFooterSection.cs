@@ -32,19 +32,16 @@ namespace MonoReports.Model.Controls
 	{
 		public PageFooterSection ():base()
 		{
-			this.Name = "Page Footter";
+			this.Name = "Page Footer";
+			sectionType = SectionType.PageFooter;
 		}
 		
-		public bool DrawOnFirstPage {
-			get;
-			set;
-		}
+		
 		
 		public override Control CreateControl ()
 		{
 			PageFooterSection pfs = new PageFooterSection();
 			CopyTo(pfs);
-			pfs.DrawOnFirstPage = this.DrawOnFirstPage;
 			return pfs;
 		}
 	}

@@ -35,19 +35,20 @@ namespace MonoReports.Model.Data
 	public class ObjectDataSource<T> : IDataSource
 	{
 		IEnumerable<T> data;
-
+		string[] sortingFields;
+		object current = null;
+		object next = null;
+		bool curentRes = false;
+		bool nextRes = false;
 		IEnumerator enumerator;
 		int currentRowIndex = -1;
+		List<DataField> fields;
+		Dictionary<string, PropertyInfo> propertiesDictionary;
 
 		public int CurrentRowIndex {
 			get { return this.currentRowIndex; }
 			set { currentRowIndex = value; }
 		}
-
-		List<DataField> fields;
-
-		Dictionary<string, PropertyInfo> propertiesDict;
-
 
 		public List<DataField> Fields {
 			get { return this.fields; }
@@ -58,28 +59,24 @@ namespace MonoReports.Model.Data
 		{
 			this.data = data as IEnumerable<T>;
 			fields = new List<DataField> ();
-			propertiesDict = typeof(T).GetProperties ().ToDictionary (pi => pi.Name);
+			propertiesDictionary = typeof(T).GetProperties ().ToDictionary (pi => pi.Name);
 		}
 
 
 
 		public string GetValue (string fieldName, string format)
-		{
-			if (!string.IsNullOrEmpty (format))
-				return string.Format (format, propertiesDict[fieldName].GetValue (current, null));
-			else
-				return propertiesDict[fieldName].GetValue (current, null).ToString ();
+		{			
+			if (current != null && propertiesDictionary.ContainsKey (fieldName)) {
+				var property = propertiesDictionary[fieldName];
+				if (!string.IsNullOrEmpty (format))
+					return string.Format (format, property.GetValue (current, null));
+				else
+					return property.GetValue (current, null).ToString ();
+			}else {
+				return string.Empty;
+			}
 		}
 
-
-
-		string[] sortingFields;
-
-
-		object current = null;
-		object next = null;
-		bool curentRes = false;
-		bool nextRes = false;
 
 		public bool MoveNext ()
 		{
@@ -183,7 +180,7 @@ namespace MonoReports.Model.Data
 		public DataField[] DiscoverFields ()
 		{
 			List<DataField> datafields = new List<DataField> ();
-			foreach (var kvp in propertiesDict) {
+			foreach (var kvp in propertiesDictionary) {
 				datafields.Add (new PropertyDataField (kvp.Value));
 			}
 			return datafields.ToArray ();

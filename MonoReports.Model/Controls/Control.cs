@@ -28,91 +28,110 @@ using MonoReports.Model;
 using MonoReports.Model.Data;
 using System.Collections.Generic;
 
-
-
 namespace MonoReports.Model.Controls
 {
-
 	public abstract class Control
 	{
 
 		public Control ()
 		{
-			BackgroundColor = new Color(1,1,1,1);
-			Location = new Point(0,0);
-			Size =  new Size(0,0);
+			BackgroundColor = new Color (1,1,1,1);
+			Location = new Point (0,0);
+			Size = new Size (0,0);
 			IsVisible = true;
 		}
-		
-		public Control TemplateControl {get;set;}
 
-		public Point Location { get; set; }
+		public Control TemplateControl {get; set;}
 
-		public Size Size { get; set; }
-		
-		public Color BackgroundColor {get;set;}
+		Point location;
+
+		public Point Location {
+			get { return location; }
+			set { location = value; }
+		}
+
+		Size size;
+
+		public Size Size {
+			get { return size;}
+			set { size = value;}
+		}
+
+		public Color BackgroundColor {get; set;}
 
 		public double Height {
 
-			get { return Size.Height; }
+			get { return size.Height; }
+			set {
+				size = new Size (size.Width, value);
+			}
 		}
-
 
 		public double Width {
 
-			get { return Size.Width; }
+			get { return size.Width; }
+			set {
+				size = new Size (value, size.Height);
+			}
 		}
 
-
-        public virtual double Top
-        {
-			get { return Location.Y; }
+		public virtual double Top {
+			
+			get { return location.Y; }
+			
+			set { 
+				location = new Point (Location.X, value);
+			}
 		}
 
 		public double Left {
 
-			get { return Location.X; }
+			get { return location.X; }
+			
+			set { 
+				location = new Point ( value, Location.Y);
+			}
 		}
 
-        public virtual double Bottom
-        {
-            get { return Location.Y + Size.Height; }
-        }
-		
-		
+		public virtual double Bottom {
+			get { return Location.Y + Size.Height; }
+		}
+
 		public bool IsVisible { get; set; }
-		
-		 
-		internal double measureBottomMarginFromSection(Section s){
+
+		internal double measureBottomMarginFromSection (Section s)
+		{
 			
-			 return  s.Height - (Location.Y +  Size.Height);
-		 
+			return  s.Height - (Location.Y + Size.Height);
+			
 		}
-		
-		public virtual void MoveControlByY(double y){
-			Location = new Point(this.Location.X,this.Location.Y + y);
+
+		public virtual void MoveControlByY (double y)
+		{
+			Location = new Point (this.Location.X,this.Location.Y + y);
 		}
-		
+
 		public abstract Control CreateControl ();
-		
-		
-		internal void CopyBasicProperties(Control c){
-			c.Location = new Point(Location.X,Location.Y);
-			c.Size = new Size(Size.Width,Size.Height);			
+
+		internal void CopyBasicProperties (Control c)
+		{
+			c.Location = new Point (Location.X,Location.Y);
+			c.Size = new Size (Size.Width,Size.Height);			
 			c.IsVisible = IsVisible;
-			c.BackgroundColor = new Color(BackgroundColor.R,BackgroundColor.G,BackgroundColor.B,BackgroundColor.A);
+			c.BackgroundColor = new Color (BackgroundColor.R,BackgroundColor.G,BackgroundColor.B,BackgroundColor.A);
 			c.TemplateControl = this;
 			
 		}
 
-        public virtual IEnumerable<Control> SplitControlAt(double y)
-        { 
-            return new Control[0];
-        }
-		
-		public virtual void AssignValue(IDataSource dataSource){
+		public virtual IEnumerable<Control> SplitControlAt (double y)
+		{ 
+			return new Control[0];
+		}
+
+		public virtual void AssignValue (IDataSource dataSource)
+		{
 			
 		}
-        
-    }
+		
+	}
 }

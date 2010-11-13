@@ -1,10 +1,10 @@
 // 
-// RenderState.cs
+// PixbufRepository.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,43 +24,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using MonoReports.Model;
+using Gdk;
 using System.Collections.Generic;
-using MonoReports.ControlView;
-using MonoReports.Model.Controls;
+
 namespace MonoReports.Core
 {
-	public class RenderState
+	public class PixbufRepository
 	{
-		public RenderState (){
-			CrossSectionControls = new List<ControlViewBase>();
+		public PixbufRepository ()
+		{
+			pixbufDictionary = new Dictionary<int, Pixbuf>();
 		}
-		bool render;
-		
-		public SectionView SectionView {get;set;}
-		public Section Section {get;set;}
-		public List<ControlViewBase> CrossSectionControls {get;set;}
 		
 		
-		public bool Render {
+		public Report Report {get;set;}
+		
+		
+		public Dictionary<int,Pixbuf> pixbufDictionary {get;set;}
+		
+		
+		public Pixbuf this [int index] {
 			get {
-				return this.render;
-			}
-			set {
-				render = value;
+				
+				if(!pixbufDictionary.ContainsKey(index)){
+					pixbufDictionary.Add(index,	 new Gdk.Pixbuf (Report.ResourceRepository[index]));
+				}
+
+				return pixbufDictionary[index];
 			}
 		}
-
-		bool isDesign;
 		
-		public bool IsDesign {
-			get {
-				return this.isDesign;
-			}
-			set {
-				isDesign = value;
+		public void AddOrUpdatePixbufAtIndex(int index) {
+			var pixbuf = new Gdk.Pixbuf (Report.ResourceRepository[index]);
+			if (pixbufDictionary.ContainsKey(index)) {
+				pixbufDictionary[index] = pixbuf;
+			} else {
+				pixbufDictionary.Add(index,pixbuf);
 			}
 		}
-
+		
+		public void DeletePixbufAtIndex(int index){
+			var pixbuf = pixbufDictionary[index];			
+			pixbufDictionary.Remove(index);
+			pixbuf.Dispose();			
+		}
+		
 		
 	}
 }

@@ -32,7 +32,7 @@ using MonoReports.Model;
 
 namespace MonoReports.Renderers
 {
-	public class TextBlockRenderer: IControlRenderer
+	public class TextBlockRenderer:  ControlRendererBase, IControlRenderer
 	{
 		public TextBlockRenderer ()
 		{
@@ -43,10 +43,13 @@ namespace MonoReports.Renderers
 		{
             TextBlock textBlock = control as TextBlock;
 			Rectangle borderRect;			
-			borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, textBlock.Height);	 						
-			var rect = c.DrawTextBlock (textBlock,true);
-				
-			if(textBlock.CanGrow && rect.Height > textBlock.Height || textBlock.CanShrink && rect.Height < textBlock.Height){
+			c.Save();
+			borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, textBlock.Height);	 
+			if(!textBlock.CanGrow || DesignMode)
+				c.ClipRectangle(borderRect);
+			
+			var rect = c.DrawTextBlock (textBlock,false);
+			if(!DesignMode && (textBlock.CanGrow && rect.Height > textBlock.Height || textBlock.CanShrink && rect.Height < textBlock.Height)){
 				borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, rect.Height);				
 			} else {
 				borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, textBlock.Height);								
@@ -55,15 +58,42 @@ namespace MonoReports.Renderers
 			c.FillRectangle(borderRect,textBlock.BackgroundColor.ToCairoColor());
 			c.DrawTextBlock (textBlock,true);
 			c.DrawInsideBorder  (borderRect, textBlock.Border,true);	
+			c.Restore();
 		}
 
         public Size Measure(Cairo.Context c, Control control)
 		{
             TextBlock textBlock = control as TextBlock;
-			var r = c.DrawTextBlock (textBlock,false);
-			return new Size(r.Width, r.Height);;
-		}						
-
+			Rectangle borderRect;
+			var rect = c.DrawTextBlock (textBlock,false);
+			
+			if(textBlock.CanGrow && rect.Height > textBlock.Height || textBlock.CanShrink && rect.Height < textBlock.Height){
+				borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, rect.Height);				
+			} else {
+				borderRect = new Rectangle (textBlock.Location.X, textBlock.Location.Y, textBlock.Width, textBlock.Height);								
+			}
+			
+			return new Size(borderRect.Width, borderRect.Height);
+		}
+		
+		
+		/// <summary>
+		/// Breaks off contol at most at height.
+		/// </summary>
+		/// <returns>
+		/// Array of two controls: broken control with height equal to height param or lower and second control representing rest part of oryginal control
+		/// </returns>
+		/// <param name='control'>
+		/// Control to broke off
+		/// </param>
+		/// <param name='height'>
+		/// Height.
+		/// </param>
+		public Control[] BreakOffControlAtMostAtHeight (Control control, double height) {
+			return new Control[]{null, control};
+		}
+		
+		
 	}
 }
 

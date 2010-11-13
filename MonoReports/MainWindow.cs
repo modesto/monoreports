@@ -63,17 +63,16 @@ public partial class MainWindow : Gtk.Window
 		var reportRenderer = new ReportRenderer(designService);
         reportRenderer.RegisterRenderer(typeof(TextBlock), new TextBlockRenderer());
         reportRenderer.RegisterRenderer(typeof(Line), new LineRenderer());
+		reportRenderer.RegisterRenderer(typeof(MonoReports.Model.Controls.Image), new ImageRenderer(){ PixbufRepository = designService.PixbufRepository});
 			
 		maindesignview1.ReportRenderer = reportRenderer;
-		
-		
-		
 		workspaceService.InvalidateDesignArea ();		
 		reportExplorer.DesignService = designService;
 		reportExplorer.Workspace = workspaceService;
 		toolBoxService.AddTool (new ZoomTool (designService));		
 		toolBoxService.AddTool (new LineTool (designService));		
 		toolBoxService.AddTool (new TextBlockTool (designService));
+		toolBoxService.AddTool (new SubreportTool (designService));
 		toolBoxService.AddTool (new SectionTool (designService));
 		toolBoxService.AddTool (new RectTool (designService));
 		toolBoxService.BuildToolBar (mainToolbar);
@@ -90,8 +89,9 @@ public partial class MainWindow : Gtk.Window
 			
 		var currentReport = new Report ();
 		
-		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock - mono zelot", FontColor = new Controls.Color(1,0,0),
-			CanGrow = true, Location = new Controls.Point (3, 3), Size = new Controls.Size (200, 80) });
+		currentReport.ReportHeaderSection.Controls.Add (
+			new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock - mono zelot", FontColor = new Controls.Color(1,0,0),
+			CanGrow = true, Location = new Controls.Point (1, 2), Size = new Controls.Size (200, 25) });
 		
 		
 		var _assembly = Assembly.GetExecutingAssembly ();				
@@ -99,27 +99,27 @@ public partial class MainWindow : Gtk.Window
 		byte[] bytes = new byte[_imageStream.Length];
 		_imageStream.Read (bytes, 0, (int)_imageStream.Length);		
 		currentReport.ResourceRepository.Add (bytes);
-		var img = new MonoReports.Model.Controls.Image { ImageIndex = 0, Location = new Controls.Point (3, 3), Size = new Controls.Size (300, 280) };
+		var img = new MonoReports.Model.Controls.Image { ImageIndex = 0, Location = new Controls.Point (3, 2), Size = new Controls.Size (298, 272) };
 		currentReport.DetailSection.Controls.Add (img);
 			
 		
 		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 24, FontName = "Helvetica", 
-			Text = "Second example section - żwawy żółw", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (123, 87), CanGrow = false, Size = new Controls.Size (160, 60) });
+			Text = "Second example section - żwawy żółw", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (123, 1), CanGrow = false, Size = new Controls.Size (160, 30) });
 		
-		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "third example text - chyży ślimak", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (300, 17), CanGrow = true, Size = new Controls.Size (100, 20) });
+		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "third example text - chyży ślimak", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (300, 7), CanGrow = true, Size = new Controls.Size (100, 20) });
 		
 		currentReport.DetailSection.Size = new Controls.Size (600, 300);
 		
-		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Chars", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (223, 42), Size = new Controls.Size (200, 30), FieldName = "Name", BackgroundColor = new Controls.Color(0,0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
+		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Chars", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (300, 42), Size = new Controls.Size (200, 30), FieldName = "Name", BackgroundColor = new Controls.Color(0,0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
 		CanGrow = true });
 		
-		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Surname", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (223, 12), Size = new Controls.Size (200, 30), FieldName = "Surname", BackgroundColor = new Controls.Color(1,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
+		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Surname", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (300, 12), Size = new Controls.Size (200, 30), FieldName = "Surname", BackgroundColor = new Controls.Color(1,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
 		CanGrow = true });
 		
-		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "fourth text - szybki jeż", FontColor = new Controls.Color(1,1,1), Location = new Controls.Point (23, 12), Size = new Controls.Size (400,70), BackgroundColor = new Controls.Color(0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 }, CanGrow = false });
+		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "fourth text - szybki jeż", FontColor = new Controls.Color(1,1,1), Location = new Controls.Point (23, 3), Size = new Controls.Size (400,25), BackgroundColor = new Controls.Color(0.2,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 }, CanGrow = false });
 		
 		
-		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 20), End = new Controls.Point (420, 10) });
+		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 1), End = new Controls.Point (200, 1) });
 		currentReport.AddGroup ("Age");
 		return currentReport;
 	}
@@ -201,10 +201,13 @@ public partial class MainWindow : Gtk.Window
 		workspaceService.InvalidateDesignArea ();
 	}
 
-	protected virtual void OnSortAscendingActionActivated (object sender, System.EventArgs e)
+	 
+	
+	protected virtual void OnMainPropertygridChanged (object sender, System.EventArgs e)
 	{
-		toolBoxService.SetToolByName ("CrossSectionLineTool");
+		workspaceService.InvalidateDesignArea();
 	}
+	
 	
 }
 

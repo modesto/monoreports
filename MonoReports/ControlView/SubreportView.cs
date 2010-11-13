@@ -34,7 +34,7 @@ using MonoReports.Renderers;
 
 namespace MonoReports.ControlView
 {
-	public class ImageView : ControlViewBase
+	public class SubreportView : ControlViewBase
 	{
 		
 		
@@ -42,40 +42,41 @@ namespace MonoReports.ControlView
 			get { return base.ControlModel; }
 			set {
 				base.ControlModel = value;
-				if (image != value) {
-					image = value as Image;	
+				if (subreport != value) {
+					subreport = value as SubReport;	
 				}
 			}
 		}
 		
-		public ImageRenderer ImageRenderer {get;set;}
+		public SubreportRenderer SubreportRenderer {get;set;}
 		
-		Image image;
+		SubReport subreport;
 		
-		public Model.Controls.Image Image {
-			get { return image; }
+		public Model.Controls.SubReport SubReport {
+			get { return subreport; }
 		}
 
-		public ImageView (MonoReports.Model.Controls.Image image, SectionView parentSection, PixbufRepository pixbufRepository): base(image)
+		public SubreportView (MonoReports.Model.Controls.SubReport subreport, SectionView parentSection): base(subreport)
 		{			
+			this.subreport = subreport;
 			this.ParentSection = parentSection;
-			AbsoluteBound = new Rectangle (parentSection.AbsoluteDrawingStartPoint.X + image.Location.X, parentSection.AbsoluteDrawingStartPoint.Y + image.Location.Y, image.Width, image.Height);			
-			ImageRenderer = new ImageRenderer(){ PixbufRepository = pixbufRepository, DesignMode = true};
+			AbsoluteBound = new Rectangle (parentSection.AbsoluteDrawingStartPoint.X + subreport.Location.X, parentSection.AbsoluteDrawingStartPoint.Y + subreport.Location.Y, subreport.Width, subreport.Height);			
+			SubreportRenderer = new SubreportRenderer(){  DesignMode = true};
 		}
 
 		
 		
 		public override string DefaultToolName {
 			get {
-				return "RectTool";
+				return "SubreportTool";
 			}
 		}
 
 		public override void Render (Context c)
 		{
-			ImageRenderer.Render(c,image);
-			AbsoluteBound = new Rectangle (ParentSection.AbsoluteDrawingStartPoint.X + image.Location.X , 
-			                               ParentSection.AbsoluteDrawingStartPoint.Y + image.Location.Y, image.Width, image.Height);		
+			SubreportRenderer.Render(c,subreport);
+			AbsoluteBound = new Rectangle (ParentSection.AbsoluteDrawingStartPoint.X + subreport.Location.X ,
+			                               ParentSection.AbsoluteDrawingStartPoint.Y + subreport.Location.Y, subreport.Width, subreport.Height);
 			 
 		}
 

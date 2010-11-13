@@ -87,7 +87,7 @@ namespace MonoReports.Tools
 			 
 			double y = 0;
 			SectionView previousSection = null;
-			
+			 
 			foreach (var sectionView in designService.SectionViews) {
 				
 				if(y > 0){
@@ -101,7 +101,7 @@ namespace MonoReports.Tools
 				}
 				previousSection = sectionView;
 			}
-			
+		 	designService.Height =  previousSection.AbsoluteBound.Y + previousSection.AbsoluteBound.Height;
 		}
 		
 	}

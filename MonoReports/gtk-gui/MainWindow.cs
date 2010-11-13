@@ -136,6 +136,7 @@ public partial class MainWindow
 		w5.Resize = false;
 		// Container child rightVPaned.Gtk.Paned+PanedChild
 		this.mainPropertygrid = new global::MonoDevelop.Components.PropertyGrid.PropertyGrid ();
+		this.mainPropertygrid.Events = ((global::Gdk.EventMask)(65536));
 		this.mainPropertygrid.Name = "mainPropertygrid";
 		this.mainPropertygrid.ShowToolbar = false;
 		this.mainPropertygrid.ShowHelp = false;
@@ -170,6 +171,6 @@ public partial class MainWindow
 		this.openAction.Activated += new global::System.EventHandler (this.OnOpenActionActivated);
 		this.saveAction.Activated += new global::System.EventHandler (this.OnSaveActionActivated);
 		this.editAction.Activated += new global::System.EventHandler (this.OnEditActionActivated);
-		this.sortAscendingAction.Activated += new global::System.EventHandler (this.OnSortAscendingActionActivated);
+		this.mainPropertygrid.Changed += new global::System.EventHandler (this.OnMainPropertygridChanged);
 	}
 }

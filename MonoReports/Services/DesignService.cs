@@ -40,9 +40,9 @@ namespace MonoReports.Services
 	{
 		public double Zoom { get; set; }
 
-		public int Width { get; private set; }
+		public double Width { get;  set; }
 
-		public int Height { get; private set; }
+		public double Height { get; set; }
 
 		public BaseTool SelectedTool {
 			get { return ToolBoxService.SelectedTool; } 
@@ -95,12 +95,41 @@ namespace MonoReports.Services
 			} 
 		}
 
-		internal Context CurrentContext;				
+		internal Context CurrentContext;	
+		
+		
+		ControlViewFactory controlViewFactory;
+
+		Report report;
+		
+		public Report Report {
+			get { return report;} 
+			set {
+				report = value;
+				initReport();
+				if(OnReportChanged != null)
+					OnReportChanged(this,new EventArgs());
+			}
+		}
+
+		private List<SectionView> sectionViews;
+
+		public IList<SectionView> SectionViews {
+			get { return sectionViews; }
+			private set {
+				;
+			}
+		}
+		
+		public PixbufRepository PixbufRepository{get;set;}
+		
+		
 
 		public DesignService (IWorkspaceService workspaceService, Report report)
 		{		
 			this.WorkspaceService = workspaceService;
 			controlViewFactory = new ControlViewFactory (this);
+			PixbufRepository = new PixbufRepository(){ Report = report};
 			IsDesign = true;
 			Zoom = 1;
 			Render = true;		
@@ -125,7 +154,7 @@ namespace MonoReports.Services
 
 		public void RedrawReport (Context c)
 		{
-			RenderState renderState = new RenderState (){ IsDesign = true, Render = true};
+			
 			CurrentContext = c;
 			
 			if (Zoom != 1) {
@@ -140,14 +169,7 @@ namespace MonoReports.Services
 			}
 			for (int i = 0; i < SectionViews.Count; i++) {
 				var renderedSection = SectionViews [i];
-				renderState.SectionView = renderedSection;
-				renderState.Section = renderedSection.Section;
-				
-				foreach (var crossControlView in renderedSection.DesignCrossSectionControlsToAdd)
-					renderState.CrossSectionControls.Add (crossControlView);
-				renderedSection.Render (CurrentContext, renderState);				
-				foreach (var crossControlView in renderedSection.DesignCrossSectionControlsToRemove)
-					renderState.CrossSectionControls.Remove (crossControlView);
+				renderedSection.Render (CurrentContext);								
 			}
 			if (SelectedTool != null) {
 				SelectedTool.OnAfterDraw (CurrentContext);
@@ -304,8 +326,7 @@ namespace MonoReports.Services
 					WorkspaceService.ShowInPropertyGrid (SelectedControl.ControlModel);
 			}
 			
-			WorkspaceService.InvalidateDesignArea (); 
-			
+			WorkspaceService.InvalidateDesignArea (); 			
 		}
 
 		public void NextPage ()
@@ -313,28 +334,7 @@ namespace MonoReports.Services
 			CurrentContext.ShowPage ();
 		}
 
-		ControlViewFactory controlViewFactory;
 
-		Report report;
-		
-		public Report Report {
-			get { return report;} 
-			set {
-				report = value;
-				initReport();
-				if(OnReportChanged != null)
-					OnReportChanged(this,new EventArgs());
-			}
-		}
-
-		private List<SectionView> sectionViews;
-
-		public IList<SectionView> SectionViews {
-			get { return sectionViews; }
-			private set {
-				;
-			}
-		}
 
 		private void addSectionView (Section section)
 		{
@@ -347,6 +347,7 @@ namespace MonoReports.Services
 			}
 			var sectionView = new SectionView (Report, controlViewFactory, section, sectionSpan);
 			sectionViews.Add (sectionView);
+			Height =  sectionView.AbsoluteBound.Y + sectionView.AbsoluteBound.Height;
 		}
 		
 	}

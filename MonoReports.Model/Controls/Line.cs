@@ -59,7 +59,7 @@ namespace MonoReports.Model.Controls
         {
             get
             {
-                return Math.Min(Location.Y,End.Y) + Size.Height;
+                return Math.Max(Location.Y,End.Y);
             }
         }
 		
