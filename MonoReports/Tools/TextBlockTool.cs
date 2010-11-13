@@ -37,7 +37,19 @@ namespace MonoReports.Tools
 		public override string Name {
 			get { return "TextBlockTool"; }
 		}
+				
 		
+		public override string ToolbarImageName {
+			get {
+				return "ToolText.png";
+			}
+		}
+		
+		public override bool IsToolbarTool {
+			get {
+				return true;
+			}
+		}
 		
 
 		public TextBlockTool (DesignService designService) :base(designService)
@@ -56,15 +68,6 @@ namespace MonoReports.Tools
 				
 		}
 
-		public override void BuildToolbar (Gtk.Toolbar toolBar)
-		{
-			ToolBarButton textBlockButton = new ToolBarButton ("ToolText.png","Text","Text tool");
-			textBlockButton.Clicked += delegate(object sender, EventArgs e) {
-				designService.SelectedTool = this;
-				this.CreateMode = true;
-			};
-			toolBar.Insert (textBlockButton, 1);		
-		}
 	}
 }
 

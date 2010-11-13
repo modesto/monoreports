@@ -31,10 +31,11 @@ using MonoReports.Core;
 using MonoReports.Extensions.CairoExtensions;
 using MonoReports.Model.Controls;
 using MonoReports.Services;
+using MonoReports.Gui.Widgets;
 
 namespace MonoReports.Tools
 {
-	public class SubreportTool : BaseTool
+	public class SubreportTool : RectTool
 	{
 		 
 			
@@ -74,7 +75,6 @@ namespace MonoReports.Tools
 				
 		}
 		
-	 
 
 	}
 }
