@@ -58,7 +58,9 @@ namespace MonoReports.Renderers
 		
 		public Control[] BreakOffControlAtMostAtHeight(Cairo.Context c, Control control, double height) {
 			Control[] controls = new Control[2];
-			controls[1] = control;
+			controls[1] = control.CreateControl();
+			//control.Height = height;
+			controls[0] = control.CreateControl();
 			return controls;
 		}
   

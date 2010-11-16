@@ -59,10 +59,7 @@ namespace MonoReports.Model.Controls
 			set;
 		}
 
-		public bool KeepTogether {
-			get;
-			set;
-		}
+	
 		
 	}
 }

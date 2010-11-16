@@ -32,8 +32,7 @@ namespace MonoReports.Model.Controls
 		bool CanGrow {get;set;}
 
 		bool CanShrink {get;set;}
-
-        bool KeepTogether { get; set; }
+      
 	}
 }
 
