@@ -3,3 +3,8 @@ C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports.Mode
 C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports.Model\obj\Debug\ResolveAssemblyReference.cache
 C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports.Model\obj\Debug\MonoReports.Model.dll
 C:\Documents and Settings\tomek\Desktop\Monoreports\Monoreports\MonoReports.Model\obj\Debug\MonoReports.Model.pdb
+C:\Documents and Settings\tomek\Pulpit\Monoreports\MonoReports.Model\bin\Debug\MonoReports.Model.dll
+C:\Documents and Settings\tomek\Pulpit\Monoreports\MonoReports.Model\bin\Debug\MonoReports.Model.pdb
+C:\Documents and Settings\tomek\Pulpit\Monoreports\MonoReports.Model\obj\Debug\ResolveAssemblyReference.cache
+C:\Documents and Settings\tomek\Pulpit\Monoreports\MonoReports.Model\obj\Debug\MonoReports.Model.dll
+C:\Documents and Settings\tomek\Pulpit\Monoreports\MonoReports.Model\obj\Debug\MonoReports.Model.pdb

@@ -59,6 +59,12 @@ namespace MonoReports.Renderers
 			Rectangle borderRect = new Rectangle (subreport.Location.X, subreport.Location.Y, subreport.Width, subreport.Height);
 			return new MonoReports.Model.Controls.Size(borderRect.Width,borderRect.Height);
 		}
+		
+		public Control[] BreakOffControlAtMostAtHeight(Cairo.Context c, Control control, double height) {
+			Control[] controls = new Control[2];
+			controls[1] = control;
+			return controls;
+		}
 		 
 	}
 }

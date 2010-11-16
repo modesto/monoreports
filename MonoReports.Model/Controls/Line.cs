@@ -53,6 +53,7 @@ namespace MonoReports.Model.Controls
             {
                 return Math.Min(Location.Y, End.Y);
             }
+          
         }
 
         public override double Bottom

@@ -36,10 +36,7 @@ namespace MonoReports.Model.Data
 	{
 		IEnumerable<T> data;
 		string[] sortingFields;
-		object current = null;
-		object next = null;
-		bool curentRes = false;
-		bool nextRes = false;
+    	bool nextRes = false;
 		IEnumerator enumerator;
 		int currentRowIndex = -1;
 		List<DataField> fields;
@@ -60,46 +57,42 @@ namespace MonoReports.Model.Data
 			this.data = data as IEnumerable<T>;
 			fields = new List<DataField> ();
 			propertiesDictionary = typeof(T).GetProperties ().ToDictionary (pi => pi.Name);
+            nextRes = true;
 		}
 
 
 
 		public string GetValue (string fieldName, string format)
-		{			
-			if (current != null && propertiesDictionary.ContainsKey (fieldName)) {
-				var property = propertiesDictionary[fieldName];
-				if (!string.IsNullOrEmpty (format))
-					return string.Format (format, property.GetValue (current, null));
-				else
-					return property.GetValue (current, null).ToString ();
-			}else {
-				return string.Empty;
+		{		
+	        
+			if (enumerator != null && propertiesDictionary.ContainsKey (fieldName)) {
+                if (nextRes)
+                {
+                    var property = propertiesDictionary[fieldName];
+                    if (!string.IsNullOrEmpty(format))
+                        return string.Format(format, property.GetValue(enumerator.Current, null));
+                    else
+                        return property.GetValue(enumerator.Current, null).ToString();
+                }
 			}
+
+			return string.Empty;
 		}
 
 
 		public bool MoveNext ()
 		{
-			if (enumerator == null)
-				enumerator = data.GetEnumerator ();
-			
-			if (CurrentRowIndex < 0) {
-				curentRes = enumerator.MoveNext ();
-				current = enumerator.Current;
-			} else {
-				current = next;
-				curentRes = nextRes;
-			}
-			if (curentRes) {
-				nextRes = enumerator.MoveNext ();
-				if (nextRes) {
-					next = enumerator.Current;
-				}
-			}
-			CurrentRowIndex++;
-			
-			
-			return curentRes;
+            if (enumerator == null)
+            {
+                enumerator = data.GetEnumerator();
+            }
+
+            if (nextRes)
+            {
+                nextRes = enumerator.MoveNext();
+                CurrentRowIndex++;
+            }
+            return nextRes;
 		}
 
 		bool isFirstOrdering;
@@ -127,25 +120,7 @@ namespace MonoReports.Model.Data
 			enumerator = data.GetEnumerator();
 		}
 
-
-//		 static IOrderedQueryable<W> ApplyOrder<W> (IQueryable<W> source, string property, string methodName)
-//		{
-//			string[] props = property.Split ('.');
-//			Type type = typeof(W);
-//			ParameterExpression arg = Expression.Parameter (type, "x");
-//			Expression expr = arg;
-//			foreach (string prop in props) {				
-//				PropertyInfo pi = type.GetProperty (prop);
-//				expr = Expression.Property (expr, pi);
-//				type = pi.PropertyType;
-//			}
-//			Type delegateType = typeof(Func<, >).MakeGenericType (typeof(W), type);
-//			LambdaExpression lambda = Expression.Lambda (delegateType, expr, arg);
-//			
-//			object result = typeof(Queryable).GetMethods ().Single (method => method.Name == methodName && method.IsGenericMethodDefinition && method.GetGenericArguments ().Length == 2 && method.GetParameters ().Length == 2).MakeGenericMethod (typeof(W), type).Invoke (null, new object[] { source, lambda });
-//			return (IOrderedQueryable<T>)result;
-//		}
-		
+ 
 		static IOrderedQueryable<K> ApplyOrder<K>(IQueryable<K> source, string property, string methodName) {
         string[] props = property.Split('.');
         Type type = typeof(K);
@@ -199,7 +174,7 @@ namespace MonoReports.Model.Data
 		}
 
 		public object Current {
-			get { return current; }
+            get { return enumerator.Current; }
 		}
 		
 		

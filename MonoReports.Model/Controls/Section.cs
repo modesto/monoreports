@@ -77,6 +77,7 @@ namespace MonoReports.Model.Controls
 			s.Name = Name;			 		 			
  			s.CanGrow = CanGrow;
 			s.CanShrink = CanShrink;
+            s.KeepTogether = KeepTogether;
 			foreach (Control ctrl in Controls) {
 				s.Controls.Add( ctrl.CreateControl() as Control);
 			}

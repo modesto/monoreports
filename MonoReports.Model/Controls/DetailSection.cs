@@ -43,8 +43,7 @@ namespace MonoReports.Model.Controls
 			CopyTo(ds);
 			return ds;
 		}
-		
-		public bool KeepTogether {get;set;}
+				
 	}
 }
 

@@ -89,8 +89,47 @@ namespace MonoReports.Renderers
 		/// <param name='height'>
 		/// Height.
 		/// </param>
-		public Control[] BreakOffControlAtMostAtHeight (Control control, double height) {
-			return new Control[]{null, control};
+		public Control[] BreakOffControlAtMostAtHeight (Cairo.Context c, Control control, double height) {
+			Control[] controls = new Control[2];
+			
+			TextBlock textBlock = control.CreateControl() as TextBlock;
+            controls[1] = textBlock;
+            var newTextBlock = control.CreateControl() as TextBlock;
+            textBlock.Top = 0;
+			int charNumber = c.GetBreakLineCharacterIndexbyMaxHeight (textBlock,height);
+			
+			if (charNumber > 0) {
+				newTextBlock.Text = textBlock.Text.Substring(0,charNumber-1);
+				var newSize = c.DrawTextBlock(newTextBlock,false);
+				newTextBlock.Height = newSize.Height;
+				textBlock.Height = textBlock.Height - newSize.Height;
+                textBlock.Text = textBlock.Text.Substring(charNumber);
+
+            }
+            else if (charNumber == 0)
+            {
+                newTextBlock.Height = textBlock.Padding.Top;
+                newTextBlock.Text = String.Empty;
+                textBlock.Height = textBlock.Height - newTextBlock.Height;
+            }            
+            else if (charNumber == -1) {
+				newTextBlock.Height = height;
+				newTextBlock.Text = String.Empty;
+				textBlock.Height = textBlock.Height - height;
+				textBlock.Padding =   new Padding(textBlock.Padding.Left,textBlock.Padding.Top - height,textBlock.Padding.Right,textBlock.Padding.Bottom);
+				
+			} else if (charNumber == -2) {
+				
+				newTextBlock.Height = height;
+                textBlock.Text = String.Empty;
+                textBlock.FieldName = String.Empty;
+				textBlock.Height = textBlock.Height - height;
+				textBlock.Padding =   new Padding(textBlock.Padding.Left,textBlock.Padding.Top - height,textBlock.Padding.Right,textBlock.Padding.Bottom);
+				
+			}
+			controls[0] = newTextBlock;
+			
+			return controls;
 		}
 		
 		

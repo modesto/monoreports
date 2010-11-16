@@ -123,10 +123,7 @@ namespace MonoReports.Model.Controls
 			
 		}
 
-		public virtual IEnumerable<Control> SplitControlAt (double y)
-		{ 
-			return new Control[0];
-		}
+		
 
 		public virtual void AssignValue (IDataSource dataSource)
 		{

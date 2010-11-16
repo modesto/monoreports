@@ -62,12 +62,10 @@ namespace MonoReports.Core
 		{
             Type controlType = control.GetType();
 			if(renderersDictionary.ContainsKey(controlType)){
-				var renderer = renderersDictionary[controlType] as IControlRenderer;
-                
+				var renderer = renderersDictionary[controlType] as IControlRenderer;                
 				return renderer.Measure(designService.CurrentContext,control);								
 			}
 			return default(Size);
- 
 		}
 
         public void RenderControl(Control control )
@@ -80,7 +78,17 @@ namespace MonoReports.Core
  
 		}
 
-		
+		public Control[] BreakOffControlAtMostAtHeight(Control control, double height){
+			Control[] controls = new Control[2];
+			
+			 Type controlType = control.GetType();
+			if(renderersDictionary.ContainsKey(controlType)){
+				var renderer = renderersDictionary[controlType] as IControlRenderer;							
+				 controls = renderer.BreakOffControlAtMostAtHeight(designService.CurrentContext,control,height);
+			}
+			
+			return controls;
+		}
 		
 	}
 }

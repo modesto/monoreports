@@ -710,14 +710,8 @@ namespace MonoReports.Extensions.CairoExtensions
 						
 		}
 		
-		
-		public static Rectangle DrawTextBlock (this Context g, TextBlock tb, bool render) {
-			
-		 	double topBottomSpan = tb.Padding.Top + tb.Padding.Bottom;
+		static Pango.Layout createLayoutFromTextBlock (Context g, TextBlock tb) {
 			double leftRightSpan = tb.Padding.Left + tb.Padding.Right;
-			g.Save ();
-			g.MoveTo (tb.Left + tb.Padding.Left, tb.Top + tb.Padding.Top);
-			g.Color = tb.FontColor.ToCairoColor();
 			Pango.Layout layout = Pango.CairoHelper.CreateLayout (g);
 			
 			layout.Wrap = Pango.WrapMode.Word;
@@ -733,35 +727,121 @@ namespace MonoReports.Extensions.CairoExtensions
 			layout.FontDescription = fd;
 		 
 			layout.Spacing = (int)(tb.LineSpan * Pango.Scale.PangoScale);
-			layout.Indent = (int)(0 * Pango.Scale.PangoScale);			
+			//layout.Indent = (int)(0 * Pango.Scale.PangoScale);			
 			layout.Alignment = ReportToPangoAlignment (tb.HorizontalAlignment);  
 			layout.SetText (tb.Text);
+			return layout;
+		}
 		
-			Pango.Rectangle unused = Pango.Rectangle.Zero;
-			Pango.Rectangle te = Pango.Rectangle.Zero;
-			layout.GetExtents (out unused, out te);		
+		
+		public static Rectangle DrawTextBlock (this Context g, TextBlock tb, bool render) {
 			
-			if (tb.VerticalAlignment == VerticalAlignment.Center) {
-					double height = te.Height / Pango.Scale.PangoScale;
-					if(height < tb.Height){
-						double sp = ((tb.Height  - (height + (tb.FontSize/2))) / 2) ;
-						g.MoveTo (tb.Left + tb.Padding.Left, tb.Top + tb.Padding.Top + sp);
-					}
-			}
+		 	double topBottomSpan = tb.Padding.Top + tb.Padding.Bottom;
+			double leftRightSpan = tb.Padding.Left + tb.Padding.Right;		
+			double vertAlgSpan = 0;
+			g.Save ();
+			Pango.Layout layout = createLayoutFromTextBlock(g,tb);
+			g.Color = tb.FontColor.ToCairoColor();
+			
+			Pango.Rectangle unused;
+			Pango.Rectangle te;			
+			layout.GetExtents (out unused, out te);
+			double measuredHeight = te.Height / Pango.Scale.PangoScale;
+			
+				if(tb.VerticalAlignment != VerticalAlignment.Top)
+				vertAlgSpan = measureVerticlaSpan(tb,measuredHeight);
+			
+			g.MoveTo (tb.Left + tb.Padding.Left, tb.Top + tb.Padding.Top + vertAlgSpan);
 			
 			if (render) {
 				Pango.CairoHelper.ShowLayout(g, layout);						
 			}
 			
 			layout.GetExtents (out unused, out te);
-			
 			(layout as IDisposable).Dispose();
-			
 			g.Restore ();
-		
 			return new Rectangle( tb.Left - tb.Padding.Left + te.X / Pango.Scale.PangoScale, tb.Top - tb.Padding.Top + te.Y / Pango.Scale.PangoScale, (te.Width / Pango.Scale.PangoScale) + leftRightSpan , (te.Height/ Pango.Scale.PangoScale) + topBottomSpan);
 						
 		}
+		
+		static double measureVerticlaSpan(TextBlock tb, double measuredHeight){
+			double vertAlgSpan = 0;
+			if (tb.VerticalAlignment == VerticalAlignment.Center) {
+					
+					double controlHeightWithoutPadding = (tb.Height - tb.Padding.Top) - tb.Padding.Bottom;
+				
+					if (measuredHeight < controlHeightWithoutPadding) {					 
+						vertAlgSpan = (controlHeightWithoutPadding  - measuredHeight) / 2;						
+					}
+			}else if (tb.VerticalAlignment == VerticalAlignment.Bottom) {
+				double controlHeightWithoutPadding = (tb.Height - tb.Padding.Bottom);
+				if (measuredHeight < controlHeightWithoutPadding) {	
+					vertAlgSpan = (controlHeightWithoutPadding  - measuredHeight) ;			
+				}
+			}
+			
+			return vertAlgSpan;
+		}
+		/// <summary>
+		/// Gets the height of the break line character indexby max.
+		/// </summary>
+		/// <returns>
+		/// The break line character indexby max height.
+		/// </returns>
+		/// <param name='g'>
+		/// G.
+		/// </param>
+		/// <param name='tb'>
+		/// Tb.
+		/// </param>
+		/// <param name='maxHeight'>
+		/// Max height.
+		/// </param>
+		public static int GetBreakLineCharacterIndexbyMaxHeight (this Context g,TextBlock tb, double maxHeight) {
+			
+			int result = 0;			
+			Pango.Rectangle unused;
+			Pango.Rectangle te;			
+			double vertAlgSpan = 0;	
+			int li = 0;
+			int chi = 0;				
+			int gi = 0;
+			int gin = 0;
+				
+			
+			if (maxHeight > 0) {
+				Pango.Layout layout = createLayoutFromTextBlock(g,tb);
+				layout.GetExtents (out unused, out te);						
+				double measuredHeight = te.Height / Pango.Scale.PangoScale;			
+				
+				if(tb.VerticalAlignment != VerticalAlignment.Top)
+					vertAlgSpan = measureVerticlaSpan(tb,measuredHeight);
+				
+
+				double realTbStart = tb.Padding.Top + vertAlgSpan;
+				
+				
+				if(realTbStart >= maxHeight)
+					return -1;
+				else if(maxHeight > realTbStart + measuredHeight)
+					return -2;
+
+                if (layout.XyToIndex(0, (int)((maxHeight - realTbStart) * Pango.Scale.PangoScale), out chi, out gi))
+                {
+                    return chi;
+						
+				} else {
+					li = -1;
+				}
+				 
+				
+				(layout as IDisposable).Dispose();
+				
+			}
+			
+			return result;
+		}
+			
 
 		public static void DrawPixbuf (this Context g, Gdk.Pixbuf pixbuf, PointD dest)
 		{

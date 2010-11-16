@@ -106,6 +106,7 @@ namespace MonoReports.Gui.Widgets
 					
 					}
 			};
+					
 			
 				
 		}

@@ -55,6 +55,12 @@ namespace MonoReports.Renderers
 			var r = c.DrawLine (p1, p2, line.BackgroundColor.ToCairoColor (), line.LineWidth, line.LineType,false);
             return new Size(r.Width, r.Height);
 		}
+		
+		public Control[] BreakOffControlAtMostAtHeight(Cairo.Context c, Control control, double height) {
+			Control[] controls = new Control[2];
+			controls[1] = control;
+			return controls;
+		}
   
     }
 }

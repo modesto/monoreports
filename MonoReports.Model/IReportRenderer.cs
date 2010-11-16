@@ -31,7 +31,8 @@ namespace MonoReports.Model
 	public interface IReportRenderer 
 	{
         Size MeasureControl (Control control);
-        void RenderControl (Control control);
+        void RenderControl (Control control);	
+		Control[] BreakOffControlAtMostAtHeight(Control control, double height);
 	}
 }
 
