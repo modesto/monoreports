@@ -106,10 +106,7 @@ namespace MonoReports.Model.Controls
 			
 		}
 
-		public virtual void MoveControlByY (double y)
-		{
-			Location = new Point (this.Location.X,this.Location.Y + y);
-		}
+	 
 
 		public abstract Control CreateControl ();
 

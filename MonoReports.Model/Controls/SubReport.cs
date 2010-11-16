@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using MonoReports.Model.Engine;
 
 namespace MonoReports.Model.Controls
 {
@@ -31,6 +32,14 @@ namespace MonoReports.Model.Controls
 	{
 		public SubReport ()
 		{
+			
+			Report = new Report();
+			
+			Report.Width = 100;
+			Report.Height = 120;
+			Report.ReportHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", 
+			Text = "Second example section - żwawy żółw", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (5, 1), CanGrow = false, Size = new Controls.Size (56, 30) });
+		
 		}
 		
 		public Report ParentReport {
@@ -62,6 +71,25 @@ namespace MonoReports.Model.Controls
 			subreport.ParentReport = ParentReport;
 			subreport.Report = Report;
 			return subreport;
+		}
+		
+		ReportEngine engine;
+		
+		public ReportEngine Engine {
+			get {
+				return this.engine;
+			}
+			set {
+				engine = value;
+			}
+		}
+
+		public bool ProcessUpToPage(IReportRenderer renderer, double height){
+			
+			engine = new ReportEngine(this.Report,renderer){ IsSubreport = true};
+			
+			
+			return engine.ProcessReportPage();
 		}
  
 		

@@ -41,18 +41,25 @@ namespace MonoReports.Model.Controls
 		public LineType LineType {get;set;}
 		
 		
-		public override void MoveControlByY (double y)
-		{
-			Location = new Point(this.Location.X,this.Location.Y + y);
-			End = new Point(this.End.X,this.End.Y + y);
-		}
-
+		 
         public override double Top
         {
             get
             {
                 return Math.Min(Location.Y, End.Y);
-            }
+            }set{
+				if(Location.Y == End.Y){
+					Location  = new Point(Location.X,value);
+					End  = new Point(Location.X,value);
+				} else if (Location.Y < End.Y) {
+					 End  = new Point(End.X, End.Y + (value - Location.Y));	
+					 Location  = new Point(Location.X,value);
+									
+				} else {
+				  	 Location  = new Point(Location.X, Location.Y + (value - End.Y));	
+					 End  = new Point(End.X,value);
+				}
+			}
           
         }
 

@@ -50,9 +50,19 @@ namespace MonoReports.Model.Engine
         List<Control> currentSectionOrderedControls = null;
         List<Control> currentSectionControlsBuffer = null;
         List<Control> currentPageFooterSectionControlsBuffer = null;
+
+		public List<Control> CurrentPageFooterSectionControlsBuffer {
+			get {
+				return this.currentPageFooterSectionControlsBuffer;
+			}
+			set {
+				currentPageFooterSectionControlsBuffer = value;
+			}
+		}
+
         List<Line> currentSectionExtendedLines = null;
         double spanCorrection = 0;
-        bool IsSubreport { get; set; }
+        public bool IsSubreport { get; set; }
         bool dataSourceHasNextRow = true;
         bool stop = false;
 
@@ -209,8 +219,9 @@ namespace MonoReports.Model.Engine
 
                 if (!result && currentSection.KeepTogether)
                     currentSectionControlsBuffer.Clear();
-
-                addControlsToCurrentPage(heightUsedOnCurrentPage);
+				
+				if(!IsSubreport)
+                	addControlsToCurrentPage(heightUsedOnCurrentPage);
 
                 heightLeftOnCurrentPage -= currentSection.Height;
                 heightUsedOnCurrentPage += currentSection.Height;
@@ -273,8 +284,12 @@ namespace MonoReports.Model.Engine
                 y = control.Top + span;
 
 
-                var controlSize = ReportRenderer.MeasureControl(control);
-
+                Size controlSize = ReportRenderer.MeasureControl(control);
+				if(control is SubReport){
+					SubReport sr = control as SubReport;
+					sr.ProcessUpToPage(this.ReportRenderer,heightTreshold);
+					currentSectionOrderedControls.AddRange(sr.Engine.currentSectionControlsBuffer);
+				}
 
                 foreach (SpanInfo item in currentSectionSpans)
                 {
@@ -288,9 +303,9 @@ namespace MonoReports.Model.Engine
                 ungrowedControlBottom = control.Bottom + span;
                 marginBottom = Math.Min(marginBottom, Math.Abs( currentSection.Height - control.Bottom));
                 maxControlBottom = Math.Max(maxControlBottom, control.Bottom);
-                control.MoveControlByY(span);
+                control.Top += span;
                 control.Size = controlSize;
-                if (control.Bottom + span <= heightTreshold)
+                if (control.Bottom  <= heightTreshold)
                 {
                     currentSectionControlsBuffer.Add(control);
 
@@ -324,9 +339,6 @@ namespace MonoReports.Model.Engine
                         currentSectionControlsBuffer.Add(control);
                     }
                 }
-
-            
-                ///mmm
 
                 if (maxHeight <= control.Bottom)
                 {
@@ -500,7 +512,7 @@ namespace MonoReports.Model.Engine
         {
             foreach (var control in controls)
             {
-                control.MoveControlByY(span);
+                control.Top += span;
                 currentPage.Controls.Add(control);
             }
         }
