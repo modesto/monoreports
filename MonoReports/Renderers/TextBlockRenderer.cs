@@ -99,11 +99,11 @@ namespace MonoReports.Renderers
 			int charNumber = c.GetBreakLineCharacterIndexbyMaxHeight (textBlock,height);
 			
 			if (charNumber > 0) {
-				newTextBlock.Text = textBlock.Text.Substring(0,charNumber-1);
-				var newSize = c.DrawTextBlock(newTextBlock,false);
+				newTextBlock.Text = textBlock.Text.Substring (0,charNumber-1);
+				var newSize = c.DrawTextBlock (newTextBlock, false);
 				newTextBlock.Height = newSize.Height;
 				textBlock.Height = textBlock.Height - newSize.Height;
-                textBlock.Text = textBlock.Text.Substring(charNumber);
+                textBlock.Text = textBlock.Text.Substring (charNumber-1);
 
             }
             else if (charNumber == 0)
@@ -116,7 +116,7 @@ namespace MonoReports.Renderers
 				newTextBlock.Height = height;
 				newTextBlock.Text = String.Empty;
 				textBlock.Height = textBlock.Height - height;
-				textBlock.Padding =   new Padding(textBlock.Padding.Left,textBlock.Padding.Top - height,textBlock.Padding.Right,textBlock.Padding.Bottom);
+				textBlock.Padding =   new Padding (textBlock.Padding.Left,textBlock.Padding.Top - height,textBlock.Padding.Right,textBlock.Padding.Bottom);
 				
 			} else if (charNumber == -2) {
 				
@@ -124,7 +124,7 @@ namespace MonoReports.Renderers
                 textBlock.Text = String.Empty;
                 textBlock.FieldName = String.Empty;
 				textBlock.Height = textBlock.Height - height;
-				textBlock.Padding =   new Padding(textBlock.Padding.Left,textBlock.Padding.Top - height,textBlock.Padding.Right,textBlock.Padding.Bottom);
+				textBlock.Padding =   new Padding (textBlock.Padding.Left,textBlock.Padding.Top - height,textBlock.Padding.Right,textBlock.Padding.Bottom);
 				
 			}
 			controls[0] = newTextBlock;

@@ -50,7 +50,7 @@ namespace MonoReports.Model.Controls
             }set{
 				if(Location.Y == End.Y){
 					Location  = new Point(Location.X,value);
-					End  = new Point(Location.X,value);
+                    End = new Point(End.X, value);
 				} else if (Location.Y < End.Y) {
 					 End  = new Point(End.X, End.Y + (value - Location.Y));	
 					 Location  = new Point(Location.X,value);
@@ -62,6 +62,13 @@ namespace MonoReports.Model.Controls
 			}
           
         }
+		
+		public override double Height {
+			get {
+				return Bottom - Top + LineWidth;
+			}
+			 
+		}
 
         public override double Bottom
         {

@@ -59,7 +59,7 @@ namespace MonoReports.Model.Controls
 
 		public Color BackgroundColor {get; set;}
 
-		public double Height {
+		public virtual double Height {
 
 			get { return size.Height; }
 			set {

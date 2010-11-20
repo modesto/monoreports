@@ -6,3 +6,5 @@ bin
 *.resharper
 *.pidb
 *.userprefs
+MonoReports/obj/Debug/*
+MonoReports.suo

@@ -783,10 +783,10 @@ namespace MonoReports.Extensions.CairoExtensions
 			return vertAlgSpan;
 		}
 		/// <summary>
-		/// Gets the height of the break line character indexby max.
+        /// Get character index after which layout should be broken to not exceed maxHeight
 		/// </summary>
 		/// <returns>
-		/// The break line character indexby max height.
+        ///  -1 if maxHeight is smaller than top padding. -2 if maxHeight is after text and character index if maxHeight is in the middle of the text.
 		/// </returns>
 		/// <param name='g'>
 		/// G.
@@ -797,18 +797,17 @@ namespace MonoReports.Extensions.CairoExtensions
 		/// <param name='maxHeight'>
 		/// Max height.
 		/// </param>
+
 		public static int GetBreakLineCharacterIndexbyMaxHeight (this Context g,TextBlock tb, double maxHeight) {
 			
 			int result = 0;			
 			Pango.Rectangle unused;
 			Pango.Rectangle te;			
 			double vertAlgSpan = 0;	
-			int li = 0;
 			int chi = 0;				
 			int gi = 0;
-			int gin = 0;
-				
-			
+
+		    
 			if (maxHeight > 0) {
 				Pango.Layout layout = createLayoutFromTextBlock(g,tb);
 				layout.GetExtents (out unused, out te);						
@@ -828,7 +827,10 @@ namespace MonoReports.Extensions.CairoExtensions
 
                 if (layout.XyToIndex(0, (int)((maxHeight - realTbStart) * Pango.Scale.PangoScale), out chi, out gi))
                 {
-                    return chi;
+                    byte[] bytes = System.Text.Encoding.UTF8.GetBytes(tb.Text);                            
+                    int o = System.Text.Encoding.UTF8.GetCharCount(bytes,0, chi);
+                    
+                    return o;
 						
 				} else {
 					li = -1;

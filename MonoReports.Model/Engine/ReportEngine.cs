@@ -43,7 +43,6 @@ namespace MonoReports.Model.Engine
         Page currentPage = null;
         double heightLeftOnCurrentPage = 0;
         double heightUsedOnCurrentPage = 0;
-        double currentY = 0;
         int currentGroupIndex = -1;
         Section currentSection = null;
         List<SpanInfo> currentSectionSpans = null;
@@ -118,7 +117,7 @@ namespace MonoReports.Model.Engine
 
             currentSectionSpans.Clear();
             currentSectionExtendedLines.Clear();
-            newSection.Location = new Point(s.Location.X, currentY);
+            newSection.Location = new Point(s.Location.X, 0);
             currentSection = newSection;
 
 
@@ -254,24 +253,27 @@ namespace MonoReports.Model.Engine
             double y = 0;
             double maxHeight = 0;
             double marginBottom = 0;
-            double maxControlBottom = 0;
+            double maxControlBottom = 0;       
             double tmpSpan = 0;
-            double ungrowedControlBottom = 0;
             bool result = true;
             double realBreak = 0;
             double breakControlMax = 0;
-
+            
             if (currentSectionOrderedControls.Count > 0)
-                marginBottom = double.MaxValue;
-
+            {
+                maxControlBottom = currentSectionOrderedControls.Max(ctrl => ctrl.Bottom);
+            }
+            marginBottom = currentSection.Height - maxControlBottom;
+           
             for (int i = 0; i < currentSectionOrderedControls.Count; i++)
             {
 
                 var control = currentSectionOrderedControls[i];
                 tmpSpan = 0;
-                ungrowedControlBottom = 0;
+              
                 if (!control.IsVisible)
                     continue;
+
                 if (control is Line && (control as Line).ExtendToBottom)
                 {
                     currentSectionExtendedLines.Add(control as Line);
@@ -282,9 +284,8 @@ namespace MonoReports.Model.Engine
 
 
                 y = control.Top + span;
-
-
                 Size controlSize = ReportRenderer.MeasureControl(control);
+
 				if(control is SubReport){
 					SubReport sr = control as SubReport;
 					sr.ProcessUpToPage(this.ReportRenderer,heightTreshold);
@@ -300,47 +301,51 @@ namespace MonoReports.Model.Engine
                 }
 
                 span = tmpSpan;
-                ungrowedControlBottom = control.Bottom + span;
-                marginBottom = Math.Min(marginBottom, Math.Abs( currentSection.Height - control.Bottom));
-                maxControlBottom = Math.Max(maxControlBottom, control.Bottom);
                 control.Top += span;
+                double bottomBeforeGrow = control.Bottom;
                 control.Size = controlSize;
+
+
                 if (control.Bottom  <= heightTreshold)
                 {
                     currentSectionControlsBuffer.Add(control);
-
                 }
                 else
                 {
-                    result = false;
-                    if (!currentSection.KeepTogether)
-                    {
-                        breakControlMax = control.Height - ((control.Top + control.Height) - heightTreshold);
-                        if(realBreak == 0)
-                            realBreak = heightTreshold;
-
-                        if (control.Top > heightTreshold)
-                        {
-                            storeSectionForNextPage();
-                            var controlToStore = control.CreateControl();
-                            controlToStore.Top -= realBreak;
-                            controlsFromPreviousSectionPage[currentSection.Name].Add(controlToStore);
-                            continue;
-                        }
                        
-                        storeSectionForNextPage();                      
-                        Control[] brokenControl = ReportRenderer.BreakOffControlAtMostAtHeight(control, breakControlMax);
-                        realBreak = heightTreshold - (breakControlMax - brokenControl[0].Height);
-                        controlsFromPreviousSectionPage[currentSection.Name].Add(brokenControl[1]);
-                        currentSectionControlsBuffer.Add(brokenControl[0]);
-                    }
-                    else
-                    {
-                        currentSectionControlsBuffer.Add(control);
-                    }
+                        result = false;
+                        if (!currentSection.KeepTogether)
+                        {
+                           
+                            breakControlMax = control.Height - ((control.Top + control.Height) - heightTreshold);
+                            if (realBreak == 0)
+                                realBreak = heightTreshold;
+
+                            if (control.Top > heightTreshold)
+                            {
+                                storeSectionForNextPage();
+                                var controlToStore = control.CreateControl();
+                                controlToStore.Top -= realBreak;
+                                controlsFromPreviousSectionPage[currentSection.Name].Add(controlToStore);
+                                sectionToStore.Height = Math.Max(sectionToStore.Height, controlToStore.Bottom + marginBottom);
+                                continue;
+                            }
+
+                            storeSectionForNextPage();
+                            Control[] brokenControl = ReportRenderer.BreakOffControlAtMostAtHeight(control, breakControlMax);
+                            realBreak = heightTreshold - (breakControlMax - brokenControl[0].Height);
+                            controlsFromPreviousSectionPage[currentSection.Name].Add(brokenControl[1]);
+                            currentSectionControlsBuffer.Add(brokenControl[0]);
+                            sectionToStore.Height = Math.Max(sectionToStore.Height, brokenControl[1].Bottom + marginBottom);
+                        }
+                        else
+                        {
+                            currentSectionControlsBuffer.Add(control);
+                        }
+                    
                 }
 
-                if (maxHeight <= control.Bottom)
+                if (currentSection.CanGrow && maxHeight <= control.Bottom)
                 {
                     maxHeight = control.Bottom;
                 }
@@ -348,8 +353,8 @@ namespace MonoReports.Model.Engine
                 currentSectionSpans.Add(
                 new SpanInfo
                 {
-                    Treshold = ungrowedControlBottom,
-                    Span = span + control.Bottom - ungrowedControlBottom
+                    Treshold = bottomBeforeGrow,
+                    Span = span + control.Bottom - bottomBeforeGrow
                 });
             }
 
@@ -368,14 +373,8 @@ namespace MonoReports.Model.Engine
             else if (heighWithMargin <= heightTreshold)
             {
                 currentSection.Height = heighWithMargin;
-            }
-            if (sectionToStore != null)
-            {
-                sectionToStore.Height = heighWithMargin - realBreak;
-            }
-            /* 3tk TODO extending line should be done in smarter way
-             * e.g. handling page break
-             * */
+            }           
+            
             foreach (Line lineItem in currentSectionExtendedLines)
             {
                 if (lineItem.Location.Y == lineItem.End.Y)
@@ -394,8 +393,14 @@ namespace MonoReports.Model.Engine
             }
 
             sectionToStore = null;
-            return result;
+            if (!currentSection.CanGrow)
+            {
+                controlsFromPreviousSectionPage.Remove(currentSection.Name);
+                result = true;
+            }
+           return result;
         }
+
         Section sectionToStore = null;
 
         void storeSectionForNextPage()
@@ -408,6 +413,7 @@ namespace MonoReports.Model.Engine
                 var controlsToNextPage = new List<Control>();
                 controlsToNextPage.Add(sectionToStore);
                 controlsFromPreviousSectionPage.Add(currentSection.Name, controlsToNextPage);
+                sectionToStore.Height = 0;
             }
         }
 
@@ -521,7 +527,6 @@ namespace MonoReports.Model.Engine
         {
             addControlsToCurrentPage(Report.Height - Report.PageFooterSection.Height, currentPageFooterSectionControlsBuffer);
             spanCorrection = 0;
-            currentY = 0;
             ReportContext.CurrentPageIndex++;
             currentPage = new Page { PageNumber = ReportContext.CurrentPageIndex };
             heightLeftOnCurrentPage = Report.Height;
