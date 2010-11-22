@@ -45,7 +45,15 @@ namespace MonoReports.Model.Controls
 			CopyBasicProperties (img);			
 			img.ImageIndex = ImageIndex;
 			img.Border = (Border)Border.Clone ();
+			img.Offset = new Point(offset.X,offset.Y);
 			return img;
+		}
+		
+		Point offset;
+
+		public Point Offset {
+			get { return offset; }
+			set { offset = value; }
 		}
 		
 		

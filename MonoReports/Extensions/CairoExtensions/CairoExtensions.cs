@@ -840,11 +840,11 @@ namespace MonoReports.Extensions.CairoExtensions
 		}
 			
 
-		public static void DrawPixbuf (this Context g, Gdk.Pixbuf pixbuf, PointD dest)
+		public static void DrawPixbuf (this Context g, Gdk.Pixbuf pixbuf, PointD dest, PointD offset)
 		{
 			g.Save ();
-
-			Gdk.CairoHelper.SetSourcePixbuf (g, pixbuf, dest.X, dest.Y);
+			 
+			Gdk.CairoHelper.SetSourcePixbuf (g, pixbuf, dest.X + offset.X, dest.Y + offset.Y);
 			g.Paint ();
 			g.Restore ();
 		}

@@ -52,7 +52,7 @@ namespace MonoReports.Renderers
 			borderRect = new Rectangle (image.Location.X, image.Location.Y, image.Width, image.Height);
 			c.FillRectangle (borderRect, image.BackgroundColor.ToCairoColor ());
 			var pixbuf = PixbufRepository[image.ImageIndex];
-			c.DrawPixbuf (pixbuf, image.Location.ToCairoPointD ());
+			c.DrawPixbuf (pixbuf, image.Location.ToCairoPointD (), image.Offset.ToCairoPointD ());
 			c.DrawInsideBorder (borderRect, image.Border, true);
 			c.Restore (); 
 		}
@@ -67,9 +67,10 @@ namespace MonoReports.Renderers
 		public Control[] BreakOffControlAtMostAtHeight(Cairo.Context c, Control control, double height) {
 			Control[] controls = new Control[2];
             var newControl = control.CreateControl();
-			var newControl1 = control.CreateControl();
+			var newControl1 = control.CreateControl() as Image;
 			newControl.Height = height;
             newControl1.Height = control.Height - height;
+			newControl1.Offset = new MonoReports.Model.Controls.Point(0,-height);
             newControl1.Top = 0;
             controls[1] = newControl1;
 			controls[0] = newControl;
