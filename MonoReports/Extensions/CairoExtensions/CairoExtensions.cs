@@ -830,13 +830,8 @@ namespace MonoReports.Extensions.CairoExtensions
                     byte[] bytes = System.Text.Encoding.UTF8.GetBytes(tb.Text);                            
                     int o = System.Text.Encoding.UTF8.GetCharCount(bytes,0, chi);
                     
-                    return o;
-						
-				} else {
-					li = -1;
-				}
-				 
-				
+                    return o;	
+				}  
 				(layout as IDisposable).Dispose();
 				
 			}
