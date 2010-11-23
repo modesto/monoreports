@@ -69,6 +69,17 @@ namespace MonoReports.Model.Controls
 			}
 			 
 		}
+		
+		public override double Left {
+			get {
+				return Math.Min(Location.X,End.X);
+			}
+			set {
+				double val = Math.Min(Location.X,End.X) - value;
+				Location = new Point(Location.X - val,Location.Y);
+				End = new Point(End.X - val,End.Y);
+			}
+		}
 
         public override double Bottom
         {
@@ -76,6 +87,18 @@ namespace MonoReports.Model.Controls
             {
                 return Math.Max(Location.Y,End.Y);
             }
+			set {
+				if(Location.Y == End.Y){
+					Location  = new Point(Location.X,value);
+                    End = new Point(End.X,  value);
+				} else if (Location.Y < End.Y) {
+					Location  = new Point(Location.X, Location.Y +  value - End.Y);
+					End  = new Point(End.X, value );		
+				} else {
+				  	 End  = new Point(End.X, End.Y + value - Location.Y);	
+					 Location  = new Point(Location.X,value);
+				}
+			}
         }
 		
 		#region implemented abstract members of MonoReports.Model.Controls.Control

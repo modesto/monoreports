@@ -147,6 +147,7 @@
     <Compile Include="ControlView\SubreportView.cs" />
     <Compile Include="Renderers\SubreportRenderer.cs" />
     <Compile Include="Tools\SubreportTool.cs" />
+    <Compile Include="Extensions\PropertyGridEditors\PointEditor.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -164,5 +165,8 @@
       <Project>{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}</Project>
       <Name>MonoReports.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\PropertyGridEditors\" />
   </ItemGroup>
 </Project>

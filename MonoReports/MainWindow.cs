@@ -76,6 +76,7 @@ public partial class MainWindow : Gtk.Window
 		toolBoxService.AddTool (new SectionTool (designService));
 		toolBoxService.AddTool (new RectTool (designService));
 		toolBoxService.BuildToolBar (mainToolbar);
+		
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)

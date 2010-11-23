@@ -84,7 +84,7 @@ namespace MonoReports.Model.Controls
 			}
 		}
 
-		public double Left {
+		public virtual double Left {
 
 			get { return location.X; }
 			
@@ -95,6 +95,7 @@ namespace MonoReports.Model.Controls
 
 		public virtual double Bottom {
 			get { return Location.Y + Size.Height; }
+			set {;}
 		}
 
 		public bool IsVisible { get; set; }

@@ -41,6 +41,7 @@ namespace MonoReports.Tools
 		protected bool endPointHit;
 		protected Line line;
 		protected SectionView currentSection = null;
+		const double lineDistance = 10;
 
 		public LineTool (DesignService designService) : base(designService)
 		{
@@ -143,10 +144,10 @@ namespace MonoReports.Tools
 				Cairo.PointD startDistance = new Cairo.PointD ( location.X - startPoint.X,  location.Y - startPoint.Y);
 				Cairo.PointD endDistance = new Cairo.PointD (line.End.X - startPoint.X,line.End.Y - startPoint.Y);
 			
-				if (startDistance.X < 8 && startDistance.X > -8 && startDistance.Y < 8 && startDistance.Y > -8) {
+				if (startDistance.X < lineDistance && startDistance.X > -lineDistance && startDistance.Y < lineDistance && startDistance.Y > -lineDistance) {
 					startPointHit = true;
 				} else {
-					if (endDistance.X < 8 && endDistance.X > -8 && endDistance.Y < 8 && endDistance.Y > -8)
+					if (endDistance.X < lineDistance && endDistance.X > -lineDistance && endDistance.Y < lineDistance && endDistance.Y > -lineDistance)
 						endPointHit = true;
 				}
 			}

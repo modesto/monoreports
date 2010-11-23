@@ -384,12 +384,19 @@ namespace MonoReports.Model.Engine
                 }
                 else if (lineItem.Location.Y > lineItem.End.Y)
                 {
-                    lineItem.Location = new Point(lineItem.Location.X, maxControlBottom + marginBottom);
+                    lineItem.Location = new Point(lineItem.Location.X, Math.Min( heighWithMargin , heightTreshold ));
                 }
                 else
                 {
-                    lineItem.End = new Point(lineItem.End.X, maxControlBottom + marginBottom);
+                    lineItem.End = new Point(lineItem.End.X,  Math.Min( heighWithMargin , heightTreshold ));
                 }
+				
+				if (heighWithMargin > heightTreshold) {
+					var newCtrl =  lineItem.CreateControl();
+					newCtrl.Top = 0;
+					storeSectionForNextPage();
+					controlsFromPreviousSectionPage[currentSection.Name].Add(newCtrl);
+				}
             }
 
             sectionToStore = null;
