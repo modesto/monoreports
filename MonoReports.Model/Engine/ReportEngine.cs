@@ -276,7 +276,8 @@ namespace MonoReports.Model.Engine
 
                 if (control is Line && (control as Line).ExtendToBottom)
                 {
-                    currentSectionExtendedLines.Add(control as Line);
+					var line = control as Line;
+                    currentSectionExtendedLines.Add(line);					
                 }
 
                 if (source != null)
@@ -392,7 +393,13 @@ namespace MonoReports.Model.Engine
                 }
 				
 				if (heighWithMargin > heightTreshold) {
+					
+					
+					
 					var newCtrl =  lineItem.CreateControl();
+					
+					if(lineItem.Location.Y == lineItem.End.Y)
+						lineItem.IsVisible = false;					
 					newCtrl.Top = 0;
 					storeSectionForNextPage();
 					controlsFromPreviousSectionPage[currentSection.Name].Add(newCtrl);
