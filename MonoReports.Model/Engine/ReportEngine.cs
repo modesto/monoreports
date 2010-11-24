@@ -383,8 +383,8 @@ namespace MonoReports.Model.Engine
             {
                 if (lineItem.Location.Y == lineItem.End.Y)
                 {
-                    lineItem.Location = new Point(lineItem.Location.X, maxControlBottom + marginBottom - lineItem.LineWidth / 2);
-                    lineItem.End = new Point(lineItem.End.X, maxControlBottom + marginBottom - lineItem.LineWidth / 2);
+                    lineItem.Location = new Point(lineItem.Location.X, heighWithMargin );
+                    lineItem.End = new Point(lineItem.End.X, heighWithMargin );
                 }
                 else if (lineItem.Location.Y > lineItem.End.Y)
                 {
