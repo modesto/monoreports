@@ -28,7 +28,7 @@ public partial class MainWindow
 	private global::MonoReports.Gui.Widgets.MainDesignView maindesignview1;
 	private global::Gtk.VPaned rightVPaned;
 	private global::MonoReports.Gui.Widgets.ReportExplorer reportExplorer;
-	private global::MonoDevelop.Components.PropertyGrid.PropertyGrid mainPropertygrid;
+	private global::PropertyGrid.PropertyGrid mainPropertygrid;
 	private global::Gtk.Statusbar bottomStatusbar;
 
 	protected virtual void Build ()
@@ -135,8 +135,7 @@ public partial class MainWindow
 		global::Gtk.Paned.PanedChild w5 = ((global::Gtk.Paned.PanedChild)(this.rightVPaned [this.reportExplorer]));
 		w5.Resize = false;
 		// Container child rightVPaned.Gtk.Paned+PanedChild
-		this.mainPropertygrid = new global::MonoDevelop.Components.PropertyGrid.PropertyGrid ();
-		this.mainPropertygrid.Events = ((global::Gdk.EventMask)(65536));
+		this.mainPropertygrid = new global::PropertyGrid.PropertyGrid ();
 		this.mainPropertygrid.Name = "mainPropertygrid";
 		this.mainPropertygrid.ShowToolbar = false;
 		this.mainPropertygrid.ShowHelp = false;

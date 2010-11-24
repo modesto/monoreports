@@ -7,4 +7,7 @@ bin
 *.pidb
 *.userprefs
 MonoReports/obj/Debug/*
+Propertygrid/bin/Debug/*
+Propertygrid/obj/Debug/*
+
 MonoReports.suo

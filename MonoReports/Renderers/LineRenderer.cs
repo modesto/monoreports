@@ -36,6 +36,7 @@ namespace MonoReports.Renderers
 	{
 		public LineRenderer ()
 		{
+			
 		}
 
 		public void Render (Cairo.Context c, Control control)

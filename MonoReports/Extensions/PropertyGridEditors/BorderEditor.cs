@@ -26,29 +26,30 @@
 using System;
 using MonoReports.Model.Controls;
 using PropertyGrid;
+using MonoReports.Model;
 
 namespace MonoReports.Extensions.PropertyGridEditors
 {
-	[PropertyEditorType (typeof (Point))]
-	public class PointEditorCell: PropertyEditorCell
+	[PropertyEditorType (typeof (Border))]
+	public class BorderEditorCell: PropertyEditorCell
 	{
 		protected override string GetValueText ()
 		{
-			return ((Point)Value).ToString ();
+			return ((Border)Value).ToString ();
 		}
 		
 		protected override IPropertyEditor CreateEditor (Gdk.Rectangle cell_area, Gtk.StateType state)
 		{
-			return new PointEditor ();
+			return new BorderEditor ();
 		}
 	}
 	
-	public class PointEditor: Gtk.HBox, IPropertyEditor
+	public class BorderEditor: Gtk.HBox, IPropertyEditor
 	{
 		Gtk.Entry entry;
-		Point point;
+		Border border;
 		
-		public PointEditor()
+		public BorderEditor()
 		{
 			entry = new Gtk.Entry ();
 			entry.Changed += OnChanged;
@@ -62,11 +63,11 @@ namespace MonoReports.Extensions.PropertyGridEditors
 		}
 		
 		public object Value {
-			get { return point; }
+			get { return border; }
 			set {
-				point = (Point) value;
+				border = (Border) value;
 				entry.Changed -= OnChanged;
-				entry.Text = String.Format("{0};{1}",point.X,point.Y);
+				entry.Text = String.Format("{0};{1};{2};{3}",border.LeftWidth,border.TopWidth,border.RightWidth,border.BottomWidth);
 				entry.Changed += OnChanged;
 			}
 		}
@@ -75,11 +76,14 @@ namespace MonoReports.Extensions.PropertyGridEditors
 		{
 			string s = entry.Text;
 				try {
-					if(s != null) {
-						s = s.Replace("[",String.Empty);
-						s = s.Replace("]",String.Empty);
+					if(s != null) {						 
 					    var doubles =  s.Split(';');
-					    point = new Point(double.Parse(doubles[0]),double.Parse(doubles[1])); 
+					    border = new Border(						
+							 double.Parse(doubles[0]),
+							double.Parse(doubles[1]),
+							 double.Parse(doubles[2]),
+							 double.Parse(doubles[3])
+						);
 					}
 					if (ValueChanged != null)
 						ValueChanged (this, a);

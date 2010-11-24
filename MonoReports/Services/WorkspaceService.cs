@@ -25,18 +25,20 @@
 // THE SOFTWARE.
 using System;
 using Gtk;
-using MonoDevelop.Components.PropertyGrid;
+using PropertyGrid;
+
 namespace MonoReports.Services
+	
 {
 	public class WorkspaceService : IWorkspaceService
 	{
 		
 		DrawingArea designArea;
 		DrawingArea previewArea;
-		PropertyGrid propertyGrid;
+		PropertyGrid.PropertyGrid propertyGrid;
 		Gtk.Window mainWindow;
 		
-		public WorkspaceService (Gtk.Window mainWindow, DrawingArea designArea,DrawingArea previewArea, PropertyGrid propertyGrid)
+		public WorkspaceService (Gtk.Window mainWindow, DrawingArea designArea,DrawingArea previewArea, PropertyGrid.PropertyGrid propertyGrid)
 		{
 			this.designArea = designArea;
 			this.previewArea = previewArea;

@@ -59,28 +59,25 @@
     <Compile Include="Controls\Image.cs" />
     <Compile Include="Controls\GroupHeaderSection.cs" />
     <Compile Include="Controls\GroupFooterSection.cs" />
-    <Compile Include="Controls\Point.cs" />
-    <Compile Include="Controls\Size.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Controls\ICrossSectionControl.cs" />
     <Compile Include="Data\DataRow.cs" />
     <Compile Include="LineType.cs" />
     <Compile Include="Data\DataField.cs" />
     <Compile Include="Data\ObjectDataSource.cs" />
-    <Compile Include="Controls\Color.cs" />
     <Compile Include="Controls\ReportFooterSection.cs" />
     <Compile Include="Controls\ReportHeaderSection.cs" />
     <Compile Include="Controls\PageBreak.cs" />
     <Compile Include="Controls\SubReport.cs" />
     <Compile Include="Controls\IResizable.cs" />
     <Compile Include="SectionType.cs" />
-    <Compile Include="Controls\Padding.cs" />
+    <Compile Include="Size.cs" />
+    <Compile Include="Padding.cs" />
+    <Compile Include="Color.cs" />
+    <Compile Include="Point.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <None Include="Errors.txt" />
-  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>
@@ -90,4 +87,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <ItemGroup>
+    <Folder Include="Controls\" />
+  </ItemGroup>
 </Project>

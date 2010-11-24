@@ -38,27 +38,41 @@ namespace MonoReports.Model
 			
 		}
 		
-		public double LeftWidth {get;set;}
-		public double TopWidth {get;set;}
-		public double RightWidth {get;set;}
-		public double BottomWidth {get;set;}
+		public Border (double left, double top, double right, double bottom)
+		{
+			_leftWidth = left;
+			_topWidth = top;
+			_rightWidth = right;
+			_bottomWidth = bottom;
+			Color = new Color(0,0,0);
+		}
+		
+		double _leftWidth;
+		public double LeftWidth {get { return _leftWidth; }set { _leftWidth = value; }}
+		double _topWidth;
+		public double TopWidth {get { return _topWidth; }set { _topWidth = value; }}
+		double _rightWidth;
+		public double RightWidth {get { return _rightWidth; }set { _rightWidth = value; }}
+		double _bottomWidth;
+		public double BottomWidth {get { return _bottomWidth; }set { _bottomWidth = value; }}
 		
 		public double WidthAll{
 			get {return LeftWidth;}
 			set {
-				LeftWidth = value;
-				TopWidth = value;
-				RightWidth = value;
-				BottomWidth = value;				
+				_leftWidth = value;
+				_topWidth = value;
+				_rightWidth = value;
+				_bottomWidth = value;				
 				}
 		}
 		
 		public Color Color {get;set;}
 		
-		#region ICloneable implementation
+	 
 		public object Clone ()
 		{
 			Border b = new Border();
+			
 			b.LeftWidth = LeftWidth;
 			b.RightWidth = RightWidth;
 			b.TopWidth = TopWidth;
@@ -66,6 +80,11 @@ namespace MonoReports.Model
 			b.Color =  new Color(Color.R,Color.G,Color.B,Color.A);
 			return b;
 		}
-		#endregion		
+		
+		public override string ToString ()
+		{
+			return string.Format ("[Border: Left={0}, Top={1}, Right={2}, Bottom={3}, Color={4}]", LeftWidth, TopWidth, RightWidth, BottomWidth, Color);
+		}
+		 
 	}
 }

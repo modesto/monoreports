@@ -77,6 +77,9 @@ public partial class MainWindow : Gtk.Window
 		toolBoxService.AddTool (new RectTool (designService));
 		toolBoxService.BuildToolBar (mainToolbar);
 		
+		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Controls.Point),typeof(MonoReports.Extensions.PropertyGridEditors.PointEditorCell));
+		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Border),typeof(MonoReports.Extensions.PropertyGridEditors.BorderEditorCell));
+		
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)

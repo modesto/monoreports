@@ -62,6 +62,9 @@ namespace MonoReports.Model.Engine
         List<Line> currentSectionExtendedLines = null;
         double spanCorrection = 0;
         public bool IsSubreport { get; set; }
+		
+		public Point SubreportLocation { get; set; }
+		
         bool dataSourceHasNextRow = true;
         bool stop = false;
 
@@ -219,8 +222,8 @@ namespace MonoReports.Model.Engine
                 if (!result && currentSection.KeepTogether)
                     currentSectionControlsBuffer.Clear();
 				
-				if(!IsSubreport)
-                	addControlsToCurrentPage(heightUsedOnCurrentPage);
+				
+                addControlsToCurrentPage(heightUsedOnCurrentPage);
 
                 heightLeftOnCurrentPage -= currentSection.Height;
                 heightUsedOnCurrentPage += currentSection.Height;
@@ -290,7 +293,7 @@ namespace MonoReports.Model.Engine
 				if(control is SubReport){
 					SubReport sr = control as SubReport;
 					sr.ProcessUpToPage(this.ReportRenderer,heightTreshold);
-					currentSectionOrderedControls.AddRange(sr.Engine.currentSectionControlsBuffer);
+					currentSectionOrderedControls.AddRange(sr.Engine.currentSectionOrderedControls);
 				}
 
                 foreach (SpanInfo item in currentSectionSpans)
@@ -526,13 +529,19 @@ namespace MonoReports.Model.Engine
             }
             currentSectionControlsBuffer.Clear();
         }
-
+		
+		
+		
 
         void addControlsToCurrentPage(double span, List<Control> controls)
         {
             foreach (var control in controls)
             {
-                control.Top += span;
+                control.Top += span;				
+				if (IsSubreport) {
+					control.Top += SubreportLocation.Y;
+					control.Left += SubreportLocation.X;
+				}
                 currentPage.Controls.Add(control);
             }
         }

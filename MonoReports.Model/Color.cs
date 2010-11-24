@@ -27,7 +27,7 @@ using System;
 
 namespace MonoReports.Model.Controls
 {
-	public  struct Color
+	public  struct Color : ICloneable
 	{
  
 	public Color (double r, double g, double b):this(r, g, b,1){
@@ -53,6 +53,11 @@ namespace MonoReports.Model.Controls
 
 	double a;
 	public double A { get { return a; } set { a = value; } }
+		
+	public object Clone ()
+	{
+		return new Color(r,g,b,a);		
+	}
 
 	}
 }

@@ -6,9 +6,9 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../../lib/MonoDevelop.Ide.dll" />
-    <widget-library name="../../lib/Mono.TextEditor.dll" />
     <widget-library name="../bin/Debug/MonoReports.exe" internal="true" />
+    <widget-library name="../../Propertygrid/bin/Debug/Propertygrid.dll" />
+    <widget-library name="../../../propertygrid/Propertygrid/bin/Debug/Propertygrid.dll" />
   </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="1027 697">
     <action-group name="Default">
@@ -177,9 +177,8 @@
                       </packing>
                     </child>
                     <child>
-                      <widget class="MonoDevelop.Components.PropertyGrid.PropertyGrid" id="mainPropertygrid">
+                      <widget class="PropertyGrid.PropertyGrid" id="mainPropertygrid">
                         <property name="MemberName" />
-                        <property name="Events">PropertyChangeMask</property>
                         <property name="ShowToolbar">False</property>
                         <property name="ShowHelp">False</property>
                         <signal name="Changed" handler="OnMainPropertygridChanged" />

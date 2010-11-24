@@ -69,7 +69,7 @@ namespace MonoReports.Model.Controls
 			subreport.CanGrow = CanGrow;
 			subreport.CanShrink = CanShrink;
 			subreport.ParentReport = ParentReport;
-			subreport.Report = Report;
+			subreport.Report = Report;			 
 			return subreport;
 		}
 		
@@ -86,7 +86,7 @@ namespace MonoReports.Model.Controls
 
 		public bool ProcessUpToPage(IReportRenderer renderer, double height){
 			
-			engine = new ReportEngine(this.Report,renderer){ IsSubreport = true};
+			engine = new ReportEngine(this.Report,renderer){ IsSubreport = true , SubreportLocation = this.Location };
 			
 			
 			return engine.ProcessReportPage();
