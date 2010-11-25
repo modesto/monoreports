@@ -205,8 +205,9 @@ new[]{ new { Name = ""Alfred"", Surname = ""Tarski"", Age = 33 },
 		var fileFilter = new FileFilter { Name = "Monoreports project" };
 		fileFilter.AddPattern ("*.mrp");
 		fc.AddFilter (fileFilter);
-		
+		designService.Report.DataSource = null;
 		if (fc.Run () == (int)ResponseType.Accept) {
+			
 			using (System.IO.FileStream file = System.IO.File.OpenWrite (fc.Filename)) {
 			
 				var serializedProject = JsonConvert.SerializeObject (designService.Report, Formatting.None, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
