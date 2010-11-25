@@ -61,7 +61,6 @@
     <Compile Include="Controls\GroupFooterSection.cs" />
     <Compile Include="Group.cs" />
     <Compile Include="Controls\ICrossSectionControl.cs" />
-    <Compile Include="Data\DataRow.cs" />
     <Compile Include="LineType.cs" />
     <Compile Include="Data\DataField.cs" />
     <Compile Include="Data\ObjectDataSource.cs" />
@@ -75,6 +74,7 @@
     <Compile Include="Padding.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="Point.cs" />
+    <Compile Include="Controls\IDataControl.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

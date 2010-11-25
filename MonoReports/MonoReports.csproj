@@ -67,6 +67,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\propertygrid\Propertygrid\bin\Debug\Propertygrid.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Addins, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -137,6 +138,7 @@
     <Compile Include="Tools\SubreportTool.cs" />
     <Compile Include="Extensions\PropertyGridEditors\PointEditor.cs" />
     <Compile Include="Extensions\PropertyGridEditors\BorderEditor.cs" />
+    <Compile Include="Extensions\PropertyGridEditors\PaddingEditor.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

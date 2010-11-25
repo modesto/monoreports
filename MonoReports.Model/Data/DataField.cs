@@ -38,6 +38,11 @@ namespace MonoReports.Model.Data
 			get;
 			set;
 		}
+		
+		public virtual string DefaultValue {
+			get { return string.Empty; }	
+			set {;}
+		}
 
 		public abstract string GetValue (object current);
 	}
@@ -78,6 +83,12 @@ namespace MonoReports.Model.Data
 			get { 
 				return propertyInfo != null ? true : false;
 			}
+		}
+		
+		string defaultValue;
+		public override  string DefaultValue {
+			get { return defaultValue; }
+			set { defaultValue = value; }
 		}
 
 		public override  string GetValue (object current)

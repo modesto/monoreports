@@ -39,9 +39,14 @@ namespace MonoReports.Gui.Widgets
 		}
 		
 		
-		public String PropertyName{
+		public String PropertyName {
 			get {return nameEntry.Text;  }
 			set {nameEntry.Text = value;  }
+		}
+		
+		public String DefaultValue {
+			get {return defaultValueEntry.Text;  }
+			set {defaultValueEntry.Text = value;  }
 		}
 		
 		protected virtual void OnNameEntryChanged (object sender, System.EventArgs e)

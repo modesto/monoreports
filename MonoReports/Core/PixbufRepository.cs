@@ -56,11 +56,13 @@ namespace MonoReports.Core
 		}
 		
 		public void AddOrUpdatePixbufAtIndex(int index) {
-			var pixbuf = new Gdk.Pixbuf (Report.ResourceRepository[index]);
-			if (pixbufDictionary.ContainsKey(index)) {
-				pixbufDictionary[index] = pixbuf;
-			} else {
-				pixbufDictionary.Add(index,pixbuf);
+			if (Report.ResourceRepository.Count > index) {
+				var pixbuf = new Gdk.Pixbuf (Report.ResourceRepository[index]);
+				if (pixbufDictionary.ContainsKey(index)) {
+					pixbufDictionary[index] = pixbuf;
+				} else {
+					pixbufDictionary.Add(index,pixbuf);
+				}
 			}
 		}
 		

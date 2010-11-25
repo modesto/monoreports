@@ -107,8 +107,6 @@ namespace MonoReports.Model.Controls
 			
 		}
 
-	 
-
 		public abstract Control CreateControl ();
 
 		internal void CopyBasicProperties (Control c)
@@ -118,14 +116,6 @@ namespace MonoReports.Model.Controls
 			c.IsVisible = IsVisible;
 			c.BackgroundColor = new Color (BackgroundColor.R,BackgroundColor.G,BackgroundColor.B,BackgroundColor.A);
 			c.TemplateControl = this;
-			
-		}
-
-		
-
-		public virtual void AssignValue (IDataSource dataSource)
-		{
-			
 		}
 		
 	}

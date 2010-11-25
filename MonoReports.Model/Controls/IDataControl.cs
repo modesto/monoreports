@@ -29,6 +29,21 @@ namespace MonoReports.Model.Controls
 {
 	public interface IDataControl
 	{
+		
+		string FieldName {
+			get;
+			set;
+		}
+ 
+		string FieldTextFormat {
+			get;
+			set;
+		}
+		
+		string Text {
+			get;
+			set;
+		}
 	}
 }
 

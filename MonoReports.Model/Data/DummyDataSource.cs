@@ -78,6 +78,13 @@ namespace MonoReports.Model.Data
 			}
 		}
  	
+	 
+
+		public bool ContainsField (string fieldName)
+		{
+			return false;
+		}
+		 
 	}
 }
 

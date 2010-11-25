@@ -33,6 +33,8 @@ using MonoReports.Model;
 using Cairo;
 using Gdk;
 using MonoReports.Extensions.CairoExtensions;
+using Mono.CSharp;
+using System.Reflection;
 
 namespace MonoReports.Gui.Widgets
 {
@@ -46,8 +48,17 @@ namespace MonoReports.Gui.Widgets
 				return this.designService;
 			}
 			set {
+				
 				designService = value;
+				if(designService != null) {
+					designService.OnReportChanged += HandleDesignServiceOnReportChanged;
+				}
 			}
+		}
+
+		void HandleDesignServiceOnReportChanged (object sender, EventArgs e)
+		{
+		   codeTextview.Buffer.Text = designService.Report.DataScript;
 		}
 
 		ReportRenderer reportRenderer;
@@ -107,7 +118,7 @@ namespace MonoReports.Gui.Widgets
 					}
 			};
 					
-			
+			initRepl();
 				
 		}
 
@@ -189,17 +200,8 @@ namespace MonoReports.Gui.Widgets
 		{
 			if (designService != null) {
 				if (args.PageNum == 1) {
-					designService.IsDesign = false;				
-					
-					 var logicians = new[] { new { Name = "Alfred", Surname = "Tarski", Age = 33 }, 
-                		new { Name = "Gotlob", Surname = "Frege", Age = 42 }, 
-                		new { Name = "Kurt", Surname = "Gödel", Age = 22 }, 
-                		new { Name = "Unknown ", Surname = "Logican", Age = 33 }, 
-                		new { Name = "Józef", Surname = "Bocheński", Age = 22 }, 
-                		new { Name = "Stanisław", Surname = "Leśniewski", Age = 79 }, 
-                		new { Name = "Saul", Surname = "Kripke", Age = 40 }, 
-                		new { Name = "George", Surname = "Boolos", Age = 79 } };
-					designService.Report.DataSource = logicians;
+					designService.IsDesign = false;		
+					Evaluate(codeTextview.Buffer.Text);
 					reportEngine = new ReportEngine (designService.Report, reportRenderer);
 					ImageSurface imagesSurface = new ImageSurface (Format.Argb32, (int)designService.Report.Width, (int)designService.Report.Height);
 					Cairo.Context cr = new Cairo.Context (imagesSurface);
@@ -223,7 +225,60 @@ namespace MonoReports.Gui.Widgets
 		{
 		}
 		
+		protected virtual void OnExecuteActionActivated (object sender, System.EventArgs e)
+		{
+			Evaluate(codeTextview.Buffer.Text);
+		}
 		
+		
+		void initRepl(){
+			Evaluator.MessageOutput = Console.Out;
+			
+			Evaluator.Init (new string[0]);
+			AppDomain.CurrentDomain.AssemblyLoad += delegate (object sender, AssemblyLoadEventArgs e)
+			{
+			
+				Evaluator.ReferenceAssembly (e.LoadedAssembly);			
+			};
+			
+			// Add all currently loaded assemblies
+//			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
+//				try {
+//					Evaluator.ReferenceAssembly (a);
+//				} catch (Exception exp) {
+//					Console.WriteLine (exp.ToString ());
+//				}
+//			}
+			
+			Evaluate ("using System; using System.Linq; using System.Collections.Generic; using System.Collections;");
+			
+		}
+		
+		
+		protected void Evaluate (string input)
+		{
+			
+			bool result_set;
+			object result;
+			
+			try {
+				input = Evaluator.Evaluate (input, out result, out result_set);
+				 
+				
+				if (result_set) {
+					
+					outputTextview.Buffer.Text = result.ToString ();
+					designService.Report.DataSource = result;
+					
+					//DesignService.Report.DataSource = result;
+					//updateTree ();
+				}
+			} catch (Exception e) {
+				outputTextview.Buffer.Text = e.ToString();				
+			}
+					
+			
+		}
 		
 	}
 }

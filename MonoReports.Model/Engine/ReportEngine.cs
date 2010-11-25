@@ -67,11 +67,13 @@ namespace MonoReports.Model.Engine
 		
         bool dataSourceHasNextRow = true;
         bool stop = false;
+		Dictionary<string,DataField> parameters;
 
         public ReportEngine(Report report, IReportRenderer renderer)
         {
             Report = report;
             source = Report._dataSource;
+			parameters = Report.Parameters.ToDictionary(rp=>rp.Name);
             if (source == null)
                 source = new DummyDataSource();
             ReportRenderer = renderer;
@@ -93,6 +95,19 @@ namespace MonoReports.Model.Engine
             {
                 nextPage();
             }
+			//3tk todo assign page number and totak number of pages
+			for (int i = 0; i < Report.Pages.Count;i++) {
+				foreach (var item in Report.Pages[i].Controls) {
+					if (item is IDataControl) {
+						IDataControl dc = item as IDataControl;
+						if(dc.FieldName == "#NumberOfPages") {
+							dc.Text = Report.Pages.Count.ToString();
+						}
+					}
+				}
+			}
+			
+			
             onAfterReportProcess();
         }
 
@@ -261,6 +276,7 @@ namespace MonoReports.Model.Engine
             bool result = true;
             double realBreak = 0;
             double breakControlMax = 0;
+			
             
             if (currentSectionOrderedControls.Count > 0)
             {
@@ -283,8 +299,22 @@ namespace MonoReports.Model.Engine
                     currentSectionExtendedLines.Add(line);					
                 }
 
-                if (source != null)
-                    control.AssignValue(source);
+                if (source != null && control is IDataControl) {
+					IDataControl dc = control as IDataControl;
+                    if (!string.IsNullOrEmpty(dc.FieldName)) {
+						
+						if(dc.FieldName.StartsWith("@")) {
+							dc.Text =  parameters[dc.FieldName].DefaultValue;
+						}else if (dc.FieldName.StartsWith("#")) {
+							if (dc.FieldName == "#PageNumber") {
+								dc.Text = ReportContext.CurrentPageIndex.ToString();
+							} else if (dc.FieldName == "#RowNumber") {
+								dc.Text = ReportContext.RowIndex.ToString();
+							}
+						} else if (source.ContainsField(dc.FieldName))
+							dc.Text =  source.GetValue(dc.FieldName,dc.FieldTextFormat);
+					}
+				}
 
 
                 y = control.Top + span;
@@ -438,6 +468,7 @@ namespace MonoReports.Model.Engine
         void nextRecord()
         {
             dataSourceHasNextRow = source.MoveNext();
+			ReportContext.RowIndex++;
         }
 
         void nextSection()

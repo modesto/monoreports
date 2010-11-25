@@ -45,6 +45,11 @@ namespace MonoReports.Model
 			get;
 			set;
 		}
+		
+		public int RowIndex {
+			get;
+			set;
+		}
  
 		public ReportMode ReportMode {get;set;}
 		

@@ -65,5 +65,8 @@ Global
 		$7.inheritsSet = Mono
 		$7.inheritsScope = text/plain
 		$7.scope = text/plain
+		$0.DotNetNamingPolicy = $8
+		$8.DirectoryNamespaceAssociation = None
+		$8.ResourceNamePolicy = FileFormatDefault
 	EndGlobalSection
 EndGlobal

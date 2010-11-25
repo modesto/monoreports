@@ -6,9 +6,9 @@
   </configuration>
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <widget-library name="../bin/Debug/MonoReports.exe" internal="true" />
-    <widget-library name="../../Propertygrid/bin/Debug/Propertygrid.dll" />
     <widget-library name="../../../propertygrid/Propertygrid/bin/Debug/Propertygrid.dll" />
+    <widget-library name="../../Propertygrid/bin/Debug/Propertygrid.dll" />
+    <widget-library name="../bin/Debug/MonoReports.exe" internal="true" />
   </import>
   <widget class="Gtk.Window" id="MainWindow" design-size="1027 697">
     <action-group name="Default">
@@ -223,7 +223,14 @@
     </child>
   </widget>
   <widget class="Gtk.Bin" id="MonoReports.Gui.Widgets.MainDesignView" design-size="733 573">
-    <action-group name="Default" />
+    <action-group name="Default">
+      <action id="executeAction">
+        <property name="Type">Action</property>
+        <property name="Label" translatable="yes" />
+        <property name="StockId">gtk-execute</property>
+        <signal name="Activated" handler="OnExecuteActionActivated" />
+      </action>
+    </action-group>
     <property name="MemberName" />
     <property name="Visible">False</property>
     <child>
@@ -231,7 +238,7 @@
         <property name="MemberName" />
         <property name="CanFocus">True</property>
         <property name="Events">ButtonPressMask, ButtonReleaseMask, KeyPressMask, KeyReleaseMask, FocusChangeMask, StructureMask</property>
-        <property name="CurrentPage">1</property>
+        <property name="CurrentPage">2</property>
         <signal name="SwitchPage" handler="OnMainNotebookSwitchPage" />
         <child>
           <widget class="Gtk.ScrolledWindow" id="designScrolledWindow">
@@ -327,6 +334,81 @@
             <property name="type">tab</property>
           </packing>
         </child>
+        <child>
+          <widget class="Gtk.VBox" id="vbox2">
+            <property name="MemberName" />
+            <property name="Spacing">6</property>
+            <child>
+              <widget class="Gtk.VPaned" id="vpaned1">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="Position">399</property>
+                <child>
+                  <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow">
+                    <property name="MemberName" />
+                    <property name="ShadowType">In</property>
+                    <child>
+                      <widget class="Gtk.TextView" id="codeTextview">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="ShowScrollbars">True</property>
+                        <property name="Text" translatable="yes" />
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="Resize">False</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="Gtk.ScrolledWindow" id="GtkScrolledWindow1">
+                    <property name="MemberName" />
+                    <property name="ShadowType">In</property>
+                    <child>
+                      <widget class="Gtk.TextView" id="outputTextview">
+                        <property name="MemberName" />
+                        <property name="CanFocus">True</property>
+                        <property name="ShowScrollbars">True</property>
+                        <property name="Text" translatable="yes" />
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+              <packing>
+                <property name="Position">0</property>
+                <property name="AutoSize">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Toolbar" id="toolbar1">
+                <property name="MemberName" />
+                <property name="ShowArrow">False</property>
+                <node name="toolbar1" type="Toolbar">
+                  <node type="Toolitem" action="executeAction" />
+                </node>
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="Position">2</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="datasourceLabel">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">datasource</property>
+          </widget>
+          <packing>
+            <property name="type">tab</property>
+          </packing>
+        </child>
       </widget>
     </child>
   </widget>
@@ -350,7 +432,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Dialog" id="MonoReports.Gui.Widgets.PropertyFieldEditor" design-size="320 145">
+  <widget class="Gtk.Dialog" id="MonoReports.Gui.Widgets.PropertyFieldEditor" design-size="320 178">
     <property name="MemberName" />
     <property name="Events">EnterNotifyMask, LeaveNotifyMask, FocusChangeMask, StructureMask, ProximityInMask, ProximityOutMask, SubstructureMask</property>
     <property name="ExtensionEvents">All</property>
@@ -371,7 +453,7 @@
         <child>
           <widget class="Gtk.Table" id="table1">
             <property name="MemberName" />
-            <property name="NRows">2</property>
+            <property name="NRows">3</property>
             <property name="NColumns">2</property>
             <property name="RowSpacing">6</property>
             <property name="ColumnSpacing">6</property>
@@ -380,6 +462,48 @@
                 <property name="MemberName" />
                 <property name="IsTextCombo">True</property>
                 <property name="Items" translatable="yes" />
+              </widget>
+              <packing>
+                <property name="TopAttach">2</property>
+                <property name="BottomAttach">3</property>
+                <property name="LeftAttach">1</property>
+                <property name="RightAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Label" id="dafValueLabel">
+                <property name="MemberName" />
+                <property name="LabelProp" translatable="yes">Deault Value</property>
+              </widget>
+              <packing>
+                <property name="TopAttach">1</property>
+                <property name="BottomAttach">2</property>
+                <property name="AutoSize">True</property>
+                <property name="XOptions">Fill</property>
+                <property name="YOptions">Fill</property>
+                <property name="XExpand">False</property>
+                <property name="XFill">True</property>
+                <property name="XShrink">False</property>
+                <property name="YExpand">False</property>
+                <property name="YFill">True</property>
+                <property name="YShrink">False</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="Gtk.Entry" id="defaultValueEntry">
+                <property name="MemberName" />
+                <property name="CanFocus">True</property>
+                <property name="IsEditable">True</property>
+                <property name="InvisibleChar">•</property>
               </widget>
               <packing>
                 <property name="TopAttach">1</property>
@@ -401,6 +525,7 @@
               <widget class="Gtk.Label" id="label1">
                 <property name="MemberName" />
                 <property name="LabelProp" translatable="yes">Name</property>
+                <property name="Justify">Right</property>
               </widget>
               <packing>
                 <property name="AutoSize">True</property>
@@ -415,13 +540,13 @@
               </packing>
             </child>
             <child>
-              <widget class="Gtk.Label" id="label2">
+              <widget class="Gtk.Label" id="label3">
                 <property name="MemberName" />
                 <property name="LabelProp" translatable="yes">Type</property>
               </widget>
               <packing>
-                <property name="TopAttach">1</property>
-                <property name="BottomAttach">2</property>
+                <property name="TopAttach">2</property>
+                <property name="BottomAttach">3</property>
                 <property name="AutoSize">True</property>
                 <property name="XOptions">Fill</property>
                 <property name="YOptions">Fill</property>

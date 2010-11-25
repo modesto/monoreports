@@ -94,8 +94,9 @@ namespace MonoReports.Gui.Widgets
 			exporerTreeview.Model = theModel;
 			
 			staticDataFieldsNode = theModel.AppendValues ("Static Fields");
-			theModel.AppendValues (staticDataFieldsNode, "PageNumber");
-			theModel.AppendValues (staticDataFieldsNode, "NumberOfPages");
+			theModel.AppendValues (staticDataFieldsNode, "#PageNumber");
+			theModel.AppendValues (staticDataFieldsNode, "#NumberOfPages");
+			theModel.AppendValues (staticDataFieldsNode, "#RowNumber");
 			
 			dataFieldsNode = theModel.AppendValues ("Data Fields");
 			
@@ -209,59 +210,6 @@ namespace MonoReports.Gui.Widgets
 			
 		}
 
-		/* 3tk
-			* TODO - Report explorer is not a good place to put REPL, i've to find another place for it
-			
-		void initRepl(){
-			Evaluator.MessageOutput = Console.Out;
-			
-			Evaluator.Init (new string[0]);
-			AppDomain.CurrentDomain.AssemblyLoad += delegate (object sender, AssemblyLoadEventArgs e)
-			{
-			
-				Evaluator.ReferenceAssembly (e.LoadedAssembly);			
-			};
-			
-			// Add all currently loaded assemblies
-			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
-				try {
-					Evaluator.ReferenceAssembly (a);
-				} catch (Exception exp) {
-					Console.WriteLine (exp.ToString ());
-				}
-			}
-			
-			Evaluate ("using System; using System.Linq; using System.Collections.Generic; using System.Collections;");
-			
-		}
-		
-		
-		
-		protected void Evaluate (string input)
-		{
-			
-			bool result_set;
-			object result;
-			
-			try {
-				input = Evaluator.Evaluate (input, out result, out result_set);
-				
-				if (result_set) {
-					
-					outputTextview.Buffer.Text = result.ToString ();
-					DesignService.Report.DataSource = result;
-					updateTree ();
-				}
-			} catch (Exception e) {
-				Console.WriteLine (e);
-				return null;
-			}
-			
-			return input;
-			
-		}
-			*/
-		
 		[GLib.ConnectBefore]
 		protected virtual void OnExporerTreeviewButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
@@ -290,7 +238,7 @@ namespace MonoReports.Gui.Widgets
 										DesignService.Report.Fields.Add (new PropertyDataField (){ Name = pfe.PropertyName});
 										updateFieldTree ();
 									}else{
-										DesignService.Report.Parameters.Add (new PropertyDataField (){ Name = pfe.PropertyName});
+										DesignService.Report.Parameters.Add (new PropertyDataField (){ Name = pfe.PropertyName, DefaultValue = pfe.DefaultValue });
 										updateParameterTree();
 									}
 									

@@ -162,9 +162,7 @@ namespace MonoReports.Model.Data
 		}
 
 
-		public bool IsLast {
-			get { return !nextRes; }
-		}
+		 
 
 		public void Reset ()
 		{
@@ -177,7 +175,10 @@ namespace MonoReports.Model.Data
             get { return enumerator.Current; }
 		}
 		
-		
+		public bool ContainsField (string fieldName)
+		{
+			return propertiesDictionary.ContainsKey(fieldName);
+		}
 	}
 }
 

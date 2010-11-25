@@ -121,7 +121,7 @@ namespace MonoReports.Services
 			}
 		}
 		
-		public PixbufRepository PixbufRepository{get;set;}
+		public PixbufRepository PixbufRepository {get;set;}
 		
 		
 
@@ -137,6 +137,7 @@ namespace MonoReports.Services
 		}
 		
 		void initReport(){
+			PixbufRepository.Report = report;
 			sectionViews = new List<SectionView> ();
 			addSectionView (report.ReportHeaderSection);
 			addSectionView (report.PageHeaderSection);

@@ -53,6 +53,8 @@ namespace MonoReports.Model
 		}
 
 		public string Title { get; set; }
+		
+		public string DataScript {get;set;}
 
 		public PageHeaderSection PageHeaderSection { get; set; }
 

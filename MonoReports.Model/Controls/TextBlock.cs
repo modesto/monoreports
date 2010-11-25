@@ -31,12 +31,12 @@ namespace MonoReports.Model.Controls
 {
 
 
-	public class TextBlock : Control,IResizable
+	public class TextBlock : Control,IResizable, IDataControl
 	{	
 
 		public TextBlock ():base()
 		{
-			Border = new Border() {WidthAll = 1, Color = new Color(0,0,0)};
+			Border = new Border() {WidthAll = 0, Color = new Color(0,0,0)};
 			FontName = "Helvetica";
 			FontColor = new Color(0,0,0);
 			FieldName = String.Empty;
@@ -92,6 +92,7 @@ namespace MonoReports.Model.Controls
 			textBlock.FontWeight =   FontWeight;
 			textBlock.FontColor =   new Color(FontColor.R,FontColor.G,FontColor.B,FontColor.A);
 			textBlock.FieldName =   FieldName;
+			textBlock.FieldTextFormat = FieldTextFormat;
 			textBlock.HorizontalAlignment =   HorizontalAlignment;
 			textBlock.VerticalAlignment =   VerticalAlignment;
 			textBlock.Text =   Text;
@@ -100,13 +101,6 @@ namespace MonoReports.Model.Controls
 		
 		#endregion
 		
-		
-		public override void AssignValue (IDataSource dataSource)
-		{		
-			if(!string.IsNullOrEmpty(this.FieldName) && dataSource != null){
-				 			
-				this.Text =  dataSource.GetValue(this.FieldName,FieldTextFormat);
-			}
-		}
+ 
 	}
 }

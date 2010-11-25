@@ -55,7 +55,7 @@ public partial class MainWindow : Gtk.Window
 	{
 		Build ();		
 		workspaceService = new WorkspaceService (this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
-		designService = new DesignService (workspaceService,exampleReport ());
+		designService = new DesignService (workspaceService,new Report());
 		toolBoxService = new ToolBoxService ();
 		designService.ToolBoxService = toolBoxService;
 		maindesignview1.DesignService = designService;
@@ -79,7 +79,9 @@ public partial class MainWindow : Gtk.Window
 		
 		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Controls.Point),typeof(MonoReports.Extensions.PropertyGridEditors.PointEditorCell));
 		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Border),typeof(MonoReports.Extensions.PropertyGridEditors.BorderEditorCell));
+		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Controls.Padding),typeof(MonoReports.Extensions.PropertyGridEditors.PaddingEditorCell));
 		
+		designService.Report = exampleReport();
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -92,6 +94,17 @@ public partial class MainWindow : Gtk.Window
 	{
 			
 		var currentReport = new Report ();
+		
+		
+		currentReport.DataScript = @"
+				new[] { new { Name = ""Alfred"", Surname = ""Tarski"", Age = 33 }, 
+                		new { Name =""Gotlob"", Surname = ""Frege"", Age = 42 }, 
+                		new { Name = ""Kurt"", Surname =""Gödel"", Age = 22 }, 
+                		new { Name = ""Unknown"", Surname = ""Logican"", Age = 33 }, 
+                		new { Name = ""Józef"", Surname = ""Bocheński"", Age = 22 }, 
+                		new { Name = ""Stanisław"", Surname = ""Leśniewski"", Age = 79 }, 
+                		new { Name = ""Saul"", Surname = ""Kripke"", Age = 40 }, 
+                		new { Name = ""George"", Surname = ""Boolos"", Age = 79 } };";
 		
 		currentReport.ReportHeaderSection.Controls.Add (
 			new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock - mono zelot", FontColor = new Controls.Color(1,0,0),
