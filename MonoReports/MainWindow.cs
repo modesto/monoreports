@@ -90,7 +90,7 @@ public partial class MainWindow : Gtk.Window
 			compilerService.Evaluate(designService.Report.DataScript,out r,out msg);					
 			designService.Report.DataSource = r;
 			
-			using (PdfSurface pdfSurface = new PdfSurface("report_" + DateTime.Now.ToShortTimeString() + ".pdf",designService.Report.Width,designService.Report.Height)){
+			using (PdfSurface pdfSurface = new PdfSurface("report_" + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + ".pdf",designService.Report.Width,designService.Report.Height)){
 				Cairo.Context cr = new Cairo.Context (pdfSurface);
 				ReportRenderer renderer = new ReportRenderer(cr);
 				renderer.RegisterRenderer(typeof(TextBlock), new TextBlockRenderer());
@@ -170,7 +170,7 @@ new[]{ new { Name = ""Alfred"", Surname = ""Tarski"", Age = 33 },
 		
 		
 		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 1), End = new Controls.Point (200, 1) });
-		currentReport.AddGroup ("Age");
+	//	currentReport.AddGroup ("Age");
 		return currentReport;
 	}
 

@@ -176,7 +176,13 @@ namespace MonoReports.Gui.Widgets
 			if (designService.IsDesign) {
 				DesignDrawingArea.GrabFocus();
 				workSpaceService.Status (String.Format ("press x:{0} y:{1} | xroot:{2} yroot:{3}", args.Event.X, args.Event.Y, args.Event.XRoot, args.Event.YRoot));
-				designService.ButtonPress (args.Event.X, args.Event.Y);
+				
+				int click = 1;
+				if (args.Event.Type == EventType.TwoButtonPress)
+					click = 2;
+				
+				designService.ButtonPress (args.Event.X, args.Event.Y, click);
+				 
 			}
 			
 		}

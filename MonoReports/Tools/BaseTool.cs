@@ -79,6 +79,11 @@ namespace MonoReports.Tools
 		{
 			
 		}
+		
+		public virtual void OnDoubleClick ()
+		{
+		 
+		}
 
 
 		public virtual void OnMouseUp ()

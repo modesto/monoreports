@@ -28,6 +28,7 @@ using MonoReports.Services;
 using MonoReports.Gui.Widgets;
 using MonoReports.Model.Controls;
 using MonoReports.ControlView;
+using Gtk;
 
 namespace MonoReports.Tools
 {
@@ -54,6 +55,23 @@ namespace MonoReports.Tools
 
 		public TextBlockTool (DesignService designService) :base(designService)
 		{
+		}
+		
+		public override void OnDoubleClick ()
+		{
+			TextEditorDialog ted = new TextEditorDialog ();
+			ted.Text = (designService.SelectedControl as TextBlockView).TextBlock.Text;
+							ted.Response += delegate(object oo, ResponseArgs argss) {						
+								if (argss.ResponseId == ResponseType.Ok) {
+									 
+									(designService.SelectedControl as TextBlockView).TextBlock.Text = ted.Text;
+									ted.Destroy ();
+									
+								} else {
+									ted.Destroy ();
+								}
+							};
+							ted.Show ();
 		}
 
 		public override void CreateNewControl (SectionView sectionView)

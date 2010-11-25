@@ -143,6 +143,8 @@
     <Compile Include="Extensions\PropertyGridEditors\BorderEditor.cs" />
     <Compile Include="Extensions\PropertyGridEditors\PaddingEditor.cs" />
     <Compile Include="Services\CompilerService.cs" />
+    <Compile Include="Gui\Widgets\TextEditorDialog.cs" />
+    <Compile Include="gtk-gui\MonoReports.Gui.Widgets.TextEditorDialog.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

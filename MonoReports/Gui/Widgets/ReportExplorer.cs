@@ -249,9 +249,11 @@ namespace MonoReports.Gui.Widgets
 									
 									pfe.Destroy ();
 									
+								}else {
+									pfe.Destroy ();
 								}
 							};
-							pfe.ShowNow ();
+							pfe.Show ();
 						}; 
 						
 						jBox.ShowAll ();

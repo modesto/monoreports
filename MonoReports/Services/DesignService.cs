@@ -226,12 +226,13 @@ namespace MonoReports.Services
 				WorkspaceService.InvalidateDesignArea ();			
 			}
 		}
+		
+		 
 
-		public void ButtonPress (double x, double y)
+		public void ButtonPress (double x, double y, int clicks)
 		{
 			StartPressPoint = new Cairo.PointD (x / Zoom, y / Zoom);
-			
-			
+						
 			IsPressed = true;
 			IsMoving = false;
 			
@@ -276,8 +277,13 @@ namespace MonoReports.Services
 			}
 
 			
-			if (SelectedTool != null)
-				SelectedTool.OnMouseDown ();
+			if (SelectedTool != null) {
+				if (clicks == 1) {
+					SelectedTool.OnMouseDown ();
+				}else {
+					SelectedTool.OnDoubleClick();
+				}
+			}
 			
 			WorkspaceService.InvalidateDesignArea ();
 			
