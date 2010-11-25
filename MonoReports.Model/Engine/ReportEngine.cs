@@ -336,6 +336,7 @@ namespace MonoReports.Model.Engine
 
                 span = tmpSpan;
                 control.Top += span;
+				double heightBeforeGrow = control.Height;
                 double bottomBeforeGrow = control.Bottom;
                 control.Size = controlSize;
 
@@ -360,6 +361,7 @@ namespace MonoReports.Model.Engine
                                 storeSectionForNextPage();
                                 var controlToStore = control.CreateControl();
                                 controlToStore.Top -= realBreak;
+							    controlToStore.Height = heightBeforeGrow;
                                 controlsFromPreviousSectionPage[currentSection.Name].Add(controlToStore);
                                 sectionToStore.Height = Math.Max(sectionToStore.Height, controlToStore.Bottom + marginBottom);
                                 continue;
