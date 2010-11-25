@@ -47,10 +47,13 @@ namespace MonoReports.Gui.Widgets
 	public partial class ReportExplorer : Gtk.Bin
 	{
 		Gtk.TreeStore theModel;
+		
+		Gtk.TreeIter reportNode;
 		Gtk.TreeIter staticDataFieldsNode;
 		Gtk.TreeIter dataFieldsNode;
 		Gtk.TreeIter groupsNode;
 		Gtk.TreeIter parametersNode;
+		Gtk.TreeIter imagesNode;
 		DesignService designService;
 
 		public DesignService DesignService {
@@ -102,16 +105,20 @@ namespace MonoReports.Gui.Widgets
 			theModel = new Gtk.TreeStore (typeof(string));	
 			exporerTreeview.Model = theModel;
 			
-			staticDataFieldsNode = theModel.AppendValues ("Static Fields");
+			reportNode =  theModel.AppendValues("Report");
+			staticDataFieldsNode = theModel.AppendValues (reportNode,"Static Fields");
 			theModel.AppendValues (staticDataFieldsNode, "#PageNumber");
 			theModel.AppendValues (staticDataFieldsNode, "#NumberOfPages");
 			theModel.AppendValues (staticDataFieldsNode, "#RowNumber");
 			
-			dataFieldsNode = theModel.AppendValues ("Data Fields");
 			
-			parametersNode = theModel.AppendValues ("Parameters");
+			dataFieldsNode = theModel.AppendValues (reportNode,"Data Fields");
 			
-			groupsNode = theModel.AppendValues ("Groups");
+			parametersNode = theModel.AppendValues (reportNode,"Parameters");
+			
+			groupsNode = theModel.AppendValues (reportNode,"Groups");
+			
+			imagesNode = theModel.AppendValues (reportNode,"Images");
 			
 			exporerTreeview.Selection.Changed += HandleExporerTreeviewSelectionChanged;
 
@@ -121,7 +128,7 @@ namespace MonoReports.Gui.Widgets
 			DragAction.Copy);
 			
 			exporerTreeview.RowActivated += HandleExporerTreeviewRowActivated;
-	
+			exporerTreeview.ExpandAll();
 		}
 
 		void HandleExporerTreeviewRowActivated (object o, RowActivatedArgs args)
@@ -164,7 +171,8 @@ namespace MonoReports.Gui.Widgets
 			foreach (var field in designService.Report.Fields) {
 				theModel.AppendValues (dataFieldsNode, field.Name);
 			}
-				
+			
+			exporerTreeview.ExpandRow(theModel.GetPath(dataFieldsNode),true);
 		}
 
 		void updateParameterTree ()
@@ -181,7 +189,7 @@ namespace MonoReports.Gui.Widgets
 			foreach (var parameter in designService.Report.Parameters) {
 				theModel.AppendValues (parametersNode, parameter.Name);
 			}
-				
+			exporerTreeview.ExpandRow(theModel.GetPath(parametersNode),true);				
 		}
 
 		void updateGroupTree ()
@@ -199,6 +207,25 @@ namespace MonoReports.Gui.Widgets
 				theModel.AppendValues (groupsNode, gr.GroupingFieldName);
 			}
 				
+		}
+		
+		void updateImageTree ()
+		{
+			TreeIter item;
+			if (theModel.IterChildren (out item, imagesNode)) {
+				int depth = theModel.IterDepth (imagesNode);
+	
+				while (theModel.Remove (ref item) && 
+					theModel.IterDepth (item) > depth)
+					;
+			}
+			int i=0;
+			foreach (var image in designService.Report.ResourceRepository) {
+				 
+				theModel.AppendValues (imagesNode, i);
+				i++;
+			}
+			exporerTreeview.ExpandRow(theModel.GetPath(imagesNode),true);				
 		}
 
 		protected virtual void OnUpdateFieldsFromDataSourceButtonButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
@@ -224,8 +251,9 @@ namespace MonoReports.Gui.Widgets
 			if (path != null) {
 				if (args.Event.Button == 3) { 					
 					Gtk.MenuItem addNewMenuItem = null;
-					int index = path.Indices [0];
-					if (index == 2 || index == 1 && path.Depth == 1) {
+					if(path.Depth > 1 ) {
+					int index = path.Indices [1];
+					if ((index == 2 || index == 1) && path.Depth == 2) {
 						Gtk.Menu jBox = new Gtk.Menu ();
 						if (index == 1) {
 							addNewMenuItem = new MenuItem ("add field");
@@ -258,10 +286,25 @@ namespace MonoReports.Gui.Widgets
 						
 						jBox.ShowAll ();
 						jBox.Popup ();	
-					
-					} 
-	
+					}else if (index == 4 && path.Depth == 2) {
+						 Gtk.Menu jBox = new Gtk.Menu ();
+						 
+							addNewMenuItem = new MenuItem ("add images");
+					}
 				} 
+	
+				} else if ( args.Event.Button == 1 ) {
+					
+					if (path.Depth == 3) {
+						int index = path.Indices [1];
+						
+						if (index == 1) {
+							Workspace.ShowInPropertyGrid( designService.Report.Fields[path.Indices[2]]);
+						} else if (index == 2) {
+							Workspace.ShowInPropertyGrid( designService.Report.Parameters[path.Indices[2]]);
+						}
+					}
+				}
 	
 				
 			}
