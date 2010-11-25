@@ -50,17 +50,21 @@ public partial class MainWindow : Gtk.Window
 	DesignService designService;
 	ToolBoxService toolBoxService;
 	WorkspaceService workspaceService;
+	CompilerService compilerService;
 
 	public MainWindow () : base(Gtk.WindowType.Toplevel)
 	{
-		Build ();		
+		Build ();
+		compilerService = new CompilerService();
 		workspaceService = new WorkspaceService (this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
 		designService = new DesignService (workspaceService,new Report());
 		toolBoxService = new ToolBoxService ();
 		designService.ToolBoxService = toolBoxService;
 		maindesignview1.DesignService = designService;
 		maindesignview1.WorkSpaceService = workspaceService;
-		var reportRenderer = new ReportRenderer(designService);
+		maindesignview1.Compiler = compilerService;
+		
+		var reportRenderer = new ReportRenderer(designService.CurrentContext);
         reportRenderer.RegisterRenderer(typeof(TextBlock), new TextBlockRenderer());
         reportRenderer.RegisterRenderer(typeof(Line), new LineRenderer());
 		reportRenderer.RegisterRenderer(typeof(MonoReports.Model.Controls.Image), new ImageRenderer(){ PixbufRepository = designService.PixbufRepository});
@@ -76,6 +80,34 @@ public partial class MainWindow : Gtk.Window
 		toolBoxService.AddTool (new SectionTool (designService));
 		toolBoxService.AddTool (new RectTool (designService));
 		toolBoxService.BuildToolBar (mainToolbar);
+ 		
+		
+		ToolBarButton toolButton = new ToolBarButton ("pdf.png","exportPdf","export to pdf");
+			toolButton.Clicked += delegate(object sender, EventArgs e) {
+			
+			object r;
+			string msg;
+			compilerService.Evaluate(designService.Report.DataScript,out r,out msg);					
+			designService.Report.DataSource = r;
+			
+			using (PdfSurface pdfSurface = new PdfSurface("report_" + DateTime.Now.ToShortTimeString() + ".pdf",designService.Report.Width,designService.Report.Height)){
+				Cairo.Context cr = new Cairo.Context (pdfSurface);
+				ReportRenderer renderer = new ReportRenderer(cr);
+				renderer.RegisterRenderer(typeof(TextBlock), new TextBlockRenderer());
+        		renderer.RegisterRenderer(typeof(Line), new LineRenderer());
+				renderer.RegisterRenderer(typeof(MonoReports.Model.Controls.Image), new ImageRenderer(){ PixbufRepository = designService.PixbufRepository});
+				MonoReports.Model.Engine.ReportEngine engine = new MonoReports.Model.Engine.ReportEngine(designService.Report,renderer);
+				engine.Process();
+				for (int i = 0; i < designService.Report.Pages.Count; ++i) {
+					renderer.RenderPage(designService.Report.Pages[i]);
+					cr.ShowPage();
+				}			
+				pdfSurface.Finish();
+			
+				}
+			};
+		
+		mainToolbar.Insert (toolButton,4);		
 		
 		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Controls.Point),typeof(MonoReports.Extensions.PropertyGridEditors.PointEditorCell));
 		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Border),typeof(MonoReports.Extensions.PropertyGridEditors.BorderEditorCell));
@@ -97,14 +129,15 @@ public partial class MainWindow : Gtk.Window
 		
 		
 		currentReport.DataScript = @"
-				new[] { new { Name = ""Alfred"", Surname = ""Tarski"", Age = 33 }, 
-                		new { Name =""Gotlob"", Surname = ""Frege"", Age = 42 }, 
-                		new { Name = ""Kurt"", Surname =""Gödel"", Age = 22 }, 
-                		new { Name = ""Unknown"", Surname = ""Logican"", Age = 33 }, 
-                		new { Name = ""Józef"", Surname = ""Bocheński"", Age = 22 }, 
-                		new { Name = ""Stanisław"", Surname = ""Leśniewski"", Age = 79 }, 
-                		new { Name = ""Saul"", Surname = ""Kripke"", Age = 40 }, 
-                		new { Name = ""George"", Surname = ""Boolos"", Age = 79 } };";
+new[]{ new { Name = ""Alfred"", Surname = ""Tarski"", Age = 33 }, 
+        new { Name =""Gotlob"", Surname = ""Frege"", Age = 42 }, 
+        new { Name = ""Kurt"", Surname =""Gödel"", Age = 22 }, 
+        new { Name = ""Unknown"", Surname = ""Logican"", Age = 33 }, 
+        new { Name = ""Józef"", Surname = ""Bocheński"", Age = 22 }, 
+        new { Name = ""Stanisław"", Surname = ""Leśniewski"", Age = 79 }, 
+        new { Name = ""Saul"", Surname = ""Kripke"", Age = 40 }, 
+        new { Name = ""George"", Surname = ""Boolos"", Age = 79 } 
+	 };";
 		
 		currentReport.ReportHeaderSection.Controls.Add (
 			new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock - mono zelot", FontColor = new Controls.Color(1,0,0),

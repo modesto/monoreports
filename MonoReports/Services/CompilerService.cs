@@ -24,6 +24,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Mono.CSharp;
 
 namespace MonoReports.Services
 {
@@ -31,6 +32,56 @@ namespace MonoReports.Services
 	{
 		public CompilerService ()
 		{
+		}
+		
+		
+		public void Init(){
+			Evaluator.MessageOutput = Console.Out;
+			
+			Evaluator.Init (new string[0]);
+			AppDomain.CurrentDomain.AssemblyLoad += delegate (object sender, AssemblyLoadEventArgs e)
+			{
+			
+				Evaluator.ReferenceAssembly (e.LoadedAssembly);			
+			};
+			
+			// Add all currently loaded assemblies
+			//			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
+			//				try {
+			//					Evaluator.ReferenceAssembly (a);
+			//				} catch (Exception exp) {
+			//					Console.WriteLine (exp.ToString ());
+			//				}
+			//			}
+			object obj;
+			string msg;
+			Evaluate ("using System; using System.Linq; using System.Collections.Generic; using System.Collections;",out obj,out msg);
+			
+		}
+ 
+		
+		
+		public bool Evaluate (string input, out object result, out string message)
+		{
+			
+			bool result_set = false;
+			object res = new object();
+			string m = String.Empty;
+			
+			try {
+				input = Evaluator.Evaluate (input, out res, out result_set);
+
+				if (result_set) {				
+					m = result.ToString ();					 
+				}
+			} catch (Exception e) {
+				m = e.ToString();		
+				
+			}
+			result = res;	
+			message = m;
+			return result_set;
+			
 		}
 	}
 }

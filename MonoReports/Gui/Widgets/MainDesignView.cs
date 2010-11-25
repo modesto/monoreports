@@ -55,6 +55,8 @@ namespace MonoReports.Gui.Widgets
 				}
 			}
 		}
+		
+		public CompilerService Compiler {get;set;}
 
 		void HandleDesignServiceOnReportChanged (object sender, EventArgs e)
 		{
@@ -116,9 +118,7 @@ namespace MonoReports.Gui.Widgets
 						designService.DropedField (fieldName, args.X, args.Y);
 					
 					}
-			};
-					
-			initRepl();
+			};								
 				
 		}
 
@@ -156,9 +156,11 @@ namespace MonoReports.Gui.Widgets
 			DrawingArea area = (DrawingArea)o;
 			if (designService.Report.Pages.Count > 0) {
 				Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
-			//Cairo.Context cr = new Cairo.Context (pdfSurface);
 				cr.Antialias = Cairo.Antialias.Gray;
+				
+				//3tk clean up CurrentContext in designService
 				designService.CurrentContext = cr;
+				reportRenderer.Context  = cr;
 				Cairo.Rectangle r = new Cairo.Rectangle(0,0,designService.Report.Width,designService.Report.Height);
 				cr.FillRectangle(r,backgroundPageColor);
 				reportRenderer.RenderPage (designService.Report.Pages [pageNumber]);
@@ -201,11 +203,15 @@ namespace MonoReports.Gui.Widgets
 			if (designService != null) {
 				if (args.PageNum == 1) {
 					designService.IsDesign = false;		
-					Evaluate(codeTextview.Buffer.Text);
-					reportEngine = new ReportEngine (designService.Report, reportRenderer);
+					evaluate ();
+
 					ImageSurface imagesSurface = new ImageSurface (Format.Argb32, (int)designService.Report.Width, (int)designService.Report.Height);
 					Cairo.Context cr = new Cairo.Context (imagesSurface);
 					designService.CurrentContext = cr;
+					reportRenderer.Context = cr;
+					reportEngine = new ReportEngine (designService.Report, reportRenderer);
+
+					
 					reportEngine.Process ();
 					(cr as IDisposable).Dispose ();
 					pageSpinButton.SpinButton.SetRange (1, designService.Report.Pages.Count);
@@ -227,55 +233,16 @@ namespace MonoReports.Gui.Widgets
 		
 		protected virtual void OnExecuteActionActivated (object sender, System.EventArgs e)
 		{
-			Evaluate(codeTextview.Buffer.Text);
+			evaluate();			
 			designService.RefreshDataFieldsFromDataSource();
 		}
 		
 		
-		void initRepl(){
-			Evaluator.MessageOutput = Console.Out;
-			
-			Evaluator.Init (new string[0]);
-			AppDomain.CurrentDomain.AssemblyLoad += delegate (object sender, AssemblyLoadEventArgs e)
-			{
-			
-				Evaluator.ReferenceAssembly (e.LoadedAssembly);			
-			};
-			
-			// Add all currently loaded assemblies
-			//			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
-			//				try {
-			//					Evaluator.ReferenceAssembly (a);
-			//				} catch (Exception exp) {
-			//					Console.WriteLine (exp.ToString ());
-			//				}
-			//			}
-			
-			Evaluate ("using System; using System.Linq; using System.Collections.Generic; using System.Collections;");
-			
-		}
-		
-		
-		protected void Evaluate (string input)
-		{
-			
-			bool result_set;
-			object result;
-			
-			try {
-				input = Evaluator.Evaluate (input, out result, out result_set);
-				 
-				
-				if (result_set) {
-					
-					outputTextview.Buffer.Text = result.ToString ();
-					designService.Report.DataSource = result;
-				}
-			} catch (Exception e) {
-				outputTextview.Buffer.Text = e.ToString();				
-			}
-					
-			
+		void evaluate() {			
+			object r;
+			string msg;
+			Compiler.Evaluate(codeTextview.Buffer.Text,out r,out msg);					
+			designService.Report.DataSource = r;
 		}
 		
 	}

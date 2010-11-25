@@ -36,15 +36,25 @@ namespace MonoReports.Core
 	public class ReportRenderer : IReportRenderer
 	{
 		Dictionary<Type, object> renderersDictionary;
-		DesignService designService;		
+		Cairo.Context context;		
 		
+		public Cairo.Context Context {
+			get {
+				return this.context;
+			}
+			set {
+				context = value;
+			}
+		}
+
 		public void RegisterRenderer(Type t,IControlRenderer renderer){
 			renderersDictionary.Add(t,renderer);
 		}
 		
-		public ReportRenderer (DesignService designService)
+		public ReportRenderer (Cairo.Context context)
 		{
-			this.designService = designService;
+			this.context = context;
+			
 			renderersDictionary = new Dictionary<Type, object>();
 		} 
 
@@ -63,7 +73,7 @@ namespace MonoReports.Core
             Type controlType = control.GetType();
 			if(renderersDictionary.ContainsKey(controlType)){
 				var renderer = renderersDictionary[controlType] as IControlRenderer;                
-				return renderer.Measure(designService.CurrentContext,control);								
+				return renderer.Measure(context,control);								
 			}
 			return default(Size);
 		}
@@ -73,7 +83,7 @@ namespace MonoReports.Core
             Type controlType = control.GetType();
 			if(renderersDictionary.ContainsKey(controlType)){
 				var renderer = renderersDictionary[controlType] as IControlRenderer;							
-				renderer.Render(designService.CurrentContext,control);								
+				renderer.Render(context,control);								
 			}
  
 		}
@@ -84,7 +94,7 @@ namespace MonoReports.Core
 			 Type controlType = control.GetType();
 			if(renderersDictionary.ContainsKey(controlType)){
 				var renderer = renderersDictionary[controlType] as IControlRenderer;							
-				 controls = renderer.BreakOffControlAtMostAtHeight(designService.CurrentContext,control,height);
+				 controls = renderer.BreakOffControlAtMostAtHeight(context,control,height);
 			}
 			
 			return controls;

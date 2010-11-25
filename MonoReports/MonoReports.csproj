@@ -85,6 +85,9 @@
     <EmbeddedResource Include="Resources\ToolSubreport.png">
       <LogicalName>ToolSubreport.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\pdf.png">
+      <LogicalName>pdf.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -139,6 +142,7 @@
     <Compile Include="Extensions\PropertyGridEditors\PointEditor.cs" />
     <Compile Include="Extensions\PropertyGridEditors\BorderEditor.cs" />
     <Compile Include="Extensions\PropertyGridEditors\PaddingEditor.cs" />
+    <Compile Include="Services\CompilerService.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
