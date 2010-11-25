@@ -60,21 +60,30 @@ namespace MonoReports.Gui.Widgets
 				
 			set { 	
 				
-				if(designService != null)
-					designService.OnReportChanged -= HandleDesignServiceOnReportChanged;
+				if (designService != null) {
+					designService.OnReportChanged -= HandleDesignServiceOnReportChanged;	
+					designService.OnReportDataFieldsRefreshed -= HandleDesignServiceOnReportDataFieldsRefreshed;
+				}
 				
 				designService = value; 
 				
-				if(designService != null)
-					designService.OnReportChanged += HandleDesignServiceOnReportChanged;
+				if (designService != null) {
+					designService.OnReportChanged += HandleDesignServiceOnReportChanged;				
+					designService.OnReportDataFieldsRefreshed += HandleDesignServiceOnReportDataFieldsRefreshed;
+				}
 			}
 		}
 
+		void HandleDesignServiceOnReportDataFieldsRefreshed (object sender, EventArgs e)
+		{
+			updateFieldTree ();
+		}
+ 
 		void HandleDesignServiceOnReportChanged (object sender, EventArgs e)
 		{
-			updateFieldTree();
-			updateParameterTree();
-			updateGroupTree();
+			updateFieldTree ();
+			updateParameterTree ();
+			updateGroupTree ();
 		}
 
 		public IWorkspaceService Workspace {get; set;}
@@ -157,8 +166,7 @@ namespace MonoReports.Gui.Widgets
 			}
 				
 		}
-		
-		
+
 		void updateParameterTree ()
 		{
 			TreeIter item;
@@ -175,7 +183,7 @@ namespace MonoReports.Gui.Widgets
 			}
 				
 		}
-		
+
 		void updateGroupTree ()
 		{
 			TreeIter item;
@@ -193,8 +201,6 @@ namespace MonoReports.Gui.Widgets
 				
 		}
 
-		
-		
 		protected virtual void OnUpdateFieldsFromDataSourceButtonButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
 		{
 			
@@ -221,11 +227,10 @@ namespace MonoReports.Gui.Widgets
 					int index = path.Indices [0];
 					if (index == 2 || index == 1 && path.Depth == 1) {
 						Gtk.Menu jBox = new Gtk.Menu ();
-						if(index == 1){
+						if (index == 1) {
 							addNewMenuItem = new MenuItem ("add field");
-							 
-						}
-						else{
+								
+						} else {
 							addNewMenuItem = new MenuItem ("add parameter");								
 						}
 						jBox.Add (addNewMenuItem);		
@@ -233,13 +238,13 @@ namespace MonoReports.Gui.Widgets
 						addNewMenuItem.Activated += delegate(object sender, EventArgs e) {					
 							PropertyFieldEditor pfe = new PropertyFieldEditor ();
 							pfe.Response += delegate(object oo, ResponseArgs argss) {						
-								if (argss.ResponseId == ResponseType.Ok){
-									if(index == 1){
+								if (argss.ResponseId == ResponseType.Ok) {
+									if (index == 1){
 										DesignService.Report.Fields.Add (new PropertyDataField (){ Name = pfe.PropertyName});
 										updateFieldTree ();
-									}else{
+									}else {
 										DesignService.Report.Parameters.Add (new PropertyDataField (){ Name = pfe.PropertyName, DefaultValue = pfe.DefaultValue });
-										updateParameterTree();
+										updateParameterTree ();
 									}
 									
 									pfe.Destroy ();

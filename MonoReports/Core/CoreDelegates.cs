@@ -25,10 +25,9 @@
 // THE SOFTWARE.
 using System;
 namespace MonoReports.Core
-{
-	
-	public delegate  void   SelectedControlChanged(object sender, EventArgs e);
-	
+{	
+	public delegate  void   SelectedControlChanged(object sender, EventArgs e);	
+	public delegate  void   ReportDataFieldsRefreshed(object sender, EventArgs e);	
 	public delegate  void   ReportChanged(object sender, EventArgs e);
 }
 

@@ -228,6 +228,7 @@ namespace MonoReports.Gui.Widgets
 		protected virtual void OnExecuteActionActivated (object sender, System.EventArgs e)
 		{
 			Evaluate(codeTextview.Buffer.Text);
+			designService.RefreshDataFieldsFromDataSource();
 		}
 		
 		
@@ -242,13 +243,13 @@ namespace MonoReports.Gui.Widgets
 			};
 			
 			// Add all currently loaded assemblies
-//			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
-//				try {
-//					Evaluator.ReferenceAssembly (a);
-//				} catch (Exception exp) {
-//					Console.WriteLine (exp.ToString ());
-//				}
-//			}
+			//			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
+			//				try {
+			//					Evaluator.ReferenceAssembly (a);
+			//				} catch (Exception exp) {
+			//					Console.WriteLine (exp.ToString ());
+			//				}
+			//			}
 			
 			Evaluate ("using System; using System.Linq; using System.Collections.Generic; using System.Collections;");
 			
@@ -269,9 +270,6 @@ namespace MonoReports.Gui.Widgets
 					
 					outputTextview.Buffer.Text = result.ToString ();
 					designService.Report.DataSource = result;
-					
-					//DesignService.Report.DataSource = result;
-					//updateTree ();
 				}
 			} catch (Exception e) {
 				outputTextview.Buffer.Text = e.ToString();				

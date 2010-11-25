@@ -33,6 +33,7 @@ using MonoReports.Model.Controls;
 using System.Collections.ObjectModel;
 using MonoReports.Tools;
 using MonoReports.ControlView;
+using MonoReports.Model.Data;
 
 namespace MonoReports.Services
 {
@@ -76,7 +77,8 @@ namespace MonoReports.Services
 
 		public ToolBoxService ToolBoxService{get; set;}
 
-		public event SelectedControlChanged OnSelectedControlChanged;
+		public event SelectedControlChanged OnSelectedControlChanged;		
+		public event ReportDataFieldsRefreshed OnReportDataFieldsRefreshed;				
 		public event ReportChanged OnReportChanged;
 
 		ControlViewBase selectedControl;
@@ -202,6 +204,12 @@ namespace MonoReports.Services
 					
 				}
 			}
+		}
+		
+		public void RefreshDataFieldsFromDataSource(){
+			Report.FillFieldsFromDataSource();
+			if (OnReportDataFieldsRefreshed != null)
+				OnReportDataFieldsRefreshed(this,new EventArgs ());
 		}
 		
 		public void KeyPress (Gdk.Key key){
@@ -350,6 +358,8 @@ namespace MonoReports.Services
 			sectionViews.Add (sectionView);
 			Height =  sectionView.AbsoluteBound.Y + sectionView.AbsoluteBound.Height;
 		}
+		
+		
 		
 	}
 	
