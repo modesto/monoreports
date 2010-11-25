@@ -820,18 +820,17 @@ namespace MonoReports.Extensions.CairoExtensions
 				double realTbStart = tb.Padding.Top + vertAlgSpan;
 				
 				
-				if(realTbStart >= maxHeight)
-					return -1;
-				else if(maxHeight > realTbStart + measuredHeight)
+				if(realTbStart >= maxHeight) {
+					result = -1;
+				} else if (maxHeight > realTbStart + measuredHeight)
 					return -2;
-
-                if (layout.XyToIndex(0, (int)((maxHeight - realTbStart) * Pango.Scale.PangoScale), out chi, out gi))
-                {
+				else {
+	                layout.XyToIndex(0, (int)((maxHeight - realTbStart) * Pango.Scale.PangoScale), out chi, out gi);               
                     byte[] bytes = System.Text.Encoding.UTF8.GetBytes(tb.Text);                            
-                    int o = System.Text.Encoding.UTF8.GetCharCount(bytes,0, chi);
-                    
-                    return o;	
-				}  
+                    int o = System.Text.Encoding.UTF8.GetCharCount(bytes,0, chi);                    
+                	result = o;	
+				}
+				  
 				(layout as IDisposable).Dispose();
 				
 			}

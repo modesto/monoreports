@@ -49,6 +49,7 @@ namespace MonoReports.Model.Engine
         List<Control> currentSectionOrderedControls = null;
         List<Control> currentSectionControlsBuffer = null;
         List<Control> currentPageFooterSectionControlsBuffer = null;
+		bool afterReportHeader = false;
 
 		public List<Control> CurrentPageFooterSectionControlsBuffer {
 			get {
@@ -85,7 +86,7 @@ namespace MonoReports.Model.Engine
             ReportContext = new ReportContext { CurrentPageIndex = 0, DataSource = null, Parameters = new Dictionary<string, string>(), ReportMode = ReportMode.Preview };
             Report.Pages = new List<Page>();
             nextPage();
-            selectCurrentSectionByTemplateSection(Report.ReportHeaderSection);
+            selectCurrentSectionByTemplateSection(Report.PageFooterSection);
 
         }
 
@@ -94,8 +95,7 @@ namespace MonoReports.Model.Engine
             while (!ProcessReportPage())
             {
                 nextPage();
-            }
-			//3tk todo assign page number and totak number of pages
+            }		
 			for (int i = 0; i < Report.Pages.Count;i++) {
 				foreach (var item in Report.Pages[i].Controls) {
 					if (item is IDataControl) {
@@ -509,22 +509,37 @@ namespace MonoReports.Model.Engine
                     if (Report.ReportHeaderSection.BreakPageAfter)
                         nextPage();
                     nextRecord();
-                    selectCurrentSectionByTemplateSection(Report.PageHeaderSection);
+					if(ReportContext.CurrentPageIndex == 1)
+                    	selectCurrentSectionByTemplateSection(Report.PageHeaderSection);
+					else if (Report.Groups.Count > 0) {
+                        currentGroupIndex = 0;
+                        selectCurrentSectionByTemplateSection(Report.GroupHeaderSections[currentGroupIndex]);
+					} else   if (dataSourceHasNextRow) {
+                            selectCurrentSectionByTemplateSection(Report.DetailSection);
+					} else {
+                            selectCurrentSectionByTemplateSection(Report.ReportFooterSection);
+					}
+					afterReportHeader = true;
                     break;
                 case SectionType.PageHeader:
 
                     selectCurrentSectionByTemplateSection(Report.PageFooterSection);
                     break;
                 case SectionType.PageFooter:
-
-                    if (Report.Groups.Count > 0)
-                    {
+				
+				    if (!afterReportHeader)
+                    {                      
+                        selectCurrentSectionByTemplateSection(Report.ReportHeaderSection);
+					
+                    } else if (Report.Groups.Count > 0) {
                         currentGroupIndex = 0;
                         selectCurrentSectionByTemplateSection(Report.GroupHeaderSections[currentGroupIndex]);
                     }
                     else
                     {
-                        if (dataSourceHasNextRow)
+						if(controlsFromPreviousSectionPage.ContainsKey("Report Header")){
+							 selectCurrentSectionByTemplateSection(Report.ReportHeaderSection);
+						} else if (dataSourceHasNextRow)
                             selectCurrentSectionByTemplateSection(Report.DetailSection);
                         else
                             selectCurrentSectionByTemplateSection(Report.ReportFooterSection);
