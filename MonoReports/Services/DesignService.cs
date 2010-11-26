@@ -179,31 +179,54 @@ namespace MonoReports.Services
 			}
 			
 		}
+		
+		
+		public void CreateTextBlockAtXY(string text,string fieldName,double x, double y) {
+			var point = new Cairo.PointD (x / Zoom, y / Zoom);
+			var sectionView = getSectionViewByXY(x,y);
+			var localpoint = sectionView.PointInSectionByAbsolutePoint (point);	
+			ToolBoxService.SetToolByName ("TextBlockTool");							
+			SelectedTool.CreateNewControl (sectionView);
+			var textBlock = (SelectedControl.ControlModel as TextBlock);
+			textBlock.Text = fieldName;
+			textBlock.FieldName = fieldName;
+			textBlock.Location = new MonoReports.Model.Controls.Point (localpoint.X,localpoint.Y);
+			SelectedTool.CreateMode = false;
+		}
+		
+		public void CreateImageAtXY(int index,double x, double y) {
+			var point = new Cairo.PointD (x / Zoom, y / Zoom);
+			var sectionView = getSectionViewByXY(x,y);
+			var localpoint = sectionView.PointInSectionByAbsolutePoint (point);
+			ToolBoxService.SetToolByName ("ImageTool");	
+			SelectedTool.CreateNewControl (sectionView);
+			var image = (SelectedControl.ControlModel as Image);
+			image.ImageIndex = index;
+			image.Location = new MonoReports.Model.Controls.Point (localpoint.X,localpoint.Y);
+			SelectedTool.CreateMode = false;
+		}
 
-		public void DropedField (string fieldName, double x, double y)
+		SectionView getSectionViewByXY (double x, double y)
 		{
 			var point = new Cairo.PointD (x / Zoom, y / Zoom);
-			
+			SectionView sectionView = null;
 			
 			for (int i = 0; i < SectionViews.Count; i++) {
-				var sectionView = SectionViews [i];
+				var retSectionView = SectionViews [i];
 					
-				if (sectionView.AbsoluteBound.ContainsPoint (point.X, point.Y)) {
+				if (retSectionView.AbsoluteBound.ContainsPoint (point.X, point.Y)) {
 						
-					if (sectionView.HeaderAbsoluteBound.ContainsPoint (point.X, point.Y)) {
-						SelectedControl = sectionView;
+					if (retSectionView.HeaderAbsoluteBound.ContainsPoint (point.X, point.Y)) {
+						SelectedControl = retSectionView;
 						continue;
 					}
-					point = sectionView.PointInSectionByAbsolutePoint (point);	
-					ToolBoxService.SetToolByName ("TextBlockTool");							
-					SelectedTool.CreateNewControl (sectionView);
-					(SelectedControl.ControlModel as TextBlock).Text = fieldName;
-					(SelectedControl.ControlModel as TextBlock).FieldName = fieldName;
-					(SelectedControl.ControlModel as TextBlock).Location = new MonoReports.Model.Controls.Point (point.X,point.Y);
-					SelectedTool.CreateMode = false;
-					
+					sectionView = retSectionView; 
+					break;
 				}
 			}
+			
+			
+			return sectionView;
 		}
 		
 		public void RefreshDataFieldsFromDataSource(){

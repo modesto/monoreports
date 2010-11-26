@@ -78,6 +78,7 @@ public partial class MainWindow : Gtk.Window
 		toolBoxService.AddTool (new TextBlockTool (designService));
 		toolBoxService.AddTool (new SubreportTool (designService));
 		toolBoxService.AddTool (new SectionTool (designService));
+		toolBoxService.AddTool (new ImageTool (designService));
 		toolBoxService.AddTool (new RectTool (designService));
 		toolBoxService.BuildToolBar (mainToolbar);
  		

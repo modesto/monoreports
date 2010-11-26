@@ -112,11 +112,23 @@ namespace MonoReports.Gui.Widgets
 					var source = Gtk.Drag.GetSourceWidget (args.Context);
 						if (source.GetType () == typeof(TreeView)){
 						TreeIter item;
-						((TreeView)source).Selection.GetSelected (out item);
-							var fieldName = ((TreeView)source).Model.GetValue (item, 0).ToString ();											
-						Gtk.Drag.Finish (args.Context, true, false, 0);
-						designService.DropedField (fieldName, args.X, args.Y);
+						TreeIter parent;
+						var treeView = ((TreeView)source);
+					    var model = ((TreeView)source).Model;
 					
+						treeView.Selection.GetSelected (out item);
+					    
+					
+						model.IterParent(out parent,item);
+					
+					    var parentName = model.GetValue(parent,0).ToString();
+						var fieldName = model.GetValue (item, 0).ToString ();											
+						Gtk.Drag.Finish (args.Context, true, false, 0);
+						if(parentName.StartsWith("Ima")){
+							designService.CreateImageAtXY(int.Parse(fieldName), args.X, args.Y);
+						} else {
+							designService.CreateTextBlockAtXY (fieldName, fieldName,args.X, args.Y);
+						}
 					}
 			};								
 				

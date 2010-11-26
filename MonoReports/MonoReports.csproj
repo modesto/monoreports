@@ -88,6 +88,9 @@
     <EmbeddedResource Include="Resources\pdf.png">
       <LogicalName>pdf.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolImage.png">
+      <LogicalName>ToolImage.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -145,6 +148,7 @@
     <Compile Include="Services\CompilerService.cs" />
     <Compile Include="Gui\Widgets\TextEditorDialog.cs" />
     <Compile Include="gtk-gui\MonoReports.Gui.Widgets.TextEditorDialog.cs" />
+    <Compile Include="Tools\ImageTool.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

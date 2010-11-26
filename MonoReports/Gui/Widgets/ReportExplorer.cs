@@ -87,6 +87,7 @@ namespace MonoReports.Gui.Widgets
 			updateFieldTree ();
 			updateParameterTree ();
 			updateGroupTree ();
+			updateImageTree();
 		}
 
 		public IWorkspaceService Workspace {get; set;}
@@ -130,7 +131,8 @@ namespace MonoReports.Gui.Widgets
 			exporerTreeview.RowActivated += HandleExporerTreeviewRowActivated;
 			exporerTreeview.ExpandAll();
 		}
-
+		
+		//3tk needs to be cleaned
 		void HandleExporerTreeviewRowActivated (object o, RowActivatedArgs args)
 		{
 			
@@ -142,18 +144,16 @@ namespace MonoReports.Gui.Widgets
 
 		void HandleExporerTreeviewSelectionChanged (object sender, EventArgs e)
 		{
-			TreeIter item;
-			exporerTreeview.Selection.GetSelected (out item);
-					
-			if (item.UserData == staticDataFieldsNode.UserData || item.UserData == dataFieldsNode.UserData || item.UserData == parametersNode.UserData) {
-				Gtk.Drag.SourceSet (
-								exporerTreeview, ModifierType.None, new TargetEntry[]{new TargetEntry ("Field", TargetFlags.OtherWidget,2)}, 
-							DragAction.Copy);
-			} else {
-				Gtk.Drag.SourceSet (
-								exporerTreeview, ModifierType.Button1Mask, new TargetEntry[]{new TargetEntry ("Field", TargetFlags.OtherWidget,2)}, 
-							DragAction.Copy);
-			}
+//			TreeIter item;
+//			exporerTreeview.Selection.GetSelected (out item);
+//			var path = theModel.GetPath(item);
+//		    if(path.Depth == 3) {
+//				if (path.Indices[1] == 1) {
+//					Gtk.Drag.SourceSet (
+//								exporerTreeview, ModifierType.None, new TargetEntry[]{new TargetEntry ("Field", TargetFlags.OtherWidget,2)}, 
+//							DragAction.Copy);
+//				}
+//			}
 				
 		}
 
@@ -222,7 +222,7 @@ namespace MonoReports.Gui.Widgets
 			int i=0;
 			foreach (var image in designService.Report.ResourceRepository) {
 				 
-				theModel.AppendValues (imagesNode, i);
+				theModel.AppendValues (imagesNode, i.ToString());
 				i++;
 			}
 			exporerTreeview.ExpandRow(theModel.GetPath(imagesNode),true);				
@@ -290,6 +290,33 @@ namespace MonoReports.Gui.Widgets
 						 Gtk.Menu jBox = new Gtk.Menu ();
 						 
 							addNewMenuItem = new MenuItem ("add images");
+							jBox.Add (addNewMenuItem);
+							addNewMenuItem.Activated += delegate(object sender, EventArgs e) {
+								
+								
+								Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose the Monoreports file to open",null, FileChooserAction.Open , "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
+								var fileFilter = new FileFilter { Name = "Images" };
+								fileFilter.AddPattern ("*.jpg");
+								fileFilter.AddPattern ("*.png");
+								fileFilter.AddPattern ("*.gif");
+								fileFilter.AddPattern ("*.JPG");
+								fileFilter.AddPattern ("*.PNG");
+								fileFilter.AddPattern ("*.GIF");				
+								fc.AddFilter (fileFilter);
+		
+								if (fc.Run () == (int)ResponseType.Accept) {
+									System.IO.FileStream file = System.IO.File.OpenRead (fc.Filename);
+									byte[] bytes = new byte[file.Length];
+									file.Read (bytes, 0, (int)file.Length);
+									designService.Report.ResourceRepository.Add(bytes);
+									file.Close ();
+								}
+		
+								fc.Destroy ();																								
+								updateImageTree();
+							};
+						jBox.ShowAll ();
+						jBox.Popup ();	
 					}
 				} 
 	

@@ -32,7 +32,7 @@ namespace MonoReports.Model.Controls
 	{
 		public Image () : base()
 		{
-			Border = new Border { WidthAll = 1, Color = new Color(0,0,0) };			
+			Border = new Border { WidthAll = 0, Color = new Color(0,0,0) };			
 		}
 
 		public int ImageIndex { get; set; }
