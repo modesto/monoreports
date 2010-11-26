@@ -1,9 +1,0 @@
-Monoreports is a report design tool and reporting engine written in C# (mono). 
-It's similar to the CrystalReport and other tools like that.
-
-Monoreports consists of two main parts (monodevelop projects):
-	Monoreports - report designer
-	Monoreports.Model - reporting engine
-
-Designer is build on the top of gtk-sharp and cairo graphics library.
-THIS PROJECT IS NOT READY TO USE YET

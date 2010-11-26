@@ -1,0 +1,85 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoReports", "MonoReports\MonoReports.csproj", "{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoReports.Model", "MonoReports.Model\MonoReports.Model.csproj", "{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Propertygrid", "Propertygrid\Propertygrid.csproj", "{4A065C05-84D3-4DF0-B49B-412786C30513}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoReports.Tests", "MonoReports.Tests\MonoReports.Tests.csproj", "{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+		Default|Any CPU = Default|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}.Debug|x86.Build.0 = Debug|Any CPU
+		{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}.Release|x86.ActiveCfg = Release|Any CPU
+		{3BFD3AD5-BF68-407F-B1C7-CCC3ED0F7F4C}.Release|x86.Build.0 = Release|Any CPU
+		{4A065C05-84D3-4DF0-B49B-412786C30513}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A065C05-84D3-4DF0-B49B-412786C30513}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A065C05-84D3-4DF0-B49B-412786C30513}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4A065C05-84D3-4DF0-B49B-412786C30513}.Debug|x86.Build.0 = Debug|Any CPU
+		{4A065C05-84D3-4DF0-B49B-412786C30513}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A065C05-84D3-4DF0-B49B-412786C30513}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A065C05-84D3-4DF0-B49B-412786C30513}.Release|x86.ActiveCfg = Release|Any CPU
+		{4A065C05-84D3-4DF0-B49B-412786C30513}.Release|x86.Build.0 = Release|Any CPU
+		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Debug|x86.Build.0 = Debug|Any CPU
+		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Release|x86.ActiveCfg = Release|Any CPU
+		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Release|x86.Build.0 = Release|Any CPU
+		{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}.Debug|x86.Build.0 = Debug|Any CPU
+		{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}.Release|x86.ActiveCfg = Release|Any CPU
+		{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = MonoReports\MonoReports.csproj
+		Policies = $0
+		$0.StandardHeader = $1
+		$1.inheritsSet = MITX11License
+		$0.VersionControlPolicy = $2
+		$2.inheritsSet = Mono
+		$0.ChangeLogPolicy = $3
+		$3.UpdateMode = None
+		$3.MessageStyle = $4
+		$4.LineAlign = 0
+		$3.inheritsSet = Mono
+		$0.TextStylePolicy = $5
+		$5.inheritsSet = null
+		$5.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $6
+		$6.inheritsSet = Mono
+		$6.inheritsScope = text/x-csharp
+		$6.scope = text/x-csharp
+		$0.TextStylePolicy = $7
+		$7.FileWidth = 120
+		$7.TabWidth = 4
+		$7.inheritsSet = Mono
+		$7.inheritsScope = text/plain
+		$7.scope = text/plain
+		$0.DotNetNamingPolicy = $8
+		$8.DirectoryNamespaceAssociation = None
+		$8.ResourceNamePolicy = FileFormatDefault
+	EndGlobalSection
+EndGlobal

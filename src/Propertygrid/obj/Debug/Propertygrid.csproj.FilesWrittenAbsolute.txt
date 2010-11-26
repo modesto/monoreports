@@ -1,0 +1,4 @@
+/home/tomek/projekty/monoreports/src/Propertygrid/bin/Debug/Propertygrid.dll.mdb
+/home/tomek/projekty/monoreports/src/Propertygrid/bin/Debug/Propertygrid.dll
+/home/tomek/projekty/monoreports/src/Propertygrid/obj/Debug/Propertygrid.dll
+/home/tomek/projekty/monoreports/src/Propertygrid/obj/Debug/Propertygrid.dll.mdb
