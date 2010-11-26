@@ -113,6 +113,9 @@ public partial class MainWindow : Gtk.Window
 		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Controls.Point),typeof(MonoReports.Extensions.PropertyGridEditors.PointEditorCell));
 		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Border),typeof(MonoReports.Extensions.PropertyGridEditors.BorderEditorCell));
 		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Controls.Padding),typeof(MonoReports.Extensions.PropertyGridEditors.PaddingEditorCell));
+		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Controls.Color),typeof(MonoReports.Extensions.PropertyGridEditors.MonoreportsColorEditorCell));
+		
+		
 		
 		designService.Report = exampleReport();
 	}

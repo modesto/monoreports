@@ -149,6 +149,7 @@
     <Compile Include="Gui\Widgets\TextEditorDialog.cs" />
     <Compile Include="gtk-gui\MonoReports.Gui.Widgets.TextEditorDialog.cs" />
     <Compile Include="Tools\ImageTool.cs" />
+    <Compile Include="Extensions\PropertyGridEditors\ColorEditor.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
