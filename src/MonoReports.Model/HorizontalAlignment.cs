@@ -1,5 +1,5 @@
 // 
-// VerticalAlignment.cs
+// HorizontalAlignment.cs
 //  
 // Author:
 //       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
@@ -24,11 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-namespace MonoReports.Model.Controls
+namespace MonoReports.Model
 {
-	public enum VerticalAlignment
+	public enum HorizontalAlignment
 	{
-		Top, Center, Bottom
+		Left,Center,Right
 	}
 }
 

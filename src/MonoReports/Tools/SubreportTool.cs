@@ -64,9 +64,9 @@ namespace MonoReports.Tools
 			var startPoint = sectionView.PointInSectionByAbsolutePoint (designService.StartPressPoint.X, designService.StartPressPoint.Y);
 			
 			var subreport = new SubReport { 
-				Location = new MonoReports.Model.Controls.Point (startPoint.X, startPoint.Y),
+				Location = new MonoReports.Model.Point (startPoint.X, startPoint.Y),
 				Size = new Size(50,20),
-				BackgroundColor = new MonoReports.Model.Controls.Color(0.5,0.5,0.5)
+				BackgroundColor = new MonoReports.Model.Color(0.5,0.5,0.5)
 			};				
 			SubreportView subreportView = sectionView.CreateControlView (subreport) as SubreportView;			
 			sectionView.Section.Controls.Add (subreport);				

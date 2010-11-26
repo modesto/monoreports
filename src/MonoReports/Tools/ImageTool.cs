@@ -63,7 +63,7 @@ namespace MonoReports.Tools
 		{				
 			var startPoint = sectionView.PointInSectionByAbsolutePoint (designService.StartPressPoint.X, designService.StartPressPoint.Y);
 			
-			MonoReports.Model.Controls.Image img = new MonoReports.Model.Controls.Image(){ Location = new MonoReports.Model.Controls.Point (startPoint.X, startPoint.Y), Width = 50, Height=50};
+			MonoReports.Model.Controls.Image img = new MonoReports.Model.Controls.Image(){ Location = new MonoReports.Model.Point (startPoint.X, startPoint.Y), Width = 50, Height=50};
 			ImageView imageView = sectionView.CreateControlView (img) as ImageView;			
 			sectionView.Section.Controls.Add (img);				
 			imageView.ParentSection = sectionView;

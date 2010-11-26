@@ -25,7 +25,7 @@
 // THE SOFTWARE.
 using System;
 
-namespace MonoReports.Model.Controls
+namespace MonoReports.Model
 {
 	public struct Padding
 	{

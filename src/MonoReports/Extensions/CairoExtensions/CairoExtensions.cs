@@ -57,7 +57,7 @@ namespace MonoReports.Extensions.CairoExtensions
 		static Cairo.Color gripperColor = new Cairo.Color(1,0.2,0.2);
 		static int gripperSize = 6;
 		
-		public static PointD ToCairoPointD(this MonoReports.Model.Controls.Point p){
+		public static PointD ToCairoPointD(this MonoReports.Model.Point p){
 			return new PointD(p.X,p.Y);
 		}
 		
@@ -662,11 +662,11 @@ namespace MonoReports.Extensions.CairoExtensions
 		private static Pango.Alignment ReportToPangoAlignment (HorizontalAlignment align)
 		{
 			switch (align) {
-			case MonoReports.Model.Controls.HorizontalAlignment.Left:
+			case MonoReports.Model.HorizontalAlignment.Left:
 				return Pango.Alignment.Left;
-			case MonoReports.Model.Controls.HorizontalAlignment.Center:
+			case MonoReports.Model.HorizontalAlignment.Center:
 				return Pango.Alignment.Center;
-			case MonoReports.Model.Controls.HorizontalAlignment.Right:
+			case MonoReports.Model.HorizontalAlignment.Right:
 				return Pango.Alignment.Right;
 			default:
 				return Pango.Alignment.Left;
@@ -1054,7 +1054,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			return c;
 		}
 		
-		public static Cairo.Color ToCairoColor (this MonoReports.Model.Controls.Color color)
+		public static Cairo.Color ToCairoColor (this MonoReports.Model.Color color)
 		{
 			Cairo.Color c = new Cairo.Color ();
 			c.A =  (((double)color.A) );

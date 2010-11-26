@@ -54,8 +54,8 @@ namespace MonoReports.Tools
 			var startPoint = sectionView.PointInSectionByAbsolutePoint (designService.StartPressPoint.X, designService.StartPressPoint.Y);
 			var l = new Line (){ 	
 				
-				Location = new MonoReports.Model.Controls.Point(startPoint.X,startPoint.Y),
-				End = new MonoReports.Model.Controls.Point(startPoint.X,startPoint.Y)
+				Location = new MonoReports.Model.Point(startPoint.X,startPoint.Y),
+				End = new MonoReports.Model.Point(startPoint.X,startPoint.Y)
 				};
 			
 			var lineView = sectionView.CreateControlView (l);			
@@ -86,12 +86,12 @@ namespace MonoReports.Tools
 					y1 = Math.Min(y1,control.ParentSection.Section.Height);
  
 					if (startPointHit) {
-						line.Location = new MonoReports.Model.Controls.Point (x,y);						
+						line.Location = new MonoReports.Model.Point (x,y);						
 					} else if (endPointHit) {
-						line.End = new MonoReports.Model.Controls.Point (x1,y1);
+						line.End = new MonoReports.Model.Point (x1,y1);
 					} else {
-						line.Location = new MonoReports.Model.Controls.Point (x,y);						
-						line.End = new MonoReports.Model.Controls.Point (x1,y1);
+						line.Location = new MonoReports.Model.Point (x,y);						
+						line.End = new MonoReports.Model.Point (x1,y1);
 					}
 
 				}

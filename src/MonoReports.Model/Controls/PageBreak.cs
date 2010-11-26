@@ -32,7 +32,7 @@ namespace MonoReports.Model.Controls
 		#region implemented abstract members of MonoReports.Model.Controls.Control
 		public override Control CreateControl ()
 		{
-			return new PageBreak(){ Size = new Size(this.Size.Width,this.Size.Height), Location = new MonoReports.Model.Controls.Point(this.Location.X,this.Location.Y)};
+			return new PageBreak(){ Size = new Size(this.Size.Width,this.Size.Height), Location = new MonoReports.Model.Point(this.Location.X,this.Location.Y)};
 		}
 		
 		#endregion

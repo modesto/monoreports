@@ -72,6 +72,10 @@ namespace MonoReports.Core
 			pixbuf.Dispose();			
 		}
 		
+		public int Count {
+			get { return pixbufDictionary.Count; }		
+		}
+		
 		
 	}
 }

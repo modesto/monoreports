@@ -26,8 +26,9 @@
 using System;
 using System.Collections.Generic;
 using MonoReports.Model.Controls;
-using MonoReports.Model.Data;
+
 using System.Collections;
+using MonoReports.Model.Data;
 
 namespace MonoReports.Model
 {
@@ -45,11 +46,11 @@ namespace MonoReports.Model
 			GroupFooterSections = new List<GroupFooterSection> ();
 			Pages = new List<Page> ();
 			ResourceRepository = new List<byte[]> ();
-			ReportHeaderSection = new Controls.ReportHeaderSection { Location = new Controls.Point (0, 0), Size = new Controls.Size (Width, 150) };
-			PageHeaderSection = new Controls.PageHeaderSection { Location = new Controls.Point (0, 0), Size = new Controls.Size (Width, 30) };
-			DetailSection = new Controls.DetailSection { Location = new Controls.Point (0, 150), Size = new Controls.Size (Width, 150) };
-			PageFooterSection = new Controls.PageFooterSection { Location = new Controls.Point (0, 300), Size = new Controls.Size (Width, 30) };
-			ReportFooterSection = new Controls.ReportFooterSection { Location = new Controls.Point (0, 300), Size = new Controls.Size (Width, 30) };
+			ReportHeaderSection = new Controls.ReportHeaderSection { Location = new Point (0, 0), Size = new Model.Size (Width, 150) };
+			PageHeaderSection = new Controls.PageHeaderSection { Location = new Point (0, 0), Size = new Model.Size (Width, 30) };
+			DetailSection = new Controls.DetailSection { Location = new Point (0, 150), Size = new Model.Size (Width, 150) };
+			PageFooterSection = new Controls.PageFooterSection { Location = new Point (0, 300), Size = new Model.Size (Width, 30) };
+			ReportFooterSection = new Controls.ReportFooterSection { Location = new Point (0, 300), Size = new Model.Size (Width, 30) };
 		}
 
 		public string Title { get; set; }
@@ -86,9 +87,9 @@ namespace MonoReports.Model
 		{
 			Group gr = new Group { GroupingFieldName = fieldName };
 			Groups.Add (gr);
-			GroupHeaderSection gh = new GroupHeaderSection { Name = "Group header " + gr.GroupingFieldName, Size = new Controls.Size (Width, 20), Location = new Controls.Point (0, 150) };
+			GroupHeaderSection gh = new GroupHeaderSection { Name = "Group header " + gr.GroupingFieldName, Size = new Model.Size (Width, 20), Location = new Point (0, 150) };
 			GroupHeaderSections.Add (gh);
-			GroupFooterSection gf = new GroupFooterSection { Name = "Group footer " + gr.GroupingFieldName, Size = new Controls.Size (Width, 20), Location = new Controls.Point (0, 250) };
+			GroupFooterSection gf = new GroupFooterSection { Name = "Group footer " + gr.GroupingFieldName, Size = new Model.Size (Width, 20), Location = new Point (0, 250) };
 			GroupFooterSections.Add (gf);
 		}
 

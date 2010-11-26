@@ -25,6 +25,7 @@
 // THE SOFTWARE.
 using System;
 using MonoReports.Model.Controls;
+using MonoReports.Model;
 
 namespace MonoReports.Core
 {	

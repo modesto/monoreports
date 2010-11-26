@@ -93,9 +93,10 @@ namespace PropertyGrid
 			Gdk.Pixbuf pixbuf = null;
 			try {
 				pixbuf = new Gdk.Pixbuf (typeof (PropertyGrid).Assembly, "MonoDevelop.Components.PropertyGrid.SortByCat.png");
-			} catch (Exception e) {
+			} catch {}
+			//(Exception e) {
 				//LoggingService.LogError ("Can't create pixbuf from resource: MonoDevelop.Components.PropertyGrid.SortByCat.png", e);
-			}
+			//}
 			if (pixbuf != null) {
 				catButton.Image = new Gtk.Image (pixbuf);
 				catButton.Image.Show ();

@@ -26,6 +26,7 @@
 using System;
 using MonoReports.Model.Controls;
 using PropertyGrid;
+using MonoReports.Model;
 
 namespace MonoReports.Extensions.PropertyGridEditors
 {

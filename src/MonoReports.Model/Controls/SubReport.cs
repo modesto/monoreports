@@ -38,7 +38,7 @@ namespace MonoReports.Model.Controls
 			Report.Width = 100;
 			Report.Height = 120;
 			Report.ReportHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", 
-			Text = "Second example section - żwawy żółw", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (5, 1), CanGrow = false, Size = new Controls.Size (56, 30) });
+			Text = "Second example section - żwawy żółw", FontColor = new Color(1,0,0), Location = new Point (5, 1), CanGrow = false, Size = new Model.Size (56, 30) });
 		
 		}
 		

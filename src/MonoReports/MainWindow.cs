@@ -24,15 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using MonoReports.Model;
-using Controls = MonoReports.Model.Controls;
-using MonoReports.Core;
 using Gtk;
 using System.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
 using Cairo;
-using Model = MonoReports.Model.Engine;
 using MonoReports.Gui.Widgets;
 using MonoReports.ControlView;
 using MonoReports.Tools;
@@ -42,7 +38,11 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Reflection;
 using MonoReports.Renderers;
-using MonoReports.Model.Controls;
+using Engine = MonoReports.Model.Engine;
+using Controls = MonoReports.Model.Controls;
+using Model = MonoReports.Model;
+using MonoReports.Core;
+using MonoReports.Model;
 
 public partial class MainWindow : Gtk.Window
 {
@@ -57,7 +57,7 @@ public partial class MainWindow : Gtk.Window
 		Build ();
 		compilerService = new CompilerService();
 		workspaceService = new WorkspaceService (this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
-		designService = new DesignService (workspaceService,new Report());
+		designService = new DesignService (workspaceService,new Model.Report());
 		toolBoxService = new ToolBoxService ();
 		designService.ToolBoxService = toolBoxService;
 		maindesignview1.DesignService = designService;
@@ -65,8 +65,8 @@ public partial class MainWindow : Gtk.Window
 		maindesignview1.Compiler = compilerService;
 		
 		var reportRenderer = new ReportRenderer(designService.CurrentContext);
-        reportRenderer.RegisterRenderer(typeof(TextBlock), new TextBlockRenderer());
-        reportRenderer.RegisterRenderer(typeof(Line), new LineRenderer());
+        reportRenderer.RegisterRenderer(typeof(Controls.TextBlock), new TextBlockRenderer());
+        reportRenderer.RegisterRenderer(typeof(Controls.Line), new LineRenderer());
 		reportRenderer.RegisterRenderer(typeof(MonoReports.Model.Controls.Image), new ImageRenderer(){ PixbufRepository = designService.PixbufRepository});
 			
 		maindesignview1.ReportRenderer = reportRenderer;
@@ -94,8 +94,8 @@ public partial class MainWindow : Gtk.Window
 			using (PdfSurface pdfSurface = new PdfSurface("report_" + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + ".pdf",designService.Report.Width,designService.Report.Height)){
 				Cairo.Context cr = new Cairo.Context (pdfSurface);
 				ReportRenderer renderer = new ReportRenderer(cr);
-				renderer.RegisterRenderer(typeof(TextBlock), new TextBlockRenderer());
-        		renderer.RegisterRenderer(typeof(Line), new LineRenderer());
+				renderer.RegisterRenderer(typeof(Controls.TextBlock), new TextBlockRenderer());
+        		renderer.RegisterRenderer(typeof(Controls.Line), new LineRenderer());
 				renderer.RegisterRenderer(typeof(MonoReports.Model.Controls.Image), new ImageRenderer(){ PixbufRepository = designService.PixbufRepository});
 				MonoReports.Model.Engine.ReportEngine engine = new MonoReports.Model.Engine.ReportEngine(designService.Report,renderer);
 				engine.Process();
@@ -110,14 +110,14 @@ public partial class MainWindow : Gtk.Window
 		
 		mainToolbar.Insert (toolButton,4);		
 		
-		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Controls.Point),typeof(MonoReports.Extensions.PropertyGridEditors.PointEditorCell));
+		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Point),typeof(MonoReports.Extensions.PropertyGridEditors.PointEditorCell));
 		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Border),typeof(MonoReports.Extensions.PropertyGridEditors.BorderEditorCell));
-		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Controls.Padding),typeof(MonoReports.Extensions.PropertyGridEditors.PaddingEditorCell));
-		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Controls.Color),typeof(MonoReports.Extensions.PropertyGridEditors.MonoreportsColorEditorCell));
+		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Padding),typeof(MonoReports.Extensions.PropertyGridEditors.PaddingEditorCell));
+		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Color),typeof(MonoReports.Extensions.PropertyGridEditors.MonoreportsColorEditorCell));
 		
 		
 		
-		designService.Report = exampleReport();
+		//designService.Report = exampleReport();
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -126,57 +126,57 @@ public partial class MainWindow : Gtk.Window
 		a.RetVal = true;
 	}
 
-	Report exampleReport ()
-	{
-			
-		var currentReport = new Report ();
-		
-		
-		currentReport.DataScript = @"
-new[]{ new { Name = ""Alfred"", Surname = ""Tarski"", Age = 33 }, 
-        new { Name =""Gotlob"", Surname = ""Frege"", Age = 42 }, 
-        new { Name = ""Kurt"", Surname =""Gödel"", Age = 22 }, 
-        new { Name = ""Unknown"", Surname = ""Logican"", Age = 33 }, 
-        new { Name = ""Józef"", Surname = ""Bocheński"", Age = 22 }, 
-        new { Name = ""Stanisław"", Surname = ""Leśniewski"", Age = 79 }, 
-        new { Name = ""Saul"", Surname = ""Kripke"", Age = 40 }, 
-        new { Name = ""George"", Surname = ""Boolos"", Age = 79 } 
-	 };";
-		
-		currentReport.ReportHeaderSection.Controls.Add (
-			new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock - mono zelot", FontColor = new Controls.Color(1,0,0),
-			CanGrow = true, Location = new Controls.Point (1, 2), Size = new Controls.Size (200, 25) });
-		
-		
-		var _assembly = Assembly.GetExecutingAssembly ();				
-		var _imageStream = _assembly.GetManifestResourceStream ("tarski.png");
-		byte[] bytes = new byte[_imageStream.Length];
-		_imageStream.Read (bytes, 0, (int)_imageStream.Length);		
-		currentReport.ResourceRepository.Add (bytes);
-		var img = new MonoReports.Model.Controls.Image { ImageIndex = 0, Location = new Controls.Point (3, 2), Size = new Controls.Size (298, 272) };
-		currentReport.DetailSection.Controls.Add (img);
-			
-		
-		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 24, FontName = "Helvetica", 
-			Text = "Second example section - żwawy żółw", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (123, 1), CanGrow = false, Size = new Controls.Size (160, 30) });
-		
-		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "third example text - chyży ślimak", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (300, 7), CanGrow = true, Size = new Controls.Size (100, 20) });
-		
-		currentReport.DetailSection.Size = new Controls.Size (600, 300);
-		
-		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Chars", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (300, 42), Size = new Controls.Size (200, 30), FieldName = "Name", BackgroundColor = new Controls.Color(0,0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
-		CanGrow = true });
-		
-		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Surname", FontColor = new Controls.Color(1,0,0), Location = new Controls.Point (300, 12), Size = new Controls.Size (200, 30), FieldName = "Surname", BackgroundColor = new Controls.Color(1,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 },
-		CanGrow = true });
-		
-		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "fourth text - szybki jeż", FontColor = new Controls.Color(1,1,1), Location = new Controls.Point (23, 3), Size = new Controls.Size (400,25), BackgroundColor = new Controls.Color(0.2,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Border { WidthAll = 0 }, CanGrow = false });
-		
-		
-		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 1), End = new Controls.Point (200, 1) });
-	//	currentReport.AddGroup ("Age");
-		return currentReport;
-	}
+//	Model.Report exampleReport ()
+//	{
+//			
+//		var currentReport = new Model.Report ();
+//		
+//		
+//		currentReport.DataScript = @"
+//new[]{ new { Name = ""Alfred"", Surname = ""Tarski"", Age = 33 }, 
+//        new { Name =""Gotlob"", Surname = ""Frege"", Age = 42 }, 
+//        new { Name = ""Kurt"", Surname =""Gödel"", Age = 22 }, 
+//        new { Name = ""Unknown"", Surname = ""Logican"", Age = 33 }, 
+//        new { Name = ""Józef"", Surname = ""Bocheński"", Age = 22 }, 
+//        new { Name = ""Stanisław"", Surname = ""Leśniewski"", Age = 79 }, 
+//        new { Name = ""Saul"", Surname = ""Kripke"", Age = 40 }, 
+//        new { Name = ""George"", Surname = ""Boolos"", Age = 79 } 
+//	 };";
+//		
+//		currentReport.ReportHeaderSection.Controls.Add (
+//			new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock - mono zelot", FontColor = new Model.Color(1,0,0),
+//			CanGrow = true, Location = new Model.Point (1, 2), Size = new Model.Size (200, 25) });
+//		
+//		
+//		var _assembly = Assembly.GetExecutingAssembly ();				
+//		var _imageStream = _assembly.GetManifestResourceStream ("tarski.png");
+//		byte[] bytes = new byte[_imageStream.Length];
+//		_imageStream.Read (bytes, 0, (int)_imageStream.Length);		
+//		currentReport.ResourceRepository.Add (bytes);
+//		var img = new MonoReports.Model.Controls.Image { ImageIndex = 0, Location = new Model.Point (3, 2), Size = new Model.Size (298, 272) };
+//		currentReport.DetailSection.Controls.Add (img);
+//			
+//		
+//		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 24, FontName = "Helvetica", 
+//			Text = "Second example section - żwawy żółw", FontColor = new Model.Color(1,0,0), Location = new Model.Point (123, 1), CanGrow = false, Size = new Model.Size (160, 30) });
+//		
+//		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "third example text - chyży ślimak", FontColor = new Model.Color(1,0,0), Location = new Controls.Point (300, 7), CanGrow = true, Size = new Model.Size (100, 20) });
+//		
+//		currentReport.DetailSection.Size = new Model.Size (600, 300);
+//		
+//		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Chars", FontColor = new Model.Color(1,0,0), Location = new Controls.Point (300, 42), Size = new Model.Size (200, 30), FieldName = "Name", BackgroundColor = new Model.Color(0,0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Model.Border { WidthAll = 0 },
+//		CanGrow = true });
+//		
+//		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Surname", FontColor = new Model.Color(1,0,0), Location = new Controls.Point (300, 12), Size = new Model.Size (200, 30), FieldName = "Surname", BackgroundColor = new Model.Color(1,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Model.Border { WidthAll = 0 },
+//		CanGrow = true });
+//		
+//		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "fourth text - szybki jeż", FontColor = new Model.Color(1,1,1), Location = new Controls.Point (23, 3), Size = new Model.Size (400,25), BackgroundColor = new Model.Color(0.2,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Model.Border { WidthAll = 0 }, CanGrow = false });
+//		
+//		
+//		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 1), End = new Controls.Point (200, 1) });
+//	//	currentReport.AddGroup ("Age");
+//		return currentReport;
+//	}
 
 	protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
 	{

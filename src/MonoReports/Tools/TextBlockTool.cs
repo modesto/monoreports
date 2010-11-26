@@ -29,6 +29,7 @@ using MonoReports.Gui.Widgets;
 using MonoReports.Model.Controls;
 using MonoReports.ControlView;
 using Gtk;
+using MonoReports.Model;
 
 namespace MonoReports.Tools
 {
@@ -78,7 +79,7 @@ namespace MonoReports.Tools
 		{				
 			var startPoint = sectionView.PointInSectionByAbsolutePoint (designService.StartPressPoint.X, designService.StartPressPoint.Y);
 			
-			var tb = new TextBlock { Location = new MonoReports.Model.Controls.Point (startPoint.X, startPoint.Y), Text="text", FontName="Helvetica", FontSize=12, Size = new Size(50,20) };				
+			var tb = new TextBlock { Location = new MonoReports.Model.Point (startPoint.X, startPoint.Y), Text="text", FontName="Helvetica", FontSize=12, Size = new Size(50,20) };				
 			TextBlockView textBlockView = sectionView.CreateControlView (tb) as TextBlockView;			
 			sectionView.Section.Controls.Add (tb);				
 			textBlockView.ParentSection = sectionView;

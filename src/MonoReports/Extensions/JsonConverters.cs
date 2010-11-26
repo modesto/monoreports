@@ -26,6 +26,7 @@
 using System;
 using MonoReports.Model.Controls;
 using Newtonsoft.Json.Converters;
+using MonoReports.Model;
 namespace MonoReports.Extensions
 {
 	public class PointConverter : CustomCreationConverter<Point>
@@ -89,11 +90,11 @@ namespace MonoReports.Extensions
 	}
 	
 	
-	public class ColorConverter : CustomCreationConverter<MonoReports.Model.Controls.Color>
+	public class ColorConverter : CustomCreationConverter<MonoReports.Model.Color>
 	{
-		public override MonoReports.Model.Controls.Color Create (Type objectType)
+		public override MonoReports.Model.Color Create (Type objectType)
 		{
-			return new MonoReports.Model.Controls.Color (0, 0,0);
+			return new MonoReports.Model.Color (0, 0,0);
 		}
 		
 		public override object ReadJson (Newtonsoft.Json.JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
@@ -115,7 +116,7 @@ namespace MonoReports.Extensions
 			reader.Read();
 			double a = double.Parse( reader.Value.ToString());
 			reader.Read();
-			return new MonoReports.Model.Controls.Color(r,g,b,a);
+			return new MonoReports.Model.Color(r,g,b,a);
 		}
 	
 	}

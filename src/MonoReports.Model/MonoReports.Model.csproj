@@ -50,8 +50,6 @@
     <Compile Include="Controls\Section.cs" />
     <Compile Include="Controls\TextBlock.cs" />
     <Compile Include="Controls\DetailSection.cs" />
-    <Compile Include="Controls\VerticalAlignment.cs" />
-    <Compile Include="Controls\HorizontalAlignment.cs" />
     <Compile Include="Controls\ReportMode.cs" />
     <Compile Include="Controls\PageHeaderSection.cs" />
     <Compile Include="Controls\PageFooterSection.cs" />
@@ -75,6 +73,8 @@
     <Compile Include="Color.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Controls\IDataControl.cs" />
+    <Compile Include="VerticalAlignment.cs" />
+    <Compile Include="HorizontalAlignment.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

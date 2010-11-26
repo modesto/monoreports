@@ -91,7 +91,7 @@ namespace MonoReports.Tools
 			foreach (var sectionView in designService.SectionViews) {
 				
 				if(y > 0){
-					sectionView.ControlModel.Location = new MonoReports.Model.Controls.Point(sectionView.ControlModel.Location.X,y);						
+					sectionView.ControlModel.Location = new MonoReports.Model.Point(sectionView.ControlModel.Location.X,y);						
 					sectionView.SectionSpan =  new Cairo.PointD (sectionView.ControlModel.Location.X, previousSection.AbsoluteBound.Y + previousSection.AbsoluteBound.Height);
 					sectionView.InvalidateBound();
 					y+=sectionView.ControlModel.Size.Height;

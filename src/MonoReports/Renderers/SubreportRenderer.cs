@@ -53,11 +53,11 @@ namespace MonoReports.Renderers
 			c.Restore (); 
 		}
 
-		public MonoReports.Model.Controls.Size Measure (Cairo.Context c, MonoReports.Model.Controls.Control control)
+		public Size Measure (Cairo.Context c, MonoReports.Model.Controls.Control control)
 		{
 			SubReport subreport = control as SubReport;
 			Rectangle borderRect = new Rectangle (subreport.Location.X, subreport.Location.Y, subreport.Width, subreport.Height);
-			return new MonoReports.Model.Controls.Size(borderRect.Width,borderRect.Height);
+			return new MonoReports.Model.Size(borderRect.Width,borderRect.Height);
 		}
 		
 		public Control[] BreakOffControlAtMostAtHeight(Cairo.Context c, Control control, double height) {

@@ -68,29 +68,29 @@ namespace MonoReports.Renderers
 				
 				if ( first.Location.Y > first.End.Y ) {
 					newX = calculateXAtYZero(first.End.X,height,first.Location.X,-(first.Height - height));
-					first.Location = new MonoReports.Model.Controls.Point(newX, first.End.Y + height);										
+					first.Location = new MonoReports.Model.Point(newX, first.End.Y + height);										
 					double deltaW = second.End.X - newX;				
 					second.Left -= deltaW;					
 					second.Top = 0;
-					second.Location = new MonoReports.Model.Controls.Point(second.Location.X + deltaW , second.Location.Y - height);	
+					second.Location = new MonoReports.Model.Point(second.Location.X + deltaW , second.Location.Y - height);	
 				} else if (first.Location.Y < first.End.Y) {
 					
 					newX = calculateXAtYZero(first.Location.X,height,first.End.X,-(first.Height - height));
-					first.End = new MonoReports.Model.Controls.Point(newX, first.Location.Y + height);										
+					first.End = new MonoReports.Model.Point(newX, first.Location.Y + height);										
 					double deltaW = second.Location.X - newX;				
 					second.Left -= deltaW;					
 					second.Top = 0;
-					second.End = new MonoReports.Model.Controls.Point(second.End.X + deltaW , second.End.Y - height);			
+					second.End = new MonoReports.Model.Point(second.End.X + deltaW , second.End.Y - height);			
 				}
 			} else {
 				if ( first.Location.Y > first.End.Y ) {
-					first.Location = new MonoReports.Model.Controls.Point(first.Location.X, first.End.Y + height);		
+					first.Location = new MonoReports.Model.Point(first.Location.X, first.End.Y + height);		
 					second.Top = 0;
-					second.Location = new MonoReports.Model.Controls.Point(second.Location.X, second.Location.Y - height);
+					second.Location = new MonoReports.Model.Point(second.Location.X, second.Location.Y - height);
 				} else if (first.Location.Y < first.End.Y) {
-					first.End = new MonoReports.Model.Controls.Point(first.End.X, first.Location.Y + height);		
+					first.End = new MonoReports.Model.Point(first.End.X, first.Location.Y + height);		
 					second.Top = 0;
-					second.End = new MonoReports.Model.Controls.Point(second.End.X , second.End.Y - height);
+					second.End = new MonoReports.Model.Point(second.End.X , second.End.Y - height);
 				}
 				 		
 			}

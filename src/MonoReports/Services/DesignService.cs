@@ -190,7 +190,7 @@ namespace MonoReports.Services
 			var textBlock = (SelectedControl.ControlModel as TextBlock);
 			textBlock.Text = fieldName;
 			textBlock.FieldName = fieldName;
-			textBlock.Location = new MonoReports.Model.Controls.Point (localpoint.X,localpoint.Y);
+			textBlock.Location = new MonoReports.Model.Point (localpoint.X,localpoint.Y);
 			SelectedTool.CreateMode = false;
 		}
 		
@@ -202,7 +202,7 @@ namespace MonoReports.Services
 			SelectedTool.CreateNewControl (sectionView);
 			var image = (SelectedControl.ControlModel as Image);
 			image.ImageIndex = index;
-			image.Location = new MonoReports.Model.Controls.Point (localpoint.X,localpoint.Y);
+			image.Location = new MonoReports.Model.Point (localpoint.X,localpoint.Y);
 			SelectedTool.CreateMode = false;
 		}
 
