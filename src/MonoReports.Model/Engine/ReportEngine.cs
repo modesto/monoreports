@@ -509,8 +509,9 @@ namespace MonoReports.Model.Engine
                     if (Report.ReportHeaderSection.BreakPageAfter)
                         nextPage();
                     nextRecord();
-					if(ReportContext.CurrentPageIndex == 1)
+					if(ReportContext.CurrentPageIndex == 1) {
                     	selectCurrentSectionByTemplateSection(Report.PageHeaderSection);
+					}
 					else if (Report.Groups.Count > 0) {
                         currentGroupIndex = 0;
                         selectCurrentSectionByTemplateSection(Report.GroupHeaderSections[currentGroupIndex]);
@@ -522,8 +523,14 @@ namespace MonoReports.Model.Engine
 					afterReportHeader = true;
                     break;
                 case SectionType.PageHeader:
-
-                    selectCurrentSectionByTemplateSection(Report.PageFooterSection);
+					if (ReportContext.CurrentPageIndex > 1 ) {
+                    	selectCurrentSectionByTemplateSection(Report.PageFooterSection);
+					} else if (Report.Groups.Count > 0) {
+                        currentGroupIndex = 0;
+                        selectCurrentSectionByTemplateSection(Report.GroupHeaderSections[currentGroupIndex]);
+					} else {
+						selectCurrentSectionByTemplateSection(Report.DetailSection);
+					}
                     break;
                 case SectionType.PageFooter:
 				
@@ -537,7 +544,7 @@ namespace MonoReports.Model.Engine
                     }
                     else
                     {
-						if(controlsFromPreviousSectionPage.ContainsKey("Report Header")){
+						if (controlsFromPreviousSectionPage.ContainsKey("Report Header")){
 							 selectCurrentSectionByTemplateSection(Report.ReportHeaderSection);
 						} else if (dataSourceHasNextRow)
                             selectCurrentSectionByTemplateSection(Report.DetailSection);
