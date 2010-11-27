@@ -43,6 +43,7 @@ using Controls = MonoReports.Model.Controls;
 using Model = MonoReports.Model;
 using MonoReports.Core;
 using MonoReports.Model;
+using MonoReports.Extensions.JsonNetExtenssions;
 
 public partial class MainWindow : Gtk.Window
 {
@@ -209,12 +210,16 @@ public partial class MainWindow : Gtk.Window
 		var fileFilter = new FileFilter { Name = "Monoreports project" };
 		fileFilter.AddPattern ("*.mrp");
 		fc.AddFilter (fileFilter);
+		
 		designService.Report.DataSource = null;
 		if (fc.Run () == (int)ResponseType.Accept) {
 			
 			using (System.IO.FileStream file = System.IO.File.OpenWrite (fc.Filename)) {
 			
-				var serializedProject = JsonConvert.SerializeObject (designService.Report, Formatting.None, new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects });
+				var serializedProject = JsonConvert.SerializeObject (designService.Report,
+					Formatting.None, 
+					new JsonSerializerSettings { ContractResolver = new MonoReportsContractResolver(), TypeNameHandling = TypeNameHandling.Objects }
+				);
 				byte[] bytes = System.Text.Encoding.UTF8.GetBytes (serializedProject);
 				file.SetLength (bytes.Length);
 				file.Write (bytes, 0, bytes.Length);

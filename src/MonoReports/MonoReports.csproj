@@ -102,7 +102,6 @@
     <Compile Include="Core\ReportRenderer.cs" />
     <Compile Include="Tools\LineTool.cs" />
     <Compile Include="Tools\RectTool.cs" />
-    <Compile Include="Extensions\JsonConverters.cs" />
     <Compile Include="Extensions\CairoExtensions\CairoExtensions.cs" />
     <Compile Include="Tools\BaseTool.cs" />
     <Compile Include="Tools\ZoomTool.cs" />
@@ -143,6 +142,8 @@
     <Compile Include="gtk-gui\MonoReports.Gui.Widgets.TextEditorDialog.cs" />
     <Compile Include="Tools\ImageTool.cs" />
     <Compile Include="Extensions\PropertyGridEditors\ColorEditor.cs" />
+    <Compile Include="Extensions\JsonNetExtenssions\JsonConverters.cs" />
+    <Compile Include="Extensions\JsonNetExtenssions\MonoReportsContractResolver.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -167,5 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\PropertyGridEditors\" />
+    <Folder Include="Extensions\JsonNetExtenssions\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
 </Project>

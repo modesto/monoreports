@@ -24,13 +24,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Newtonsoft.Json.Serialization;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MonoReports.Extensions.JsonNetExtenssions
 {
-	public class MonoReportsContractResolver
+	public class MonoReportsContractResolver : DefaultContractResolver
 	{
+		
+		static string [] notSerilizingProperties  = {"Left", "Top", "Right", "Bottom"};
+			
 		public MonoReportsContractResolver ()
 		{
+		}
+		
+		protected override System.Collections.Generic.IList<JsonProperty> CreateProperties (JsonObjectContract contract)
+		{			
+			IList<JsonProperty> properties = base.CreateProperties(contract);     		
+			
+    		properties = properties.Where(p => !notSerilizingProperties.Contains(p.PropertyName) ).ToList();
+    		return properties;
 		}
 	}
 }
