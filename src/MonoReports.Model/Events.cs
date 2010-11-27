@@ -1,10 +1,10 @@
 // 
-// ReportContext.cs
+// Events.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz (dot ) kubacki (at) gmail (dot) com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,39 +23,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
-using System.Collections.Generic;
-using MonoReports.Model.Data;
+
 using MonoReports.Model.Controls;
 
-namespace MonoReports.Model
-{
-	public class ReportContext
-	{
-		public ReportContext ()
-		{
-		}
-		
-		public Dictionary<string,string> Parameters {get;set;}
-		
-		public IDataSource DataSource {get;set;}
-				
-		
-		public int CurrentPageIndex {
-			get;
-			set;
-		}
-		
-		public int RowIndex {
-			get;
-			set;
-		}
- 
-		public ReportMode ReportMode {get;set;}
-		
-		public double HeightLeftOnCurrentPage {get;internal set;}
-		
-
-	}
+namespace MonoReports.Model {
+	
+	public delegate void BeforeControlProcessing(ReportContext rc, Control c);
 }
-

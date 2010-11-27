@@ -39,9 +39,8 @@ namespace MonoReports.Model.Engine
         IReportRenderer ReportRenderer;
         Report Report;
         IDataSource source;
-        ReportContext ReportContext;
-        Page currentPage = null;
-        double heightLeftOnCurrentPage = 0;
+        ReportContext rc;
+        Page currentPage = null;         
         double heightUsedOnCurrentPage = 0;
         int currentGroupIndex = -1;
         Section currentSection = null;
@@ -83,7 +82,7 @@ namespace MonoReports.Model.Engine
             currentSectionExtendedLines = new List<Line>();
             currentSectionControlsBuffer = new List<Control>();
             currentPageFooterSectionControlsBuffer = new List<Control>();
-            ReportContext = new ReportContext { CurrentPageIndex = 0, DataSource = null, Parameters = new Dictionary<string, string>(), ReportMode = ReportMode.Preview };
+            rc = new ReportContext { CurrentPageIndex = 0, DataSource = null, Parameters = new Dictionary<string, string>(), ReportMode = ReportMode.Preview };
             Report.Pages = new List<Page>();
             nextPage();
             selectCurrentSectionByTemplateSection(Report.PageFooterSection);
@@ -231,8 +230,8 @@ namespace MonoReports.Model.Engine
 
             do
             {
-
-                result = ProcessSectionUpToHeightTreshold(heightLeftOnCurrentPage);
+				currentSection.TemplateControl.FireBeforeControlProcessing(rc,currentSection);
+                result = ProcessSectionUpToHeightTreshold(rc.HeightLeftOnCurrentPage);
 
                 if (!result && currentSection.KeepTogether)
                     currentSectionControlsBuffer.Clear();
@@ -240,12 +239,12 @@ namespace MonoReports.Model.Engine
 				
                 addControlsToCurrentPage(heightUsedOnCurrentPage);
 
-                heightLeftOnCurrentPage -= currentSection.Height;
+                rc.HeightLeftOnCurrentPage -= currentSection.Height;
                 heightUsedOnCurrentPage += currentSection.Height;
 
                 if (result)
                 {
-                    nextSection();
+                    nextSection();									
                 }
                 else
                 {
@@ -307,9 +306,9 @@ namespace MonoReports.Model.Engine
 							dc.Text =  parameters[dc.FieldName].DefaultValue;
 						}else if (dc.FieldName.StartsWith("#")) {
 							if (dc.FieldName == "#PageNumber") {
-								dc.Text = ReportContext.CurrentPageIndex.ToString();
+								dc.Text = rc.CurrentPageIndex.ToString();
 							} else if (dc.FieldName == "#RowNumber") {
-								dc.Text = ReportContext.RowIndex.ToString();
+								dc.Text = rc.RowIndex.ToString();
 							}
 						} else if (source.ContainsField(dc.FieldName))
 							dc.Text =  source.GetValue(dc.FieldName,dc.FieldTextFormat);
@@ -496,7 +495,7 @@ namespace MonoReports.Model.Engine
         void nextRecord()
         {
             dataSourceHasNextRow = source.MoveNext();
-			ReportContext.RowIndex++;
+			rc.RowIndex++;
         }
 
         void nextSection()
@@ -509,7 +508,7 @@ namespace MonoReports.Model.Engine
                     if (Report.ReportHeaderSection.BreakPageAfter)
                         nextPage();
                     nextRecord();
-					if(ReportContext.CurrentPageIndex == 1) {
+					if(rc.CurrentPageIndex == 1) {
                     	selectCurrentSectionByTemplateSection(Report.PageHeaderSection);
 					}
 					else if (Report.Groups.Count > 0) {
@@ -523,7 +522,7 @@ namespace MonoReports.Model.Engine
 					afterReportHeader = true;
                     break;
                 case SectionType.PageHeader:
-					if (ReportContext.CurrentPageIndex > 1 ) {
+					if (rc.CurrentPageIndex > 1 ) {
                     	selectCurrentSectionByTemplateSection(Report.PageFooterSection);
 					} else if (Report.Groups.Count > 0) {
                         currentGroupIndex = 0;
@@ -631,9 +630,9 @@ namespace MonoReports.Model.Engine
         {
             addControlsToCurrentPage(Report.Height - Report.PageFooterSection.Height, currentPageFooterSectionControlsBuffer);
             spanCorrection = 0;
-            ReportContext.CurrentPageIndex++;
-            currentPage = new Page { PageNumber = ReportContext.CurrentPageIndex };
-            heightLeftOnCurrentPage = Report.Height;
+            rc.CurrentPageIndex++;
+            currentPage = new Page { PageNumber = rc.CurrentPageIndex };
+            rc.HeightLeftOnCurrentPage = Report.Height;
             heightUsedOnCurrentPage = 0;
             currentPageFooterSectionControlsBuffer.Clear();
             Report.Pages.Add(currentPage);

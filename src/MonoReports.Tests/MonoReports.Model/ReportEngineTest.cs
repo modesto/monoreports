@@ -36,16 +36,42 @@ namespace MonoReports.Tests
 	public class ReportEngineTest
 	{
 		[Test()]
-		public void ProcessSectionUpToHeightTreshold_WithNoDatasource_RendersFirtstPage ()
+		public void ProcessSectionUpToHeightTreshold_WithNoDatasource_HasAtLeastOnePage ()
 		{
 			Report r = new Report();
-			
-		    RendererMock m = new RendererMock();
+			RendererMock m = new RendererMock();
 			ReportEngine re = new ReportEngine(r,m);			
-			re.ProcessSectionUpToHeightTreshold(800);	
+			re.Process();	
 			Assert.IsNotEmpty(r.Pages);
 		}
-		
+
+		[Test]
+		public void ProcessSectionUpToHeightTreshold_BeforeDeailsProcess_HeightLeftIsReportHeightMinusHeadersAndFooters()
+		{
+			
+			Report r = new Report();	
+			
+			double heightBeforeDetails = 0;
+			
+			r.ReportHeaderSection.Height = 50;
+			r.PageHeaderSection.Height = 10;
+			r.PageFooterSection.Height = 25;
+			r.DetailSection.Height = 15;
+			
+			r.DetailSection.OnBeforeControlProcessing += delegate(ReportContext rc, Control c) {
+				//before first detail processing
+				if( heightBeforeDetails == 0 ) {
+					heightBeforeDetails = rc.HeightLeftOnCurrentPage;
+				}
+			};
+			
+			RendererMock m = new RendererMock();
+			ReportEngine re = new ReportEngine(r,m);			
+			re.Process();	
+			double pageHeaderAndPageFooterHeight =  r.Height - ( r.ReportHeaderSection.Height + r.PageHeaderSection.Height + r.PageFooterSection.Height);
+			
+			Assert.AreEqual(pageHeaderAndPageFooterHeight,heightBeforeDetails);
+		}
 		
 		class RendererMock : IReportRenderer {
 			#region IReportRenderer implementation

@@ -118,5 +118,13 @@ namespace MonoReports.Model.Controls
 			c.TemplateControl = this;
 		}
 		
+		public event BeforeControlProcessing OnBeforeControlProcessing;
+		
+		internal void FireBeforeControlProcessing(ReportContext rc, Control c) {
+			if (OnBeforeControlProcessing != null) {
+				OnBeforeControlProcessing(rc, c);
+			}
+		}
+		
 	}
 }
