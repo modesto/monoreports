@@ -58,7 +58,7 @@ public partial class MainWindow : Gtk.Window
 		Build ();
 		compilerService = new CompilerService();
 		workspaceService = new WorkspaceService (this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
-		designService = new DesignService (workspaceService,new Model.Report());
+		designService = new DesignService (workspaceService,compilerService,new Model.Report());
 		toolBoxService = new ToolBoxService ();
 		designService.ToolBoxService = toolBoxService;
 		maindesignview1.DesignService = designService;
@@ -76,6 +76,9 @@ public partial class MainWindow : Gtk.Window
 		reportExplorer.Workspace = workspaceService;
 		toolBoxService.AddTool (new ZoomTool (designService));		
 		toolBoxService.AddTool (new LineTool (designService));		
+		toolBoxService.AddTool (new LineToolV (designService));		
+		toolBoxService.AddTool (new LineToolH (designService));		
+		
 		toolBoxService.AddTool (new TextBlockTool (designService));
 		toolBoxService.AddTool (new SubreportTool (designService));
 		toolBoxService.AddTool (new SectionTool (designService));
@@ -84,32 +87,13 @@ public partial class MainWindow : Gtk.Window
 		toolBoxService.BuildToolBar (mainToolbar);
  		
 		
-		ToolBarButton toolButton = new ToolBarButton ("pdf.png","exportPdf","export to pdf");
-			toolButton.Clicked += delegate(object sender, EventArgs e) {
-			
-			object r;
-			string msg;
-			compilerService.Evaluate(designService.Report.DataScript,out r,out msg);					
-			designService.Report.DataSource = r;
-			
-			using (PdfSurface pdfSurface = new PdfSurface("report_" + DateTime.Now.Hour.ToString() + DateTime.Now.Minute.ToString() + ".pdf",designService.Report.Width,designService.Report.Height)){
-				Cairo.Context cr = new Cairo.Context (pdfSurface);
-				ReportRenderer renderer = new ReportRenderer(cr);
-				renderer.RegisterRenderer(typeof(Controls.TextBlock), new TextBlockRenderer());
-        		renderer.RegisterRenderer(typeof(Controls.Line), new LineRenderer());
-				renderer.RegisterRenderer(typeof(MonoReports.Model.Controls.Image), new ImageRenderer(){ PixbufRepository = designService.PixbufRepository});
-				MonoReports.Model.Engine.ReportEngine engine = new MonoReports.Model.Engine.ReportEngine(designService.Report,renderer);
-				engine.Process();
-				for (int i = 0; i < designService.Report.Pages.Count; ++i) {
-					renderer.RenderPage(designService.Report.Pages[i]);
-					cr.ShowPage();
-				}			
-				pdfSurface.Finish();
-			
-				}
-			};
+		ToolBarButton exportPdfToolButton = new ToolBarButton ("pdf.png","exportPdf","export to pdf");
+		exportPdfToolButton.Clicked += delegate(object sender, EventArgs e) {
+			designService.ExportToPdf();
+		};
 		
-		mainToolbar.Insert (toolButton,4);		
+	
+		mainToolbar.Insert (exportPdfToolButton,7);		
 		
 		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Point),typeof(MonoReports.Extensions.PropertyGridEditors.PointEditorCell));
 		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Border),typeof(MonoReports.Extensions.PropertyGridEditors.BorderEditorCell));
@@ -268,6 +252,42 @@ public partial class MainWindow : Gtk.Window
 		workspaceService.InvalidateDesignArea();
 	}
 	
+	protected virtual void OnAboutActionActivated (object sender, System.EventArgs e)
+	{
+		AboutDialog about = new AboutDialog();
+	
+		about.ProgramName = "Monoreports - report designer tool";
+		about.Authors = new string[]{"Tomasz Kubacki"};
+		about.WrapLicense = true;
+		about.License = @"
+Copyright (c) 2010 Tomasz Kubacki
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the ""Software""), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED ""AS IS"", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+";
+ 
+		about.Response += delegate(object o, ResponseArgs args) {
+			about.Destroy ();
+		};
+		
+		about.Show();
+	}
 	
 }
 

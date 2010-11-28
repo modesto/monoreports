@@ -63,7 +63,21 @@ namespace MonoReports.ControlView
 		
 		public override string DefaultToolName {
 			get {
-				return "LineTool";
+				var r = String.Empty;
+				switch (line.LineMode) {					 
+					case LineMode.Vertical:
+						r = "LineToolV";
+						break;
+					case LineMode.All:
+						r = "LineToolH";
+					break;
+						
+					default:
+						r = "LineTool";
+						break;
+				}
+				
+				return r;
 			}
 		}
 	 

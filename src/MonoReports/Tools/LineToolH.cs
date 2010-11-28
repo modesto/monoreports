@@ -1,10 +1,10 @@
 // 
-// WorkspaceService.cs
+// LineToolV.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz (dot ) kubacki (at) gmail (dot) com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,57 +24,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Gtk;
-using PropertyGrid;
- 
+using MonoReports.Services;
 
-namespace MonoReports.Services
-	
+namespace MonoReports.Tools
 {
-	public class WorkspaceService : IWorkspaceService
+	public class LineToolH : LineTool
 	{
 		
-		DrawingArea designArea;
-		DrawingArea previewArea;
-		PropertyGrid.PropertyGrid propertyGrid;
-		Gtk.Window mainWindow;
-		
-		
-		public WorkspaceService (Gtk.Window mainWindow, DrawingArea designArea,DrawingArea previewArea, PropertyGrid.PropertyGrid propertyGrid)
+		public LineToolH(DesignService designService):base(designService) {
+		}
+		 
+		protected override MonoReports.Model.Controls.Line createLine (double x , double y)
 		{
-			this.designArea = designArea;
-			this.previewArea = previewArea;
-			this.propertyGrid = propertyGrid;
-			this.mainWindow = mainWindow;			
+			var l =  base.createLine (x,y);
+			l.LineMode = MonoReports.Model.LineMode.Horizontal;
+			return l;
 		}
 		
-	
-		#region IWorkspaceService implementation
-		public void Status (string message)
-		{
-			 
+		public override string Name {
+			get {
+				return "LineToolH";
+			}
 		}
-
-		public void SetCursor (Gdk.CursorType cursorType)
-		{
-		 	mainWindow.GdkWindow.Cursor = new Gdk.Cursor (cursorType);
+		
+		public override string ToolbarImageName {
+			get {
+				return "ToolLineH.png";
+			}
 		}
-
-		public void InvalidateDesignArea ()
-		{
-			designArea.QueueDraw();
-		}
-
-		public void InvalidatePreviewArea ()
-		{
-		  	previewArea.QueueDraw();
-		}
-
-		public void ShowInPropertyGrid (object o)
-		{
-			propertyGrid.CurrentObject = o;
-		}
-		#endregion 
-}
+	}
 }
 

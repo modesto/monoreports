@@ -1,4 +1,3 @@
-// 
 // ReportView.cs
 //  
 // Author:
@@ -34,6 +33,8 @@ using System.Collections.ObjectModel;
 using MonoReports.Tools;
 using MonoReports.ControlView;
 using MonoReports.Model.Data;
+using MonoReports.Renderers;
+
 
 namespace MonoReports.Services
 {
@@ -41,7 +42,7 @@ namespace MonoReports.Services
 	{
 		public double Zoom { get; set; }
 
-		public double Width { get;  set; }
+		public double Width { get; set; }
 
 		public double Height { get; set; }
 
@@ -77,6 +78,8 @@ namespace MonoReports.Services
 
 		public ToolBoxService ToolBoxService{get; set;}
 
+		CompilerService compilerService;
+
 		public event SelectedControlChanged OnSelectedControlChanged;		
 		public event ReportDataFieldsRefreshed OnReportDataFieldsRefreshed;				
 		public event ReportChanged OnReportChanged;
@@ -87,9 +90,9 @@ namespace MonoReports.Services
 			get { return selectedControl; } 
 			set { 
 				selectedControl = value; 
-				if (selectedControl != null){
+				if (selectedControl != null) {
 					ToolBoxService.SetToolByControlView (selectedControl);
-				}else{
+				} else {
 					ToolBoxService.UnselectTool ();
 				}
 				if (OnSelectedControlChanged != null)
@@ -98,19 +101,16 @@ namespace MonoReports.Services
 		}
 
 		internal Context CurrentContext;	
-		
-		
 		ControlViewFactory controlViewFactory;
-
 		Report report;
-		
+
 		public Report Report {
 			get { return report;} 
 			set {
 				report = value;
-				initReport();
-				if(OnReportChanged != null)
-					OnReportChanged(this,new EventArgs());
+				initReport ();
+				if (OnReportChanged != null)
+					OnReportChanged (this, new EventArgs ());
 			}
 		}
 
@@ -122,23 +122,23 @@ namespace MonoReports.Services
 				;
 			}
 		}
-		
-		public PixbufRepository PixbufRepository {get;set;}
-		
-		
 
-		public DesignService (IWorkspaceService workspaceService, Report report)
+		public PixbufRepository PixbufRepository {get; set;}
+
+		public DesignService (IWorkspaceService workspaceService, CompilerService compilerService,Report report)
 		{		
 			this.WorkspaceService = workspaceService;
+			this.compilerService = compilerService;
 			controlViewFactory = new ControlViewFactory (this);
-			PixbufRepository = new PixbufRepository(){ Report = report};
+			PixbufRepository = new PixbufRepository (){ Report = report};
 			IsDesign = true;
 			Zoom = 1;
 			Render = true;		
 			Report = report;
 		}
-		
-		void initReport(){
+
+		void initReport ()
+		{
 			PixbufRepository.Report = report;
 			sectionViews = new List<SectionView> ();
 			addSectionView (report.ReportHeaderSection);
@@ -179,11 +179,11 @@ namespace MonoReports.Services
 			}
 			
 		}
-		
-		
-		public void CreateTextBlockAtXY(string text,string fieldName,double x, double y) {
+
+		public void CreateTextBlockAtXY (string text, string fieldName,double x, double y)
+		{
 			var point = new Cairo.PointD (x / Zoom, y / Zoom);
-			var sectionView = getSectionViewByXY(x,y);
+			var sectionView = getSectionViewByXY (x, y);
 			var localpoint = sectionView.PointInSectionByAbsolutePoint (point);	
 			ToolBoxService.SetToolByName ("TextBlockTool");							
 			SelectedTool.CreateNewControl (sectionView);
@@ -193,10 +193,11 @@ namespace MonoReports.Services
 			textBlock.Location = new MonoReports.Model.Point (localpoint.X,localpoint.Y);
 			SelectedTool.CreateMode = false;
 		}
-		
-		public void CreateImageAtXY(int index,double x, double y) {
+
+		public void CreateImageAtXY (int index,double x, double y)
+		{
 			var point = new Cairo.PointD (x / Zoom, y / Zoom);
-			var sectionView = getSectionViewByXY(x,y);
+			var sectionView = getSectionViewByXY (x, y);
 			var localpoint = sectionView.PointInSectionByAbsolutePoint (point);
 			ToolBoxService.SetToolByName ("ImageTool");	
 			SelectedTool.CreateNewControl (sectionView);
@@ -228,29 +229,30 @@ namespace MonoReports.Services
 			
 			return sectionView;
 		}
-		
-		public void RefreshDataFieldsFromDataSource(){
-			Report.FillFieldsFromDataSource();
+
+		public void RefreshDataFieldsFromDataSource ()
+		{
+			Report.FillFieldsFromDataSource ();
 			if (OnReportDataFieldsRefreshed != null)
-				OnReportDataFieldsRefreshed(this,new EventArgs ());
+				OnReportDataFieldsRefreshed (this, new EventArgs ());
 		}
-		
-		public void KeyPress (Gdk.Key key){
-			if(SelectedTool != null){
-				SelectedTool.KeyPress(key);
+
+		public void KeyPress (Gdk.Key key)
+		{
+			if (SelectedTool != null) {
+				SelectedTool.KeyPress (key);
 			}
 		}
-		
-		public void DeleteSelectedControl(){
-			if(selectedControl != null){
-				SelectedControl.ParentSection.RemoveControlView(selectedControl);				
+
+		public void DeleteSelectedControl ()
+		{
+			if (selectedControl != null) {
+				SelectedControl.ParentSection.RemoveControlView (selectedControl);				
 				SelectedControl.ControlModel = null;
 				SelectedControl = null;
 				WorkspaceService.InvalidateDesignArea ();			
 			}
 		}
-		
-		 
 
 		public void ButtonPress (double x, double y, int clicks)
 		{
@@ -303,8 +305,8 @@ namespace MonoReports.Services
 			if (SelectedTool != null) {
 				if (clicks == 1) {
 					SelectedTool.OnMouseDown ();
-				}else {
-					SelectedTool.OnDoubleClick();
+				} else {
+					SelectedTool.OnDoubleClick ();
 				}
 			}
 			
@@ -361,7 +363,7 @@ namespace MonoReports.Services
 			}
 			
 			if (SelectedControl != null) {
-					WorkspaceService.ShowInPropertyGrid (SelectedControl.ControlModel);
+				WorkspaceService.ShowInPropertyGrid (SelectedControl.ControlModel);
 			}
 			
 			WorkspaceService.InvalidateDesignArea (); 			
@@ -371,8 +373,6 @@ namespace MonoReports.Services
 		{
 			CurrentContext.ShowPage ();
 		}
-
-
 
 		private void addSectionView (Section section)
 		{
@@ -385,7 +385,44 @@ namespace MonoReports.Services
 			}
 			var sectionView = new SectionView (Report, controlViewFactory, section, sectionSpan);
 			sectionViews.Add (sectionView);
-			Height =  sectionView.AbsoluteBound.Y + sectionView.AbsoluteBound.Height;
+			Height = sectionView.AbsoluteBound.Y + sectionView.AbsoluteBound.Height;
+		}
+
+		public void ExportToPdf ()
+		{
+			
+			Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose the pdf file to save", null, Gtk.FileChooserAction.Save, "Cancel", Gtk.ResponseType.Cancel, "Export", Gtk.ResponseType.Accept);
+			var fileFilter = new Gtk.FileFilter { Name = "pdf file" };
+			fileFilter.AddPattern ("*.pdf");
+			fc.AddFilter (fileFilter);
+			object r;
+			string msg;	
+		
+		
+			if (fc.Run () == (int)Gtk.ResponseType.Accept) {
+				
+				compilerService.Evaluate (report.DataScript, out r, out msg);					
+				report.DataSource = r;
+			
+				using (PdfSurface pdfSurface = new PdfSurface (fc.Filename,report.Width,report.Height)) {
+					Cairo.Context cr = new Cairo.Context (pdfSurface);
+					ReportRenderer renderer = new ReportRenderer (cr);
+					renderer.RegisterRenderer (typeof(TextBlock), new TextBlockRenderer ());
+					renderer.RegisterRenderer (typeof(Line), new LineRenderer ());
+					renderer.RegisterRenderer (typeof(Image), new ImageRenderer (){ PixbufRepository = PixbufRepository});
+					MonoReports.Model.Engine.ReportEngine engine = new MonoReports.Model.Engine.ReportEngine (Report,renderer);
+					engine.Process ();
+					for (int i = 0; i < Report.Pages.Count; ++i) {
+						renderer.RenderPage (Report.Pages [i]);
+						cr.ShowPage ();
+					}			
+					pdfSurface.Finish ();
+			
+				}
+			}
+		
+			fc.Destroy ();
+			
 		}
 		
 		

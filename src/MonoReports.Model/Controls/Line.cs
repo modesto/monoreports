@@ -39,6 +39,7 @@ namespace MonoReports.Model.Controls
 		public double LineWidth {get;set;}
 		public bool ExtendToBottom {get;set;}
 		public LineType LineType {get;set;}
+		public LineMode LineMode {get;set;}
 		
 		
 		 
@@ -109,6 +110,7 @@ namespace MonoReports.Model.Controls
 			line.End = new Point(End.X,End.Y);
 			line.LineWidth = LineWidth;
 			line.LineType = LineType;
+			line.LineMode = line.LineMode;
 			line.ExtendToBottom = ExtendToBottom;
 			return line;
 		}

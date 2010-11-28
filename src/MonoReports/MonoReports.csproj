@@ -84,6 +84,12 @@
     <EmbeddedResource Include="Resources\ToolImage.png">
       <LogicalName>ToolImage.png</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolLineH.png">
+      <LogicalName>ToolLineH.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\ToolLineV.png">
+      <LogicalName>ToolLineV.png</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="gtk-gui\generated.cs" />
@@ -144,6 +150,8 @@
     <Compile Include="Extensions\PropertyGridEditors\ColorEditor.cs" />
     <Compile Include="Extensions\JsonNetExtenssions\JsonConverters.cs" />
     <Compile Include="Extensions\JsonNetExtenssions\MonoReportsContractResolver.cs" />
+    <Compile Include="Tools\LineToolV.cs" />
+    <Compile Include="Tools\LineToolH.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

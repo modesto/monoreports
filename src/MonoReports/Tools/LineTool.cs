@@ -31,6 +31,7 @@ using Cairo;
 using MonoReports.Model.Controls;
 using MonoReports.Services;
 using MonoReports.Gui.Widgets;
+using MonoReports.Model;
 
 namespace MonoReports.Tools
 {
@@ -41,23 +42,29 @@ namespace MonoReports.Tools
 		protected bool endPointHit;
 		protected Line line;
 		protected SectionView currentSection = null;
-		const double lineDistance = 10;
+		const double lineDistance = 10;							
 
 		public LineTool (DesignService designService) : base(designService)
-		{
+		{		
+		}
+		
+		
+		protected virtual Line createLine(double x, double y) {
+			var l = new Line (){ 	
+				
+				Location = new MonoReports.Model.Point(x,y),
+				End = new MonoReports.Model.Point(x,y)
+				};
 			
+			return l;
 		}
 
 		public override void CreateNewControl (SectionView sectionView)
 		{
 			
 			var startPoint = sectionView.PointInSectionByAbsolutePoint (designService.StartPressPoint.X, designService.StartPressPoint.Y);
-			var l = new Line (){ 	
-				
-				Location = new MonoReports.Model.Point(startPoint.X,startPoint.Y),
-				End = new MonoReports.Model.Point(startPoint.X,startPoint.Y)
-				};
 			
+			var l = createLine(startPoint.X,startPoint.Y);
 			var lineView = sectionView.CreateControlView (l);			
 			sectionView.Section.Controls.Add (l);
 			lineView.ParentSection = sectionView;
@@ -76,7 +83,7 @@ namespace MonoReports.Tools
 				var control = designService.SelectedControl;
 				
 				if (designService.IsMoving && control != null) {
-					double x = Math.Max (0, line.Location.X + designService.DeltaPoint.X);
+					double x =  Math.Max (0, line.Location.X + designService.DeltaPoint.X);
 					double y = Math.Max (0, line.Location.Y + designService.DeltaPoint.Y);
 					double x1 = Math.Max (0, line.End.X + designService.DeltaPoint.X);
 					double y1 = Math.Max (0, line.End.Y + designService.DeltaPoint.Y);
@@ -86,9 +93,39 @@ namespace MonoReports.Tools
 					y1 = Math.Min(y1,control.ParentSection.Section.Height);
  
 					if (startPointHit) {
-						line.Location = new MonoReports.Model.Point (x,y);						
+						
+						switch (line.LineMode) {
+							
+							case LineMode.Vertical:
+								line.Location = new MonoReports.Model.Point (line.Location.X,y);	
+							break;
+							
+							case LineMode.Horizontal:
+								line.Location = new MonoReports.Model.Point (x,line.Location.Y);		
+							break;
+							
+							default:
+								line.Location = new MonoReports.Model.Point (x,y);									
+							break;
+						}												
+						
 					} else if (endPointHit) {
-						line.End = new MonoReports.Model.Point (x1,y1);
+						
+						switch (line.LineMode) {
+							
+							case LineMode.Vertical:
+								line.End = new MonoReports.Model.Point (line.End.X,y1);	
+							break;
+							
+							case LineMode.Horizontal:
+								line.End = new MonoReports.Model.Point (x1,line.End.Y);		
+							break;
+							
+							default:
+								line.End = new MonoReports.Model.Point (x1,y1);									
+							break;
+						}		
+												
 					} else {
 						line.Location = new MonoReports.Model.Point (x,y);						
 						line.End = new MonoReports.Model.Point (x1,y1);
@@ -157,6 +194,7 @@ namespace MonoReports.Tools
 		{
 			startPointHit = false;
 			endPointHit = false;
+			CreateMode = false;
 		}
 		
 		
@@ -164,5 +202,9 @@ namespace MonoReports.Tools
 		
 		
 	}
+	
+	
+	
+	
 }
 
