@@ -1,5 +1,5 @@
 Introduction to Monoreports
-================
+===========================
 
 
 QuickStart
@@ -12,11 +12,10 @@ If you can't wait/don't have time here is quickstart to make report and see "som
 
 3. copy below and paste in textview:
 
- 	new { 
-		{ name = "Alfred", surname="Tarski"},
-		{ name = "Stefan", surname="Banach"},
-		{ name = "Stanisław", surname="Leśniewski"},
-	
+	new [] { 
+		new { name = "Alfred", surname="Tarski"},
+		new { name = "Stefan", surname="Banach"},
+		new { name = "Stanisław", surname="Leśniewski"}
 	};
 
 4. press execute button (at bottom)
