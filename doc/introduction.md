@@ -11,13 +11,13 @@ If you can't wait/dont have time here is quickstart to make report and see "some
 2. press datasource tab.
 
 copy below and paste in textview:
-
+{
  new { 
 	{ name = "Alfred", surname="Tarski"},
 	{ name = "Stefan", surname="Banach"},
 	{ name = "Stanisław", surname="Leśniewski"},
  };
-
+}
 3. press execute button (at bottom)
 
 4. press design tab
