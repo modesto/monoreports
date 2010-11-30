@@ -40,7 +40,7 @@ namespace MonoReports.Model.Controls
 			FontName = "Helvetica";
 			FontColor = new Color(0,0,0);
 			FieldName = String.Empty;
-			Padding = new Padding(1,1,1,1);
+			Padding = new Thickness(1,1,1,1);
 			CanGrow = true;
 		}	
 		
@@ -53,7 +53,7 @@ namespace MonoReports.Model.Controls
 		
 		public bool CanShrink {get;set;}        
 		
-		public Padding Padding {get;set;}
+		public Thickness Padding {get;set;}
 		
 		public double LineSpan {get;set;}
 		
@@ -86,7 +86,7 @@ namespace MonoReports.Model.Controls
 			textBlock.Border = (Border) Border.Clone();
 			textBlock.FontName = FontName;
 			textBlock.LineSpan = LineSpan;
-			textBlock.Padding = new Padding(Padding.Left,Padding.Top, Padding.Right, Padding.Bottom);
+			textBlock.Padding = new Thickness(Padding.Left,Padding.Top, Padding.Right, Padding.Bottom);
 			textBlock.FontSize = FontSize;
 			textBlock.FontSlant =   FontSlant;
 			textBlock.FontWeight =   FontWeight;

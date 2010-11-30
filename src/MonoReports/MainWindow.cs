@@ -44,6 +44,7 @@ using Model = MonoReports.Model;
 using MonoReports.Core;
 using MonoReports.Model;
 using MonoReports.Extensions.JsonNetExtenssions;
+using MonoReports.Extensions.PropertyGridEditors;
 
 public partial class MainWindow : Gtk.Window
 {
@@ -56,9 +57,20 @@ public partial class MainWindow : Gtk.Window
 	public MainWindow () : base(Gtk.WindowType.Toplevel)
 	{
 		Build ();
+		
+		Report startReport = new Report(){ 
+			DataScript = @"
+new [] {
+     new { Name=""Alfred"" ,  Surname = ""Tarski"", Age = ""82"" },
+     new { Name=""Saul"" ,  Surname = ""Kripke"", Age = ""70"" },
+     new { Name=""Gotlob"" ,  Surname = ""Frege"", Age = ""85"" },
+     new { Name=""Kurt"" ,  Surname = ""Gödel"", Age = ""72"" } 
+}
+"};
+		
 		compilerService = new CompilerService();
 		workspaceService = new WorkspaceService (this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
-		designService = new DesignService (workspaceService,compilerService,new Model.Report());
+		designService = new DesignService (workspaceService,compilerService,startReport);
 		toolBoxService = new ToolBoxService ();
 		designService.ToolBoxService = toolBoxService;
 		maindesignview1.DesignService = designService;
@@ -95,11 +107,7 @@ public partial class MainWindow : Gtk.Window
 	
 		mainToolbar.Insert (exportPdfToolButton,7);		
 		
-		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Point),typeof(MonoReports.Extensions.PropertyGridEditors.PointEditorCell));
-		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Border),typeof(MonoReports.Extensions.PropertyGridEditors.BorderEditorCell));
-		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Padding),typeof(MonoReports.Extensions.PropertyGridEditors.PaddingEditorCell));
-		mainPropertygrid.AddPropertyEditor(typeof(MonoReports.Model.Color),typeof(MonoReports.Extensions.PropertyGridEditors.MonoreportsColorEditorCell));
-		
+		mainPropertygrid.LoadMonoreportsExtensions();
 		
 		
 		//designService.Report = exampleReport();
@@ -288,6 +296,22 @@ THE SOFTWARE.
 		
 		about.Show();
 	}
+	
+	protected virtual void OnReportSettingsActionActivated (object sender, System.EventArgs e)
+	{
+		
+		ReportSettingsEditor reportSettingsEditor = new ReportSettingsEditor();
+	
+		reportSettingsEditor.Report = designService.Report;
+ 
+		reportSettingsEditor.Response += delegate(object o, ResponseArgs args) {
+			reportSettingsEditor.Destroy ();
+		};
+		
+		reportSettingsEditor.Show();
+		
+	}
+	
 	
 }
 

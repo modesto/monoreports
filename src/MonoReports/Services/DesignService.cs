@@ -402,10 +402,13 @@ namespace MonoReports.Services
 			if (fc.Run () == (int)Gtk.ResponseType.Accept) {
 				
 				compilerService.Evaluate (report.DataScript, out r, out msg);					
-				report.DataSource = r;
-			
-				using (PdfSurface pdfSurface = new PdfSurface (fc.Filename,report.Width,report.Height)) {
+			    Report.DataSource = r;
+				
+				using (PdfSurface pdfSurface = new PdfSurface (
+					fc.Filename,report.WidthWithMargins,report.HeightWithMargins)) {
+					
 					Cairo.Context cr = new Cairo.Context (pdfSurface);
+					cr.Translate(report.Margin.Left,report.Margin.Top);
 					ReportRenderer renderer = new ReportRenderer (cr);
 					renderer.RegisterRenderer (typeof(TextBlock), new TextBlockRenderer ());
 					renderer.RegisterRenderer (typeof(Line), new LineRenderer ());

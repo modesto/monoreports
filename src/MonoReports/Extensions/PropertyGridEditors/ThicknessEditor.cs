@@ -30,26 +30,26 @@ using MonoReports.Model;
 
 namespace MonoReports.Extensions.PropertyGridEditors
 {
-	[PropertyEditorType (typeof (Padding))]
-	public class PaddingEditorCell: PropertyEditorCell
+	[PropertyEditorType (typeof (Thickness))]
+	public class ThicknessEditorCell: PropertyEditorCell
 	{
 		protected override string GetValueText ()
 		{
-			return ((Padding)Value).ToString ();
+			return ((Thickness)Value).ToString ();
 		}
 		
 		protected override IPropertyEditor CreateEditor (Gdk.Rectangle cell_area, Gtk.StateType state)
 		{
-			return new PaddingEditor ();
+			return new ThicknessEditor ();
 		}
 	}
 	
-	public class PaddingEditor: Gtk.HBox, IPropertyEditor
+	public class ThicknessEditor: Gtk.HBox, IPropertyEditor
 	{
 		Gtk.Entry entry;
-		Padding padding;
+		Thickness padding;
 		
-		public PaddingEditor()
+		public ThicknessEditor()
 		{
 			entry = new Gtk.Entry ();
 			entry.Changed += OnChanged;
@@ -65,7 +65,7 @@ namespace MonoReports.Extensions.PropertyGridEditors
 		public object Value {
 			get { return padding; }
 			set {
-				padding = (Padding) value;
+				padding = (Thickness) value;
 				entry.Changed -= OnChanged;
 				entry.Text = String.Format("{0};{1};{2};{3}",padding.Left,padding.Top,padding.Right,padding.Bottom);
 				entry.Changed += OnChanged;
@@ -80,9 +80,9 @@ namespace MonoReports.Extensions.PropertyGridEditors
 					 
 					    var doubles =  s.Split(';');
 						if (doubles.Length > 3) {
-					    	padding = new Padding(double.Parse(doubles[0]),double.Parse(doubles[1]),double.Parse(doubles[2]),double.Parse(doubles[3])); 
+					    	padding = new Thickness(double.Parse(doubles[0]),double.Parse(doubles[1]),double.Parse(doubles[2]),double.Parse(doubles[3])); 
 						}else if ( doubles.Length == 1) {
-							padding = new Padding( double.Parse(doubles[0]));
+							padding = new Thickness( double.Parse(doubles[0]));
 						}
 					}
 					if (ValueChanged != null)

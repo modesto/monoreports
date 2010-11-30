@@ -1,8 +1,8 @@
 // 
-// Padding.cs
+// PropertyGridExtensions.cs
 //  
 // Author:
-//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz (dot ) kubacki (at) gmail (dot) com>
 // 
 // Copyright (c) 2010 Tomasz Kubacki
 // 
@@ -24,56 +24,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using PropertyGrid;
 
-namespace MonoReports.Model
+namespace MonoReports.Extensions.PropertyGridEditors
 {
-	public struct Padding
+	public static class PropertyGridExtensions
 	{
-		
-		public Padding (double all) {
-			l = all;
-			t = all;
-			r = all;
-			b = all;
-		}
-		
-		public Padding (double left, double top, double right, double bottom) {
-			l = left;
-			t = top;
-			r = right;
-			b = bottom;
-		}
-
-		double l;
-		public double Left {
-			get { return l; }
-			set { l = value; }
-		}
-		
-		double t;
-		public double Top
+		public static void LoadMonoreportsExtensions (this PropertyGrid.PropertyGrid pg)
 		{
-			get { return t; }
-			set { t = value; }
-		}
+			pg.AddPropertyEditor (typeof(MonoReports.Model.Point), typeof(MonoReports.Extensions.PropertyGridEditors.PointEditorCell));
+			pg.AddPropertyEditor (typeof(MonoReports.Model.Border), typeof(MonoReports.Extensions.PropertyGridEditors.BorderEditorCell));
+			pg.AddPropertyEditor (typeof(MonoReports.Model.Thickness), typeof(MonoReports.Extensions.PropertyGridEditors.ThicknessEditorCell));
+			pg.AddPropertyEditor (typeof(MonoReports.Model.Color), typeof(MonoReports.Extensions.PropertyGridEditors.MonoreportsColorEditorCell));
 		
-		
-		double r;
-		public double Right {
-			get { return r; }
-			set { r = value; }
-		}
-		
-		double b;
-		public double Bottom
-		{
-			get { return b; }
-			set { b = value; }
-		}
-		
-		public override string ToString ()
-		{
-			return string.Format ("[Padding: Left={0}, Top={1},Right={2}, Bottom={3}]", l, t, r, b); 
 		}
 	}
 }

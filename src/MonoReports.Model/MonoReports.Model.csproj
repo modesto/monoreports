@@ -69,7 +69,6 @@
     <Compile Include="Controls\IResizable.cs" />
     <Compile Include="SectionType.cs" />
     <Compile Include="Size.cs" />
-    <Compile Include="Padding.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Controls\IDataControl.cs" />
@@ -78,6 +77,7 @@
     <Compile Include="Events.cs" />
     <Compile Include="LineMode.cs" />
     <Compile Include="Data\PropertyDataField.cs" />
+    <Compile Include="Thickness.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

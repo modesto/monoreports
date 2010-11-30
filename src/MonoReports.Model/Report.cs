@@ -37,8 +37,9 @@ namespace MonoReports.Model
 
 		public Report ()
 		{
-			Width = 600;
+			Width = 560;
 			Height = 800;
+			Margin = new Thickness(10);
 			Groups = new List<Group> ();
 			Fields = new List<DataField> ();
 			Parameters = new List<DataField> ();
@@ -46,9 +47,9 @@ namespace MonoReports.Model
 			GroupFooterSections = new List<GroupFooterSection> ();
 			Pages = new List<Page> ();
 			ResourceRepository = new List<byte[]> ();
-			ReportHeaderSection = new Controls.ReportHeaderSection { Location = new Point (0, 0), Size = new Model.Size (Width, 150) };
+			ReportHeaderSection = new Controls.ReportHeaderSection { Location = new Point (0, 0), Size = new Model.Size (Width, 50) };
 			PageHeaderSection = new Controls.PageHeaderSection { Location = new Point (0, 0), Size = new Model.Size (Width, 30) };
-			DetailSection = new Controls.DetailSection { Location = new Point (0, 150), Size = new Model.Size (Width, 150) };
+			DetailSection = new Controls.DetailSection { Location = new Point (0, 150), Size = new Model.Size (Width, 50) };
 			PageFooterSection = new Controls.PageFooterSection { Location = new Point (0, 300), Size = new Model.Size (Width, 30) };
 			ReportFooterSection = new Controls.ReportFooterSection { Location = new Point (0, 300), Size = new Model.Size (Width, 30) };
 		}
@@ -78,8 +79,14 @@ namespace MonoReports.Model
 		public List<byte[]> ResourceRepository { get; set; }
 
 		public double Height { get; set; }
-
+		
+		public double HeightWithMargins { get { return Height  + Margin.Top + Margin.Bottom;} }
+		
 		public double Width { get; set; }
+		
+		public double WidthWithMargins { get { return Width  + Margin.Left + Margin.Right;} }
+		
+		public Thickness Margin {get;set;}
 
 		public UnitType Unit { get; set; }
 

@@ -52,6 +52,7 @@ namespace MonoReports.Gui.Widgets
 				designService = value;
 				if(designService != null) {
 					designService.OnReportChanged += HandleDesignServiceOnReportChanged;
+					 codeTextview.Buffer.Text = designService.Report.DataScript;
 				}
 			}
 		}
@@ -169,11 +170,11 @@ namespace MonoReports.Gui.Widgets
 			if (designService.Report.Pages.Count > 0) {
 				Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
 				cr.Antialias = Cairo.Antialias.None;
-				
+				cr.Translate(designService.Report.Margin.Left,designService.Report.Margin.Top);
 				//3tk clean up CurrentContext in designService
 				designService.CurrentContext = cr;
 				reportRenderer.Context  = cr;
-				Cairo.Rectangle r = new Cairo.Rectangle(0,0,designService.Report.Width,designService.Report.Height);
+				Cairo.Rectangle r = new Cairo.Rectangle(0,0,designService.Report.WidthWithMargins,designService.Report.HeightWithMargins);
 				cr.FillRectangle(r,backgroundPageColor);
 				reportRenderer.RenderPage (designService.Report.Pages [pageNumber]);
 				area.SetSizeRequest ((int)designService.Report.Width,(int) designService.Report.Height + 10);
@@ -255,16 +256,13 @@ namespace MonoReports.Gui.Widgets
 			designService.RefreshDataFieldsFromDataSource();
 		}
 		
-		bool flagCheat = false;
-		
 		void evaluate() {			
 			object r;
 			string msg;
 			
 			Compiler.Evaluate(codeTextview.Buffer.Text,out r,out msg);					
 			designService.Report.DataSource = r;
-			flagCheat = true;
-			
+			designService.Report.DataScript = codeTextview.Buffer.Text;			
 		}
 		
 	}

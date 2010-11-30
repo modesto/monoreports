@@ -116,7 +116,7 @@ namespace MonoReports.Renderers
 				newTextBlock.Height = height;
 				newTextBlock.Text = String.Empty;
 				textBlock.Height = textBlock.Height - height;
-				textBlock.Padding =   new Padding (textBlock.Padding.Left,textBlock.Padding.Top - height,textBlock.Padding.Right,textBlock.Padding.Bottom);
+				textBlock.Padding =   new Thickness (textBlock.Padding.Left,textBlock.Padding.Top - height,textBlock.Padding.Right,textBlock.Padding.Bottom);
 				
 			} else if (charNumber == -2) {
 				
@@ -124,7 +124,7 @@ namespace MonoReports.Renderers
                 textBlock.Text = String.Empty;
                 textBlock.FieldName = String.Empty;
 				textBlock.Height = textBlock.Height - height;
-				textBlock.Padding =   new Padding (textBlock.Padding.Left,textBlock.Padding.Top - height,textBlock.Padding.Right,textBlock.Padding.Bottom);
+				textBlock.Padding =   new Thickness (textBlock.Padding.Left,textBlock.Padding.Top - height,textBlock.Padding.Right,textBlock.Padding.Bottom);
 				
 			}
 			controls[0] = newTextBlock;

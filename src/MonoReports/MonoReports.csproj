@@ -61,6 +61,10 @@
     <Reference Include="Mono.Cairo" />
     <Reference Include="Mono.Addins, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="Mono.CSharp" />
+    <Reference Include="Propertygrid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Propertygrid\bin\Debug\Propertygrid.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -142,7 +146,6 @@
     <Compile Include="Tools\SubreportTool.cs" />
     <Compile Include="Extensions\PropertyGridEditors\PointEditor.cs" />
     <Compile Include="Extensions\PropertyGridEditors\BorderEditor.cs" />
-    <Compile Include="Extensions\PropertyGridEditors\PaddingEditor.cs" />
     <Compile Include="Services\CompilerService.cs" />
     <Compile Include="Gui\Widgets\TextEditorDialog.cs" />
     <Compile Include="gtk-gui\MonoReports.Gui.Widgets.TextEditorDialog.cs" />
@@ -152,6 +155,10 @@
     <Compile Include="Extensions\JsonNetExtenssions\MonoReportsContractResolver.cs" />
     <Compile Include="Tools\LineToolV.cs" />
     <Compile Include="Tools\LineToolH.cs" />
+    <Compile Include="Extensions\PropertyGridEditors\ThicknessEditor.cs" />
+    <Compile Include="Gui\Widgets\ReportSettingsEditor.cs" />
+    <Compile Include="gtk-gui\MonoReports.Gui.Widgets.ReportSettingsEditor.cs" />
+    <Compile Include="Extensions\PropertyGridEditors\PropertyGridExtensions.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
