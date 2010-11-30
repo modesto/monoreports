@@ -38,7 +38,7 @@ namespace MonoReports.Model.Controls
 			Report.Width = 100;
 			Report.Height = 120;
 			Report.ReportHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", 
-			Text = "Second example section - żwawy żółw", FontColor = new Color(1,0,0), Location = new Point (5, 1), CanGrow = false, Size = new Model.Size (56, 30) });
+			Text = "Random text random text random text Random text random text random text", FontColor = new Color(1,0,0), Location = new Point (5, 1), CanGrow = true, Size = new Model.Size (70, 30) });
 		
 		}
 		
@@ -86,8 +86,12 @@ namespace MonoReports.Model.Controls
 
 		public bool ProcessUpToPage(IReportRenderer renderer, double height){
 			
-			engine = new ReportEngine(this.Report,renderer){ IsSubreport = true , SubreportLocation = this.Location };
-			
+			engine = new ReportEngine(this.Report,renderer){ 
+				IsSubreport = true ,
+				SubreportLocation = this.Location,
+ 
+			};
+			engine.context.HeightLeftOnCurrentPage = height;
 			
 			return engine.ProcessReportPage();
 		}

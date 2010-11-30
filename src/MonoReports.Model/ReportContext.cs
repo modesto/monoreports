@@ -53,7 +53,12 @@ namespace MonoReports.Model
  
 		public ReportMode ReportMode {get;set;}
 		
-		public double HeightLeftOnCurrentPage {get;internal set;}
+		double heightLeftOnCurrentPage;
+		public double HeightLeftOnCurrentPage {
+			get { 
+				return heightLeftOnCurrentPage;
+			}
+			internal set { heightLeftOnCurrentPage = value; }}
 		
 
 	}
