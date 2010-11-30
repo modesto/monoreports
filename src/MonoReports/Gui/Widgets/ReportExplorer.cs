@@ -268,10 +268,10 @@ namespace MonoReports.Gui.Widgets
 							pfe.Response += delegate(object oo, ResponseArgs argss) {						
 								if (argss.ResponseId == ResponseType.Ok) {
 									if (index == 1){
-										DesignService.Report.Fields.Add (new PropertyDataField (){ Name = pfe.PropertyName});
+										//DesignService.Report.Fields.Add (new PropertyDataField (){ Name = pfe.PropertyName});
 										updateFieldTree ();
 									}else {
-										DesignService.Report.Parameters.Add (new PropertyDataField (){ Name = pfe.PropertyName, DefaultValue = pfe.DefaultValue });
+										//DesignService.Report.Parameters.Add (new PropertyDataField (){ Name = pfe.PropertyName, DefaultValue = pfe.DefaultValue });
 										updateParameterTree ();
 									}
 									

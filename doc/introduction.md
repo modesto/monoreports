@@ -12,11 +12,10 @@ If you can't wait/don't have time here is quickstart to make report and see "som
 
 3. copy below and paste in textview:
 
-	new [] { 
-		new { name = "Alfred", surname="Tarski"},
-		new { name = "Stefan", surname="Banach"},
-		new { name = "Stanisław", surname="Leśniewski"}
-	};
+	new []{ 
+	new  { Site = "Monoreports site",  Link = "https://github.com/tomaszkubacki/monoreports"} ,
+	new  { Site = "Alfred Tarski",  Link = "http://en.wikipedia.org/wiki/Alfred_Tarski"} 
+	}
 
 4. press execute button (at bottom)
 

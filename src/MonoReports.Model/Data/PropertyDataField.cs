@@ -1,10 +1,10 @@
 // 
-// Field.cs
+// PropertyDataField.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz (dot ) kubacki (at) gmail (dot) com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,25 +29,48 @@ using System.Linq.Expressions;
 
 namespace MonoReports.Model.Data
 {
-	public abstract class  DataField
+	public class PropertyDataField<T,K> : DataField where T: class
 	{
+		
 		 
-
-		public virtual string Name {
-			get;
-			set;
+		public PropertyDataField(){
+			 
 		}
 		
-		public virtual string DefaultValue {
-			get { return string.Empty; }	
-			set {;}
+		public PropertyDataField(ParameterExpression root, Expression parent,string propertyName){
+		
+			Expression<Func<T,K>> lambda = Expression.Lambda<Func<T,K>>(Expression.Property(parent,propertyName),root);
+			compiledMethod = lambda.Compile();
+			expression = lambda;
+			
 		}
 		
-		internal Expression expression;
+		string defaultValue;
+		public override  string DefaultValue {
+			get { return defaultValue; }
+			set { defaultValue = value; }
+		}
 
-		public abstract string GetValue (object current, string format);
+		public override  string GetValue (object current, string format)
+		{			
+			if (compiledMethod == null) {	
+				Compile();				 
+			}
+			
+			string returnVal = String.Empty;
+			
+			try{
+				returnVal =  String.Format(format,compiledMethod(current as T) );
+			}catch{};
+			
+			return returnVal;
+		}				
+		
+		public void Compile() {
+			compiledMethod = (Func<T,K>) (expression as LambdaExpression) .Compile();
+		}
+		
+		Func<T,K> compiledMethod;
 	}
-
-	
 }
 

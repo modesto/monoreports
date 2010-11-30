@@ -40,27 +40,27 @@ namespace MonoReports.Model.Data
 		IEnumerator enumerator;
 		int currentRowIndex = -1;
 		List<DataField> fields;
-		Dictionary<string, PropertyInfo> propertiesDictionary;
-
+		Dictionary<string, DataField> propertiesDictionary;
+		Type dataType;
+		Type rootObjectType;
+		
 		public int CurrentRowIndex {
 			get { return this.currentRowIndex; }
 			set { currentRowIndex = value; }
 		}
 
-		public List<DataField> Fields {
-			get { return this.fields; }
-			set { fields = value; }
-		}
+	
 
 		public ObjectDataSource (IEnumerable<T> data)
-		{
+		{			 
 			this.data = data as IEnumerable<T>;
 			fields = new List<DataField> ();
-			propertiesDictionary = typeof(T).GetProperties ().ToDictionary (pi => pi.Name);
+			dataType =  data.GetType();	
+			rootObjectType = typeof(T);	
+			DiscoverFields();
             nextRes = true;
 		}
-
-
+		
 
 		public string GetValue (string fieldName, string format)
 		{		
@@ -68,11 +68,9 @@ namespace MonoReports.Model.Data
 			if (enumerator != null && propertiesDictionary.ContainsKey (fieldName)) {
                 if (nextRes)
                 {
-                    var property = propertiesDictionary[fieldName];
-                    if (!string.IsNullOrEmpty(format))
-                        return string.Format(format, property.GetValue(enumerator.Current, null));
-                    else
-                        return property.GetValue(enumerator.Current, null).ToString();
+                    var property = propertiesDictionary[fieldName] as DataField;
+					
+                    return property.GetValue(enumerator.Current, format != null ? format : "{0}");                    
                 }
 			}
 
@@ -119,6 +117,9 @@ namespace MonoReports.Model.Data
 			enumerator = queryableData.GetEnumerator ();
 			enumerator = data.GetEnumerator();
 		}
+		
+		
+		 
 
  
 		static IOrderedQueryable<K> ApplyOrder<K>(IQueryable<K> source, string property, string methodName) {
@@ -134,7 +135,8 @@ namespace MonoReports.Model.Data
         }
         Type delegateType = typeof(Func<,>).MakeGenericType(typeof(K), type);
         LambdaExpression lambda = Expression.Lambda(delegateType, expr, arg);
-
+		 
+		 
         object result = typeof(Queryable).GetMethods().Single(
                 method => method.Name == methodName
                         && method.IsGenericMethodDefinition
@@ -154,15 +156,30 @@ namespace MonoReports.Model.Data
 
 		public DataField[] DiscoverFields ()
 		{
-			List<DataField> datafields = new List<DataField> ();
-			foreach (var kvp in propertiesDictionary) {
-				datafields.Add (new PropertyDataField (kvp.Value));
-			}
-			return datafields.ToArray ();
+ 
+        	ParameterExpression arg = Expression.Parameter(rootObjectType, "ds");
+			fields.Clear();
+			fillFields(arg,arg,null,rootObjectType);
+ 			propertiesDictionary = fields.ToDictionary(pr=>pr.Name);
+			return fields.ToArray ();
 		}
 
-
-		 
+		void fillFields(ParameterExpression par,Expression parent,string namePrefix, Type t) {
+			PropertyInfo[] properties = t.GetProperties();
+			foreach (var property in properties) {
+				if (property.PropertyType.IsPrimitive || property.PropertyType == typeof(string) || property.PropertyType == typeof(DateTime)) {
+					
+					var genericType = typeof(PropertyDataField<,>).MakeGenericType(rootObjectType, property.PropertyType);
+				  	var p = Activator.CreateInstance(genericType,par,parent,property.Name) as DataField;
+					p.Name = string.IsNullOrEmpty(namePrefix) ?  property.Name : namePrefix + "." + property.Name;
+					fields.Add(p);
+				} else {
+					var expr = Expression.Property(parent,property.Name);
+					fillFields(par,expr,property.Name,property.PropertyType);
+				}
+			}			
+		}
+		
 
 		public void Reset ()
 		{

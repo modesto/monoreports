@@ -155,7 +155,7 @@ namespace MonoReports.Gui.Widgets
 			if (designService != null) {
 				DrawingArea area = (DrawingArea)o;
 				Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
-				cr.Antialias = Cairo.Antialias.Gray;
+				cr.Antialias = Cairo.Antialias.None;
 				designService.RedrawReport (cr);
 				area.SetSizeRequest ((int)designService.Width, (int)designService.Height);
 				(cr as IDisposable).Dispose ();
@@ -168,7 +168,7 @@ namespace MonoReports.Gui.Widgets
 			DrawingArea area = (DrawingArea)o;
 			if (designService.Report.Pages.Count > 0) {
 				Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
-				cr.Antialias = Cairo.Antialias.Gray;
+				cr.Antialias = Cairo.Antialias.None;
 				
 				//3tk clean up CurrentContext in designService
 				designService.CurrentContext = cr;
@@ -255,12 +255,16 @@ namespace MonoReports.Gui.Widgets
 			designService.RefreshDataFieldsFromDataSource();
 		}
 		
+		bool flagCheat = false;
 		
 		void evaluate() {			
 			object r;
 			string msg;
+			
 			Compiler.Evaluate(codeTextview.Buffer.Text,out r,out msg);					
 			designService.Report.DataSource = r;
+			flagCheat = true;
+			
 		}
 		
 	}
