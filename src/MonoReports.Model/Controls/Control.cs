@@ -67,7 +67,8 @@ namespace MonoReports.Model.Controls
 			}
 		}
 
-		public double Width {
+        public virtual double Width
+        {
 
 			get { return size.Width; }
 			set {

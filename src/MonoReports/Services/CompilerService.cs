@@ -24,11 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using Mono.CSharp;
 using System.CodeDom.Compiler;
 using Microsoft.CSharp;
 using System.Text;
 using System.CodeDom;
+using System.Collections.Generic;
 
 namespace MonoReports.Services
 {
@@ -40,14 +40,14 @@ namespace MonoReports.Services
 
 		public void Init ()
 		{
-			Evaluator.MessageOutput = Console.Out;
+			//Evaluator.MessageOutput = Console.Out;
 			
-			Evaluator.Init (new string[0]);
-			AppDomain.CurrentDomain.AssemblyLoad += delegate (object sender, AssemblyLoadEventArgs e)
-			{
+			//Evaluator.Init (new string[0]);
+			//AppDomain.CurrentDomain.AssemblyLoad += delegate (object sender, AssemblyLoadEventArgs e)
+			//{
 			
-				Evaluator.ReferenceAssembly (e.LoadedAssembly);			
-			};
+			//	Evaluator.ReferenceAssembly (e.LoadedAssembly);			
+			//};
 			
 			// Add all currently loaded assemblies
 			//			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
@@ -65,15 +65,23 @@ namespace MonoReports.Services
 
 		public bool Evaluate (string input, out object result,out string message)
 		{
-			
 			bool result_set = false;
-				
-				
 			message = String.Empty;
 			result = new  object ();
 			
 			LanguageCompiler cmp = new LanguageCompiler (LangType.CSharp,false,true,true);
-			cmp.Code = "using System; public class Te { public object Test() { return " + input + "; }}";
+			cmp.Code = @"
+using System;
+public class Te {
+    public object Test()
+    { 
+        var cos = " + input.Replace("\n","") + @";
+
+        return cos;
+    }
+}
+
+";
 			result_set = cmp.RunCode ("Te", "Test", new object[]{});
 			if (result_set) {
 				result = cmp.ResultObject;
@@ -206,7 +214,8 @@ namespace MonoReports.Services
 			{
 				switch (lang) {
 				case LangType.CSharp:
-					return new CSharpCodeProvider ();
+					return  new CSharpCodeProvider (new Dictionary<string, string>() { { "CompilerVersion", "v3.5" }});
+                    
 
 				}
 				return null;

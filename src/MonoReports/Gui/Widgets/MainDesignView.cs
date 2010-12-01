@@ -33,7 +33,6 @@ using MonoReports.Model;
 using Cairo;
 using Gdk;
 using MonoReports.Extensions.CairoExtensions;
-using Mono.CSharp;
 using System.Reflection;
 
 namespace MonoReports.Gui.Widgets
@@ -170,12 +169,13 @@ namespace MonoReports.Gui.Widgets
 			if (designService.Report.Pages.Count > 0) {
 				Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
 				cr.Antialias = Cairo.Antialias.None;
-				cr.Translate(designService.Report.Margin.Left,designService.Report.Margin.Top);
+				
 				//3tk clean up CurrentContext in designService
 				designService.CurrentContext = cr;
 				reportRenderer.Context  = cr;
 				Cairo.Rectangle r = new Cairo.Rectangle(0,0,designService.Report.WidthWithMargins,designService.Report.HeightWithMargins);
 				cr.FillRectangle(r,backgroundPageColor);
+				cr.Translate(designService.Report.Margin.Left,designService.Report.Margin.Top);
 				reportRenderer.RenderPage (designService.Report.Pages [pageNumber]);
 				area.SetSizeRequest ((int)designService.Report.Width,(int) designService.Report.Height + 10);
 			

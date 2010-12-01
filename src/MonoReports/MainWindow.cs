@@ -64,7 +64,7 @@ new [] {
      new { Name=""Alfred"" ,  Surname = ""Tarski"", Age = ""82"" },
      new { Name=""Saul"" ,  Surname = ""Kripke"", Age = ""70"" },
      new { Name=""Gotlob"" ,  Surname = ""Frege"", Age = ""85"" },
-     new { Name=""Kurt"" ,  Surname = ""Gödel"", Age = ""72"" } 
+     new { Name=""Kurt"" ,  Surname = ""Gödel"", Age = ""72"" }, 
 }
 "};
 		
@@ -81,6 +81,12 @@ new [] {
         reportRenderer.RegisterRenderer(typeof(Controls.TextBlock), new TextBlockRenderer());
         reportRenderer.RegisterRenderer(typeof(Controls.Line), new LineRenderer());
 		reportRenderer.RegisterRenderer(typeof(MonoReports.Model.Controls.Image), new ImageRenderer(){ PixbufRepository = designService.PixbufRepository});
+		SectionRenderer sr = new SectionRenderer();
+		reportRenderer.RegisterRenderer(typeof(Controls.ReportHeaderSection), sr);
+		reportRenderer.RegisterRenderer(typeof(Controls.ReportFooterSection), sr);
+		reportRenderer.RegisterRenderer(typeof(Controls.DetailSection), sr);
+		reportRenderer.RegisterRenderer(typeof(Controls.PageHeaderSection), sr);
+		reportRenderer.RegisterRenderer(typeof(Controls.PageFooterSection), sr);
 			
 		maindesignview1.ReportRenderer = reportRenderer;
 		workspaceService.InvalidateDesignArea ();		

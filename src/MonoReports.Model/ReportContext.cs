@@ -59,7 +59,20 @@ namespace MonoReports.Model
 				return heightLeftOnCurrentPage;
 			}
 			internal set { heightLeftOnCurrentPage = value; }}
-		
+
+
+
+     
+
+        double heightUsedOnCurrentPage;
+        public double HeightUsedOnCurrentPage
+        {
+            get
+            {
+                return heightUsedOnCurrentPage;
+            }
+            internal set { heightUsedOnCurrentPage = value; }
+        }
 
 	}
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -59,12 +59,6 @@
       <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cairo" />
-    <Reference Include="Mono.Addins, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Mono.CSharp" />
-    <Reference Include="Propertygrid, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Propertygrid\bin\Debug\Propertygrid.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
@@ -159,6 +153,7 @@
     <Compile Include="Gui\Widgets\ReportSettingsEditor.cs" />
     <Compile Include="gtk-gui\MonoReports.Gui.Widgets.ReportSettingsEditor.cs" />
     <Compile Include="Extensions\PropertyGridEditors\PropertyGridExtensions.cs" />
+    <Compile Include="Renderers\SectionRenderer.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -180,10 +175,10 @@
       <Project>{4A065C05-84D3-4DF0-B49B-412786C30513}</Project>
       <Name>Propertygrid</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Propertygrid\Propertygrid.csproj">
+      <Project>{4A065C05-84D3-4DF0-B49B-412786C30513}</Project>
+      <Name>Propertygrid</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\PropertyGridEditors\" />
-    <Folder Include="Extensions\JsonNetExtenssions\" />
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
 </Project>

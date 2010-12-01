@@ -86,18 +86,20 @@ namespace MonoReports.Model.Controls
         {
             get
             {
-                return Math.Max(Location.Y,End.Y);
+                return Math.Max(Location.Y,End.Y) + LineWidth / 2;
             }
 			set {
+				 double halfLineWidth = LineWidth / 2;
+				
 				if(Location.Y == End.Y){
-					Location  = new Point(Location.X,value);
-                    End = new Point(End.X,  value);
+					Location  = new Point(Location.X,value - halfLineWidth);
+                    End = new Point(End.X,  value - halfLineWidth);
 				} else if (Location.Y < End.Y) {
-					Location  = new Point(Location.X, Location.Y +  value - End.Y);
-					End  = new Point(End.X, value );		
+					Location  = new Point(Location.X, Location.Y +  value - (End.Y + halfLineWidth));
+					End  = new Point(End.X, value  - halfLineWidth);		
 				} else {
-				  	 End  = new Point(End.X, End.Y + value - Location.Y);	
-					 Location  = new Point(Location.X,value);
+				  	 End  = new Point(End.X, End.Y + value - (Location.Y + halfLineWidth));	
+					 Location  = new Point(Location.X,value - halfLineWidth);
 				}
 			}
         }

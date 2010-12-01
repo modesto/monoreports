@@ -100,6 +100,7 @@ namespace MonoReports.Renderers
 			
 			if (charNumber > 0) {
 				newTextBlock.Text = textBlock.Text.Substring (0,charNumber-1);
+				newTextBlock.Padding = new Thickness(textBlock.Padding.Left,0,textBlock.Padding.Right,textBlock.Padding.Bottom);
 				var newSize = c.DrawTextBlock (newTextBlock, false);
 				newTextBlock.Height = newSize.Height;
 				textBlock.Height = textBlock.Height - newSize.Height;

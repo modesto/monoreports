@@ -34,19 +34,25 @@ namespace MonoReports.Model.Controls
 		{
 			
 			Report = new Report();
-			
-			Report.Width = 100;
-			Report.Height = 120;
+            CanGrow = true;
+			Report.Height = 35;
+            Width = 100;
+            Report.PageHeaderSection.IsVisible = false;
+            Report.PageFooterSection.IsVisible = false;
+			Report.PageHeaderSection.Height = 0;
+
+			Report.PageFooterSection.Height = 0;
+            Report.ReportHeaderSection.BackgroundColor = new Color(0.2, 0.8, 0.4);
+            Report.ReportFooterSection.BackgroundColor = new Color(0.8, 0.2, 0.7);
+            Report.PageFooterSection.BackgroundColor =   new Color(0.8, 0.2, 0.2);
+            Report.PageHeaderSection.BackgroundColor = new Color(0.1, 0.3, 0.2);
 			Report.ReportHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", 
-			Text = "Random text random text random text Random text random text random text", FontColor = new Color(1,0,0), Location = new Point (5, 1), CanGrow = true, Size = new Model.Size (70, 30) });
-		
+			Text = "11text random text random text 08Random text 33 Random text random WW text random _text Random text random text r 44 andom text Random text random text random text ZZZZ", FontColor = new Color(1,0,0), Location = new Point (0, 10), CanGrow = true, Size = new Model.Size (79, 30) });
+			engine = new ReportEngine (this.Report,null) { 
+			IsSubreport = true  
+			};
 		}
-		
-		public Report ParentReport {
-			get;
-			set;
-		}
-		
+ 
 		public Report Report {
 			get;
 			set;
@@ -60,6 +66,19 @@ namespace MonoReports.Model.Controls
             get;
             set;
         }
+
+        public override double Width
+        {
+            get
+            {
+                return base.Width;
+            }
+            set
+            {
+                base.Width = value;
+                Report.Width = value;
+            }
+        }
 		
 	
 		public override Control CreateControl ()
@@ -67,9 +86,9 @@ namespace MonoReports.Model.Controls
 			var subreport = new SubReport();			
 			CopyBasicProperties(subreport);
 			subreport.CanGrow = CanGrow;
-			subreport.CanShrink = CanShrink;
-			subreport.ParentReport = ParentReport;
+			subreport.CanShrink = CanShrink;           
 			subreport.Report = Report;			 
+			
 			return subreport;
 		}
 		
@@ -84,16 +103,14 @@ namespace MonoReports.Model.Controls
 			}
 		}
 
-		public bool ProcessUpToPage(IReportRenderer renderer, double height){
+        public bool Finished { get; set; }
+
+		public void ProcessUpToPage(IReportRenderer renderer, double height){
 			
-			engine = new ReportEngine(this.Report,renderer){ 
-				IsSubreport = true ,
-				SubreportLocation = this.Location,
- 
-			};
+			engine.ReportRenderer = renderer;
 			engine.context.HeightLeftOnCurrentPage = height;
-			
-			return engine.ProcessReportPage();
+            Finished = engine.ProcessReportPage();					
+			 
 		}
  
 		

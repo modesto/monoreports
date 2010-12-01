@@ -81,8 +81,38 @@ namespace MonoReports.Model
 		public double Height { get; set; }
 		
 		public double HeightWithMargins { get { return Height  + Margin.Top + Margin.Bottom;} }
-		
-		public double Width { get; set; }
+
+
+        double width;
+        public double Width { 
+            get { return width; } 
+            set {
+                if (width != value)
+                {
+                    width = value;
+                    if (ReportHeaderSection != null)
+                    {
+                        ReportHeaderSection.Width = width;
+                        ReportFooterSection.Width = width;
+                        PageHeaderSection.Width = width;
+                        PageFooterSection.Width = width;
+                        DetailSection.Width = width;
+
+                        foreach (var item in GroupHeaderSections)
+                        {
+                            item.Width = width;
+
+                        }
+
+                        foreach (var item in GroupFooterSections)
+                        {
+                            item.Width = width;
+                        }
+                    }
+                }
+            } 
+        
+        }
 		
 		public double WidthWithMargins { get { return Width  + Margin.Left + Margin.Right;} }
 		

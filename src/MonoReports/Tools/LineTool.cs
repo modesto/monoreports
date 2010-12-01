@@ -42,7 +42,7 @@ namespace MonoReports.Tools
 		protected bool endPointHit;
 		protected Line line;
 		protected SectionView currentSection = null;
-		const double lineDistance = 10;							
+		double lineDistance = 6;							
 
 		public LineTool (DesignService designService) : base(designService)
 		{		
@@ -165,15 +165,17 @@ namespace MonoReports.Tools
 					.SelectedControl
 					.ParentSection
 					.AbsolutePointByLocalPoint (line.End.X, line.End.Y);
-				c.DrawGripper (p1);
-				c.DrawGripper (p2);
+                c.DrawGripper(p1, (int) lineDistance);
+                c.DrawGripper(p2, (int) lineDistance);
 			}
 		}
 
 		public override void OnMouseDown ()
 		{
+            
 			currentSection = designService.SelectedControl != null ? designService.SelectedControl.ParentSection : null;
 			if (designService.SelectedControl != null) {
+                lineDistance = 6 - designService.Zoom;
 				line = designService.SelectedControl.ControlModel as Line;
 				var location = line.Location;
 				var startPoint = currentSection.PointInSectionByAbsolutePoint (designService.StartPressPoint);

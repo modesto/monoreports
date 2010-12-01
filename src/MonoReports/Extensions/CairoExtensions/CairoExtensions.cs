@@ -86,16 +86,16 @@ namespace MonoReports.Extensions.CairoExtensions
 			return dirty;
 		}
 		
-		public static void DrawGripper(this Context g,PointD r){
+		public static void DrawGripper(this Context g,PointD r, int gripperSize){
 			g.Save ();			 
 			g.Color = gripperColor;
 			 
-			int halfPSize  = gripperSize / 2;			
-			g.MoveTo (r.X - halfPSize , r.Y - halfPSize);
-			g.LineTo (r.X + halfPSize , r.Y - halfPSize);
-			g.LineTo (r.X + halfPSize , r.Y + halfPSize);
-			g.LineTo (r.X - halfPSize , r.Y + halfPSize);
-			g.LineTo (r.X - halfPSize , r.Y - halfPSize);		
+			 
+            g.MoveTo (r.X - gripperSize, r.Y - gripperSize);
+            g.LineTo (r.X + gripperSize, r.Y - gripperSize);
+            g.LineTo (r.X + gripperSize, r.Y + gripperSize);
+            g.LineTo (r.X - gripperSize, r.Y + gripperSize);
+            g.LineTo (r.X - gripperSize, r.Y - gripperSize);		
 			g.Fill ();
 			g.Restore();
 		}
@@ -748,7 +748,7 @@ namespace MonoReports.Extensions.CairoExtensions
 			layout.GetExtents (out unused, out te);
 			double measuredHeight = te.Height / Pango.Scale.PangoScale;
 			
-				if(tb.VerticalAlignment != VerticalAlignment.Top)
+			if(tb.VerticalAlignment != VerticalAlignment.Top)
 				vertAlgSpan = measureVerticlaSpan(tb,measuredHeight);
 			
 			g.MoveTo (tb.Left + tb.Padding.Left, tb.Top + tb.Padding.Top + vertAlgSpan);
@@ -766,6 +766,7 @@ namespace MonoReports.Extensions.CairoExtensions
 		
 		static double measureVerticlaSpan(TextBlock tb, double measuredHeight){
 			double vertAlgSpan = 0;
+			
 			if (tb.VerticalAlignment == VerticalAlignment.Center) {
 					
 					double controlHeightWithoutPadding = (tb.Height - tb.Padding.Top) - tb.Padding.Bottom;
