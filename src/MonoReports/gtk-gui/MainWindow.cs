@@ -125,7 +125,9 @@ public partial class MainWindow
 		this.mainHPaned.Name = "mainHPaned";
 		this.mainHPaned.Position = 606;
 		// Container child mainHPaned.Gtk.Paned+PanedChild
-		this.maindesignview1 = null;
+		this.maindesignview1 = new global::MonoReports.Gui.Widgets.MainDesignView ();
+		this.maindesignview1.Events = ((global::Gdk.EventMask)(256));
+		this.maindesignview1.Name = "maindesignview1";
 		this.mainHPaned.Add (this.maindesignview1);
 		global::Gtk.Paned.PanedChild w4 = ((global::Gtk.Paned.PanedChild)(this.mainHPaned [this.maindesignview1]));
 		w4.Resize = false;
@@ -135,7 +137,8 @@ public partial class MainWindow
 		this.rightVPaned.Name = "rightVPaned";
 		this.rightVPaned.Position = 291;
 		// Container child rightVPaned.Gtk.Paned+PanedChild
-		this.reportExplorer = null;
+		this.reportExplorer = new global::MonoReports.Gui.Widgets.ReportExplorer ();
+		this.reportExplorer.Name = "reportExplorer";
 		this.rightVPaned.Add (this.reportExplorer);
 		global::Gtk.Paned.PanedChild w5 = ((global::Gtk.Paned.PanedChild)(this.rightVPaned [this.reportExplorer]));
 		w5.Resize = false;
