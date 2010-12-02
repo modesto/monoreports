@@ -167,6 +167,8 @@ namespace MonoReports.Model.Engine
 
 			return result;
 		}
+		
+		double marginBottom = 0;
 
 		/// <summary>
 		/// Processes the section up to heightTreshold.
@@ -182,7 +184,7 @@ namespace MonoReports.Model.Engine
 			double span = 0;
 			double y = 0;
 			double maxHeight = 0;
-			double marginBottom = 0;
+			
 			double maxControlBottom = 0;       
 			double tmpSpan = 0;
 			bool result = true;
@@ -250,8 +252,6 @@ namespace MonoReports.Model.Engine
 
                     if (!(sr.Engine.context.HeightUsedOnCurrentPage > maxSubreportHeight))
                     {
-
-
                         controlSize = new Size(sr.Width, sr.Engine.context.HeightUsedOnCurrentPage);
                         subreportSectionControlsBuffer.AddRange(sr.Engine.currentPage.Controls);
                         sr.Engine.currentPage.Controls.Clear();
@@ -259,7 +259,13 @@ namespace MonoReports.Model.Engine
                         if (!sr.Finished && sr.CanGrow)
                         {
                             storeSectionForNextPage();
-                            controlsFromPreviousSectionPage[currentSection.Name].Add(sr);
+							
+							var subreportClone = sr.CreateControl() as SubReport;
+							subreportClone.Top -= 0;
+							subreportClone.Engine = sr.Engine;
+							subreportClone.Height = sr.TemplateControl.Height;
+							
+                            storeControlForNextSection(subreportClone);
                             sr.Engine.nextPage();
                         }
                         if (!sr.Finished)
@@ -285,8 +291,7 @@ namespace MonoReports.Model.Engine
 						var controlToStore = control;
 						controlToStore.Top -= realBreak;
 						controlToStore.Height = heightBeforeGrow;
-						controlsFromPreviousSectionPage [currentSection.Name].Add (controlToStore);
-						sectionToStore.Height = Math.Max (sectionToStore.Height, controlToStore.Bottom + marginBottom);
+						storeControlForNextSection (controlToStore);						
 					}
 				} else {
 					
@@ -302,17 +307,15 @@ namespace MonoReports.Model.Engine
 							var controlToStore = control.CreateControl ();
 							controlToStore.Top -= realBreak;
 							controlToStore.Height = heightBeforeGrow;
-							controlsFromPreviousSectionPage [currentSection.Name].Add (controlToStore);
-							sectionToStore.Height = Math.Max (sectionToStore.Height, controlToStore.Bottom + marginBottom);
+							storeControlForNextSection (controlToStore);						
 							continue;
 						}
 
 						
 						Control[] brokenControl = ReportRenderer.BreakOffControlAtMostAtHeight (control, breakControlMax);
 						realBreak = heightTreshold - (breakControlMax - brokenControl [0].Height);
-						controlsFromPreviousSectionPage [currentSection.Name].Add (brokenControl [1]);
-						currentSectionControlsBuffer.Add (brokenControl [0]);
-						sectionToStore.Height = Math.Max (sectionToStore.Height, brokenControl [1].Bottom + marginBottom);
+						storeControlForNextSection (brokenControl [1]);
+						currentSectionControlsBuffer.Add (brokenControl [0]);						
 					} else {
 						var controlToStore = control;
 						controlToStore.Top -= realBreak;
@@ -327,8 +330,8 @@ namespace MonoReports.Model.Engine
 							allKeepTogether = true;
 						}
 						
-						controlsFromPreviousSectionPage [currentSection.Name].Add (controlToStore);
-						sectionToStore.Height = Math.Max (sectionToStore.Height, controlToStore.Bottom + marginBottom);
+						storeControlForNextSection (controlToStore);
+						
 						continue;
 					}
 				
@@ -407,6 +410,11 @@ namespace MonoReports.Model.Engine
 				controlsFromPreviousSectionPage.Add (currentSection.Name, controlsToNextPage);
 				sectionToStore.Height = 0;
 			}
+		}
+		
+		void storeControlForNextSection(Control controlToStore) {
+			controlsFromPreviousSectionPage [currentSection.Name].Add(controlToStore);
+			sectionToStore.Height = Math.Max(sectionToStore.Height,controlToStore.Bottom + marginBottom);
 		}
 
 		void nextRecord ()
