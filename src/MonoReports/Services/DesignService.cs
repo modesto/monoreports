@@ -181,17 +181,20 @@ namespace MonoReports.Services
 		}
 
 		public void CreateTextBlockAtXY (string text, string fieldName,double x, double y)
-		{
+		{			
 			var point = new Cairo.PointD (x / Zoom, y / Zoom);
 			var sectionView = getSectionViewByXY (x, y);
-			var localpoint = sectionView.PointInSectionByAbsolutePoint (point);	
-			ToolBoxService.SetToolByName ("TextBlockTool");							
-			SelectedTool.CreateNewControl (sectionView);
-			var textBlock = (SelectedControl.ControlModel as TextBlock);
-			textBlock.Text = fieldName;
-			textBlock.FieldName = fieldName;
-			textBlock.Location = new MonoReports.Model.Point (localpoint.X,localpoint.Y);
-			SelectedTool.CreateMode = false;
+			
+			if (sectionView != null) {
+				var localpoint = sectionView.PointInSectionByAbsolutePoint (point);	
+				ToolBoxService.SetToolByName ("TextBlockTool");							
+				SelectedTool.CreateNewControl (sectionView);
+				var textBlock = (SelectedControl.ControlModel as TextBlock);
+				textBlock.Text = fieldName;
+				textBlock.FieldName = fieldName;
+				textBlock.Location = new MonoReports.Model.Point (localpoint.X,localpoint.Y);
+				SelectedTool.CreateMode = false;
+			}
 		}
 
 		public void CreateImageAtXY (int index,double x, double y)
