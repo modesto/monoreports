@@ -40,7 +40,7 @@ namespace MonoReports.Model.Engine
 		IDataSource source;
 		internal ReportContext context;
 		internal Page currentPage = null;         
-		
+		bool beforeFirstDeatail = true;
 		int currentGroupIndex = -1;
 		Section currentSection = null;
 		List<SpanInfo> currentSectionSpans = null;
@@ -477,15 +477,19 @@ namespace MonoReports.Model.Engine
 			if (!currentSection.IsVisible)
 				nextSection ();
 		}
-
+		
+		
+			
 		void setDetailsOrGroup ()
 		{
-
+			
             if(!controlsFromPreviousSectionPage.ContainsKey(Report.DetailSection.Name)) {            
                 nextRecord();
             }            
-			if (dataSourceHasNextRow) {
+			
+			if (dataSourceHasNextRow || beforeFirstDeatail) {
 				selectCurrentSectionByTemplateSection (Report.DetailSection);
+				beforeFirstDeatail = false;
 			} else {
 				selectCurrentSectionByTemplateSection (Report.ReportFooterSection);
 			}

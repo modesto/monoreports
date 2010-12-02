@@ -54,7 +54,7 @@ Global
 		{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = MonoReports\MonoReports.csproj
+		StartupItem = MonoReports.Tests\MonoReports.Tests.csproj
 		Policies = $0
 		$0.StandardHeader = $1
 		$1.inheritsSet = MITX11License
