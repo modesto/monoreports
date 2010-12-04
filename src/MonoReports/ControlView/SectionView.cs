@@ -23,7 +23,6 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System;
 using MonoReports.Model.Controls;
 using MonoReports.Core;
@@ -37,30 +36,35 @@ namespace MonoReports.ControlView
 {
 	public class SectionView : ControlViewBase
 	{
+		
+		public static double SectionheaderHeight = 20;
+		public static double SectionGripperHeight = 4;
 		static Cairo.Color blackColor = new Cairo.Color (0, 0, 0);
-		static Cairo.Color lightGraykColor = new Cairo.Color (0.67, 0.67, 0.66);
 		static Cairo.Color yellowColor = new Cairo.Color (1, 1, 0);
+		static Cairo.Color sectionHeaderColor = new Cairo.Color (0.85, 0.85, 0.91);
+		static Cairo.Color sectionHeaderColor1 = new Cairo.Color (0.56, 0.56, 0.61);
 		public Cairo.Color SectionGripperColor;
 		public bool IsCollapsed { get; set; }
-		public static double SectionheaderHeight = 20;
-		public static double SectionGripperHeight = 5;
 		public Cairo.PointD SectionSpan { get; set; }
 		public Cairo.PointD AbsoluteDrawingStartPoint { get; set; }
-	 	public Rectangle HeaderAbsoluteBound { get; set; }
+		public Rectangle HeaderAbsoluteBound { get; set; }
+
 		public Rectangle GripperAbsoluteBound { get; set; }
+
 		IControlViewFactory controlViewFactory;
 		Report parentReport;
-		Cairo.Color sectionHeaderColor = new Cairo.Color (0.9, 0.9, 0.97);
+
+
 		public bool AllowCrossSectionControl { get; private set; }
 
 		List<ControlViewBase> controls;
+
 		public ReadOnlyCollection<ControlViewBase> Controls {
 			get { return controls.AsReadOnly (); }
 			private set {
 				;
 			}
 		}
-
 
 		public override Control ControlModel {
 			get { return base.ControlModel; }
@@ -75,7 +79,7 @@ namespace MonoReports.ControlView
 		public Section Section {
 			get { return section; }
 		}
-		
+
 		public List<ControlViewBase> DesignCrossSectionControlsToAdd {
 			get;
 			set;
@@ -86,29 +90,26 @@ namespace MonoReports.ControlView
 			set;
 		}
 
-		
-		
-		public SectionView (Report parentReport, IControlViewFactory controlViewFactory, Section section, Cairo.PointD sectionSpan) : base(section)
+		public SectionView (Report parentReport,IControlViewFactory controlViewFactory,Section section,Cairo.PointD sectionSpan) : base(section)
 		{
-			DesignCrossSectionControlsToAdd = new List<ControlViewBase>();
-			DesignCrossSectionControlsToRemove = new List<ControlViewBase>();
+			DesignCrossSectionControlsToAdd = new List<ControlViewBase> ();
+			DesignCrossSectionControlsToRemove = new List<ControlViewBase> ();
 			this.controlViewFactory = controlViewFactory;
 			this.parentReport = parentReport;
 			
 			if (section is DetailSection)
-				AllowCrossSectionControl = false;
-			else{
+				AllowCrossSectionControl = false; else {
 				AllowCrossSectionControl = true;
 			}
 			
 			SectionSpan = sectionSpan;
 			controls = new System.Collections.Generic.List<ControlViewBase> ();
 			AddControls (this.section.Controls);
-			SectionGripperColor = lightGraykColor;
+			SectionGripperColor = sectionHeaderColor1;
+			
 			InvalidateBound ();
 			
 		}
-
 
 		public void AddControlView (ControlViewBase controlView)
 		{
@@ -121,16 +122,17 @@ namespace MonoReports.ControlView
 			AddControlView (controlView);
 			return controlView;
 		}
-		
-		public void RemoveControlView(ControlViewBase controlView){
-			Section.Controls.Remove( controlView.ControlModel);
-			controls.Remove(controlView);
+
+		public void RemoveControlView (ControlViewBase controlView)
+		{
+			Section.Controls.Remove (controlView.ControlModel);
+			controls.Remove (controlView);
 		}
 
 		public void AddControls (IList<Control> controlsToAdd)
 		{
 			for (int i = 0; i < controlsToAdd.Count; i++) {
-				CreateControlView (controlsToAdd[i]);
+				CreateControlView (controlsToAdd [i]);
 			}
 		}
 
@@ -153,40 +155,33 @@ namespace MonoReports.ControlView
 		public override void Render (Cairo.Context c)
 		{
 			
+	
+				
+			InvalidateBound ();
 			
-			Size size = new Size (parentReport.Width, section.Height);
-			if (true) {
-				InvalidateBound ();
-			} else {
-				AbsoluteBound = new Rectangle (section.Location.X, section.Location.Y, section.Width, section.Height);
-			}
-			if (true) {
-				c.Save ();
-				c.FillRectangle (AbsoluteBound, section.BackgroundColor.ToCairoColor ());
+			c.Save ();
+			c.FillRectangle (AbsoluteBound, section.BackgroundColor.ToCairoColor ());
 				
 				
-				if (true) {
-					Rectangle r = new Rectangle (AbsoluteBound.X, AbsoluteBound.Y, parentReport.Width, SectionheaderHeight);
-					c.FillRectangle (r, sectionHeaderColor);
-					c.DrawText (new Cairo.PointD (r.X + 3, r.Y + 3), "Arial", Cairo.FontSlant.Normal, Cairo.FontWeight.Normal, 12, blackColor, 600, Section.Name);
-					c.FillRectangle (GripperAbsoluteBound, SectionGripperColor);
-					c.Translate (AbsoluteDrawingStartPoint.X, AbsoluteDrawingStartPoint.Y);
-					for (int j = 0; j < Controls.Count; j++) {
-						var ctrl = Controls[j];
-						ctrl.Render (c);
-					}
-										
-					
-				}
-				
-				
-				
-				c.Restore ();
-			}
 			
-			 
-		}
+			Rectangle r = new Rectangle (AbsoluteBound.X, AbsoluteBound.Y, parentReport.Width, SectionheaderHeight);
+			Cairo.Gradient pat = new Cairo.LinearGradient (0, AbsoluteBound.Y, 0, AbsoluteBound.Y + SectionheaderHeight);
+			pat.AddColorStop (0, sectionHeaderColor);
+			pat.AddColorStop (1, sectionHeaderColor1);
+			c.FillRectangle (r, pat);
+			c.DrawText (new Cairo.PointD (r.X + 3, r.Y + 3), "Tahoma", Cairo.FontSlant.Normal, Cairo.FontWeight.Normal, 11, blackColor, 600, Section.Name);
+			c.FillRectangle (GripperAbsoluteBound, SectionGripperColor);
+			c.Translate (AbsoluteDrawingStartPoint.X, AbsoluteDrawingStartPoint.Y);
+			
+			for (int j = 0; j < Controls.Count; j++) {
+					var ctrl = Controls [j];
+					ctrl.Render (c);
+			}
 
+			c.Restore ();
+				
+				
+		}
 
 		public override bool ContainsPoint (double x, double y)
 		{
@@ -211,6 +206,7 @@ namespace MonoReports.ControlView
 		}
 
 		private bool sectionGripperHighlighted;
+
 		public bool SectionGripperHighlighted {
 
 
@@ -222,7 +218,7 @@ namespace MonoReports.ControlView
 					if (sectionGripperHighlighted) {
 						SectionGripperColor = yellowColor;
 					} else {
-						SectionGripperColor = lightGraykColor;
+						SectionGripperColor = sectionHeaderColor1;
 					}
 				}
 			}

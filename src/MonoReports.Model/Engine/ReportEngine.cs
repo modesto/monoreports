@@ -247,7 +247,7 @@ namespace MonoReports.Model.Engine
 				
 				if (control is SubReport) {
 					SubReport sr = control as SubReport;
-                    double maxSubreportHeight = ((heightTreshold - span) - sr.Top) - marginBottom;                    
+                    double maxSubreportHeight = ((heightTreshold - span) - sr.Top);                    
 					sr.ProcessUpToPage (this.ReportRenderer, maxSubreportHeight);
 
                     if (!(sr.Engine.context.HeightUsedOnCurrentPage > maxSubreportHeight))
@@ -283,7 +283,7 @@ namespace MonoReports.Model.Engine
 				control.Size = controlSize;
 				
 
-				if (control.Bottom <= heightTresholdIncludingBottomMargin) {
+				if (control.Bottom <= heightTreshold) {
 					if (!allKeepTogether) {
 						currentSectionControlsBuffer.Add (control);
 					} else {
@@ -363,6 +363,9 @@ namespace MonoReports.Model.Engine
 			else if ((currentSection.CanGrow && currentSection.Height < sectionHeightWithMargin) ||
 					 (currentSection.CanShrink && currentSection.Height > sectionHeightWithMargin)) {				 
 				currentSection.Height = sectionHeightWithMargin;			
+			}else 
+			{
+				currentSection.Height = Math.Min(currentSection.Height, heightTreshold);
 			}
 			
 				

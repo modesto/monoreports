@@ -252,7 +252,7 @@
         <property name="MemberName" />
         <property name="CanFocus">True</property>
         <property name="Events">ButtonPressMask, ButtonReleaseMask, KeyPressMask, KeyReleaseMask, FocusChangeMask, StructureMask</property>
-        <property name="CurrentPage">0</property>
+        <property name="CurrentPage">1</property>
         <signal name="SwitchPage" handler="OnMainNotebookSwitchPage" />
         <child>
           <widget class="Gtk.ScrolledWindow" id="designScrolledWindow">
