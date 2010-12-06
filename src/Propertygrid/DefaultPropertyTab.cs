@@ -83,16 +83,16 @@ namespace PropertyGrid
 		
 		public Gdk.Pixbuf GetIcon ()
 		{
-			using (var stream = GetType ().Assembly.GetManifestResourceStream (GetType ().FullName + ".bmp")) {
-				if (stream != null) {
-					try {
-						return new Gdk.Pixbuf (stream);
-					} catch {}
-					//(Exception e) {
-					//LoggingService.LogError ("Can't create pixbuf from resource:" + GetType ().FullName + ".bmp", e);
-					//}
-				}
-			}
+//			using (var stream = GetType ().Assembly.GetManifestResourceStream (GetType ().FullName + ".bmp")) {
+//				if (stream != null) {
+//					try {
+//						return new Gdk.Pixbuf (stream);
+//					} catch {}
+//					//(Exception e) {
+//					//LoggingService.LogError ("Can't create pixbuf from resource:" + GetType ().FullName + ".bmp", e);
+//					//}
+//				}
+//			}
 			return null;
 		}
 	}
