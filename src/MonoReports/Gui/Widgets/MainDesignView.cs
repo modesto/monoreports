@@ -169,10 +169,7 @@ namespace MonoReports.Gui.Widgets
 			DrawingArea area = (DrawingArea)o;
 			if (designService.Report.Pages.Count > 0) {
 				Cairo.Context cr = Gdk.CairoHelper.Create (area.GdkWindow);
-				cr.Antialias = Cairo.Antialias.None;
-				
-				//3tk clean up CurrentContext in designService
-				designService.CurrentContext = cr;
+				cr.Antialias = Cairo.Antialias.None;								 				 
 				reportRenderer.Context  = cr;
 				Cairo.Rectangle r = new Cairo.Rectangle(0,0,designService.Report.WidthWithMargins,designService.Report.HeightWithMargins);
 				cr.FillRectangle(r,backgroundPageColor);
@@ -226,8 +223,7 @@ namespace MonoReports.Gui.Widgets
 					evaluate ();
 
 					ImageSurface imagesSurface = new ImageSurface (Format.Argb32, (int)designService.Report.Width, (int)designService.Report.Height);
-					Cairo.Context cr = new Cairo.Context (imagesSurface);
-					designService.CurrentContext = cr;
+					Cairo.Context cr = new Cairo.Context (imagesSurface);				
 					reportRenderer.Context = cr;
 					reportEngine = new ReportEngine (designService.Report, reportRenderer);
 

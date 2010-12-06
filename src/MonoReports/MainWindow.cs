@@ -77,7 +77,7 @@ new [] {
 		maindesignview1.WorkSpaceService = workspaceService;
 		maindesignview1.Compiler = compilerService;
 		
-		var reportRenderer = new ReportRenderer(designService.CurrentContext);
+		var reportRenderer = new ReportRenderer();
         reportRenderer.RegisterRenderer(typeof(Controls.TextBlock), new TextBlockRenderer());
         reportRenderer.RegisterRenderer(typeof(Controls.Line), new LineRenderer());
 		reportRenderer.RegisterRenderer(typeof(MonoReports.Model.Controls.Image), new ImageRenderer(){ PixbufRepository = designService.PixbufRepository});

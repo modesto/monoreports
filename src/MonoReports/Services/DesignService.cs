@@ -100,7 +100,7 @@ namespace MonoReports.Services
 			} 
 		}
 
-		internal Context CurrentContext;	
+		 
 		ControlViewFactory controlViewFactory;
 		Report report;
 
@@ -158,24 +158,24 @@ namespace MonoReports.Services
 		public void RedrawReport (Context c)
 		{
 			
-			CurrentContext = c;
+			
 			
 			if (Zoom != 1) {
-				CurrentContext.Scale (Zoom, Zoom);
+				c.Scale (Zoom, Zoom);
 				Width = (int)(Report.Width * Zoom);
 				Height = (int)(Report.Height * Zoom);
 			}
 			
 			
 			if (SelectedTool != null) {
-				SelectedTool.OnBeforeDraw (CurrentContext);
+				SelectedTool.OnBeforeDraw (c);
 			}
 			for (int i = 0; i < SectionViews.Count; i++) {
 				var renderedSection = SectionViews [i];
-				renderedSection.Render (CurrentContext);								
+				renderedSection.Render (c);								
 			}
 			if (SelectedTool != null) {
-				SelectedTool.OnAfterDraw (CurrentContext);
+				SelectedTool.OnAfterDraw (c);
 			}
 			
 		}
@@ -372,10 +372,7 @@ namespace MonoReports.Services
 			WorkspaceService.InvalidateDesignArea (); 			
 		}
 
-		public void NextPage ()
-		{
-			CurrentContext.ShowPage ();
-		}
+		 
 
 		private void addSectionView (Section section)
 		{
@@ -412,7 +409,7 @@ namespace MonoReports.Services
 					
 					Cairo.Context cr = new Cairo.Context (pdfSurface);
 					cr.Translate(report.Margin.Left,report.Margin.Top);
-					ReportRenderer renderer = new ReportRenderer (cr);
+					ReportRenderer renderer = new ReportRenderer (){ Context = cr};
 					renderer.RegisterRenderer (typeof(TextBlock), new TextBlockRenderer ());
 					renderer.RegisterRenderer (typeof(Line), new LineRenderer ());
 					renderer.RegisterRenderer (typeof(Image), new ImageRenderer (){ PixbufRepository = PixbufRepository});

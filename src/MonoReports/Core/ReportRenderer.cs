@@ -51,10 +51,8 @@ namespace MonoReports.Core
 			renderersDictionary.Add(t,renderer);
 		}
 		
-		public ReportRenderer (Cairo.Context context)
+		public ReportRenderer ()
 		{
-			this.context = context;
-			
 			renderersDictionary = new Dictionary<Type, object>();
 		} 
 
