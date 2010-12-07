@@ -70,31 +70,43 @@ namespace MonoReports.Tools
 				var location = control.ControlModel.Location;
 				
 				if (designService.IsMoving) {
+					double w,h,x,y;
 					if (!isResizing) {
-						double x = Math.Max(0, location.X + designService.DeltaPoint.X);
-						double y = Math.Max(0, location.Y + designService.DeltaPoint.Y);
+						x = Math.Max(0, location.X + designService.DeltaPoint.X);
+						y = Math.Max(0, location.Y + designService.DeltaPoint.Y);
 						x = Math.Min(control.ParentSection.Section.Width - control.ControlModel.Width, x);
-						y = Math.Min(control.ParentSection.Section.Height - control.ControlModel.Height,y);
-						
+						y = Math.Min(control.ParentSection.Section.Height - control.ControlModel.Height,y);						
 						var point = new MonoReports.Model.Point (x,y);
 						control.ControlModel.Location = point;
 					} else {
 						
 						switch (gripperType) {
 						case GripperType.NE:
-							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width + designService.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height - designService.DeltaPoint.Y));
-							control.ControlModel.Location = new MonoReports.Model.Point (location.X, location.Y + designService.DeltaPoint.Y);
+							w = Math.Min( Math.Abs (control.ControlModel.Size.Width + designService.DeltaPoint.X) , control.ParentSection.Section.Width);
+							h = Math.Min( Math.Abs (control.ControlModel.Size.Height - designService.DeltaPoint.Y) , control.ParentSection.Section.Height);
+							y = Math.Max( location.Y + designService.DeltaPoint.Y,0);
+							control.ControlModel.Size = new Size (w, h);
+							control.ControlModel.Location = new MonoReports.Model.Point (location.X, y);
 							break;
 						case GripperType.SE:
-							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width + designService.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height + designService.DeltaPoint.Y));
+							w = Math.Min( Math.Abs (control.ControlModel.Size.Width + designService.DeltaPoint.X) , control.ParentSection.Section.Width);
+							h = Math.Min( Math.Abs (control.ControlModel.Size.Height + designService.DeltaPoint.Y) , control.ParentSection.Section.Height - control.ControlModel.Location.Y);
+							control.ControlModel.Size = new Size (w,h);
 							break;
 						case GripperType.SW:
-							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width - designService.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height + designService.DeltaPoint.Y));
-							control.ControlModel.Location = new MonoReports.Model.Point (location.X + designService.DeltaPoint.X, location.Y);
+							w = Math.Min( Math.Abs (control.ControlModel.Size.Width - designService.DeltaPoint.X) , control.ParentSection.Section.Width);
+							h = Math.Min( Math.Abs (control.ControlModel.Size.Height + designService.DeltaPoint.Y) , control.ParentSection.Section.Height- control.ControlModel.Location.Y);
+							x = Math.Max( location.X + designService.DeltaPoint.X,0);
+							control.ControlModel.Size = new Size (w,h);
+							control.ControlModel.Location = new MonoReports.Model.Point (x, location.Y);
 							break;
 						case GripperType.NW:
-							control.ControlModel.Size = new Size (Math.Abs (control.ControlModel.Size.Width - designService.DeltaPoint.X), Math.Abs (control.ControlModel.Size.Height - designService.DeltaPoint.Y));
-							control.ControlModel.Location = new MonoReports.Model.Point (location.X + designService.DeltaPoint.X, location.Y + designService.DeltaPoint.Y);
+							w = Math.Min( Math.Abs (control.ControlModel.Size.Width - designService.DeltaPoint.X) , control.ParentSection.Section.Width);
+							h = Math.Min( Math.Abs (control.ControlModel.Size.Height - designService.DeltaPoint.Y) , control.ParentSection.Section.Height- control.ControlModel.Location.Y);
+							x = Math.Max( location.X + designService.DeltaPoint.X,0);
+							y = Math.Max( location.Y + designService.DeltaPoint.Y,0);
+							control.ControlModel.Size = new Size (w,h);
+							control.ControlModel.Location = new MonoReports.Model.Point (x,y);
 							break;
 						default:
 							break;
