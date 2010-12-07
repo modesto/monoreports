@@ -35,7 +35,7 @@ namespace MonoReports.Model.Controls
 
 		public Control ()
 		{
-			BackgroundColor = new Color (1,1,1,1);
+			BackgroundColor = new Color (1,1,1,0);
 			Location = new Point (0,0);
 			Size = new Size (0,0);
 			IsVisible = true;

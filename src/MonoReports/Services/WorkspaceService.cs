@@ -38,21 +38,22 @@ namespace MonoReports.Services
 		DrawingArea previewArea;
 		PropertyGrid.PropertyGrid propertyGrid;
 		Gtk.Window mainWindow;
+		Gtk.Label StatusLabel {get;set;}
 		
-		
-		public WorkspaceService (Gtk.Window mainWindow, DrawingArea designArea,DrawingArea previewArea, PropertyGrid.PropertyGrid propertyGrid)
+		public WorkspaceService (Gtk.Window mainWindow, DrawingArea designArea,DrawingArea previewArea, PropertyGrid.PropertyGrid propertyGrid,Gtk.Label statusLabel)
 		{
 			this.designArea = designArea;
 			this.previewArea = previewArea;
 			this.propertyGrid = propertyGrid;
 			this.mainWindow = mainWindow;			
+			this.StatusLabel = statusLabel;
 		}
 		
 	
 		#region IWorkspaceService implementation
 		public void Status (string message)
 		{
-			 
+			 StatusLabel.Text = message;
 		}
 
 		public void SetCursor (Gdk.CursorType cursorType)

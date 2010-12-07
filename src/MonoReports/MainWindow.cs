@@ -60,16 +60,41 @@ public partial class MainWindow : Gtk.Window
 		
 		Report startReport = new Report(){ 
 			DataScript = @"
-new [] {
-     new { Name=""Alfred"" ,  Surname = ""Tarski"", Age = ""82"" },
-     new { Name=""Saul"" ,  Surname = ""Kripke"", Age = ""70"" },
-     new { Name=""Gotlob"" ,  Surname = ""Frege"", Age = ""85"" },
-     new { Name=""Kurt"" ,  Surname = ""Gödel"", Age = ""72"" }, 
-}
+//default datasource for detils section
+datasource = new [] {
+     new { Name=""Alfred"", Surname = ""Tarski"", Age = ""82"" },
+     new { Name=""Saul"", Surname = ""Kripke"", Age = ""70"" },
+     new { Name=""Gotlob"", Surname = ""Frege"", Age = ""85"" },
+     new { Name=""Kurt"", Surname = ""Gödel"", Age = ""72"" }, 
+};
+
+parameters.Add(""Title"",""The Logicans"");
+
 "};
 		
-		compilerService = new CompilerService();
-		workspaceService = new WorkspaceService (this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid);
+		
+string template = @"
+using System;
+using System.Collections.Generic;
+{0}
+
+public sealed class GenerateDataSource {{
+    public object Generate()
+    {{ 
+		object datasource = null;
+		Dictionary<string,object> parameters = new Dictionary<string,object>();
+		 {1}
+        return new object[] {{datasource,parameters}};
+    }}
+}}
+
+";		
+		
+		
+		
+		compilerService = new CompilerService(template);
+		workspaceService = new WorkspaceService (this,maindesignview1.DesignDrawingArea,maindesignview1.PreviewDrawingArea,mainPropertygrid, StatusBarLabel);
+		
 		designService = new DesignService (workspaceService,compilerService,startReport);
 		toolBoxService = new ToolBoxService ();
 		designService.ToolBoxService = toolBoxService;

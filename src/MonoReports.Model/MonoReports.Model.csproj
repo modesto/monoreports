@@ -60,7 +60,6 @@
     <Compile Include="Group.cs" />
     <Compile Include="Controls\ICrossSectionControl.cs" />
     <Compile Include="LineType.cs" />
-    <Compile Include="Data\DataField.cs" />
     <Compile Include="Data\ObjectDataSource.cs" />
     <Compile Include="Controls\ReportFooterSection.cs" />
     <Compile Include="Controls\ReportHeaderSection.cs" />
@@ -78,6 +77,8 @@
     <Compile Include="LineMode.cs" />
     <Compile Include="Data\PropertyDataField.cs" />
     <Compile Include="Thickness.cs" />
+    <Compile Include="Data\Field.cs" />
+    <Compile Include="Data\FieldBuilder.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -34,6 +34,8 @@ using Cairo;
 using Gdk;
 using MonoReports.Extensions.CairoExtensions;
 using System.Reflection;
+using System.Collections.Generic;
+using MonoReports.Model.Data;
 
 namespace MonoReports.Gui.Widgets
 {
@@ -112,23 +114,18 @@ namespace MonoReports.Gui.Widgets
 					var source = Gtk.Drag.GetSourceWidget (args.Context);
 						if (source.GetType () == typeof(TreeView)){
 						TreeIter item;
-						TreeIter parent;
-						var treeView = ((TreeView)source);
-					    var model = ((TreeView)source).Model;
-					
+						TreeView treeView = ((TreeView)source) as TreeView;
 						treeView.Selection.GetSelected (out item);
-					    
-					
-						model.IterParent(out parent,item);
-					
-					    var parentName = model.GetValue(parent,0).ToString();
-						var fieldName = model.GetValue (item, 0).ToString ();											
+					    var model = treeView.Model as Gtk.TreeStore;					
+						var wrapper = model.GetValue (item, 0) as TreeItemWrapper;	 					
 						Gtk.Drag.Finish (args.Context, true, false, 0);
-						if(parentName.StartsWith("Ima")){
-							designService.CreateImageAtXY(int.Parse(fieldName), args.X, args.Y);
+					
+						if(wrapper.Object is Field) {
+							Field f = wrapper.Object as Field;
+							designService.CreateTextBlockAtXY (f.Name,f.Name, f.FieldKind,args.X, args.Y);
 						} else {
-							designService.CreateTextBlockAtXY (fieldName, fieldName,args.X, args.Y);
-						}
+							//designService.CreateImageAtXY(int.Parse(fieldName), args.X, args.Y);
+						}  
 					}
 			};								
 			
@@ -254,12 +251,29 @@ namespace MonoReports.Gui.Widgets
 		}
 		
 		void evaluate() {			
-			object r;
-			string msg;
+ 
+			object result = null;
+			string meassage = null;			 
+			 
+			string usings = String.Empty;
+			string code = codeTextview.Buffer.Text;
 			
-			Compiler.Evaluate(codeTextview.Buffer.Text,out r,out msg);					
-			designService.Report.DataSource = r;
-			designService.Report.DataScript = codeTextview.Buffer.Text;			
+			if( Compiler.Evaluate (out result, out meassage,new object[]{usings,code})  ) {
+				var ds = (result as object[]);
+				var datasource = ds[0] ;
+				Dictionary<string,object> parametersDictionary = ds[1] as Dictionary<string,object>;
+				designService.Report.Parameters.Clear();
+				foreach (KeyValuePair<string, object> kvp in parametersDictionary) {
+					 designService.Report.Parameters.AddRange(FieldBuilder.CreateFields(kvp.Value, kvp.Key,FieldKind.Parameter));
+				}
+					
+				if (datasource != null) {
+					designService.Report.DataSource = datasource;
+					designService.Report.DataScript = codeTextview.Buffer.Text;			
+				}
+			}
+			
+			outputTextview.Buffer.Text = meassage;
 		}
 		
 	}

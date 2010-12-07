@@ -40,8 +40,7 @@ namespace MonoReports.Model.Engine
 		IDataSource source;
 		internal ReportContext context;
 		internal Page currentPage = null;         
-		bool beforeFirstDeatail = true;
-		int currentGroupIndex = -1;
+		bool beforeFirstDetailSection = true;
 		Section currentSection = null;
 		List<SpanInfo> currentSectionSpans = null;
 		List<Control> currentSectionOrderedControls = null;
@@ -66,7 +65,7 @@ namespace MonoReports.Model.Engine
 
 		bool dataSourceHasNextRow = true;
 		bool stop = false;
-		Dictionary<string,DataField> parameters;
+		Dictionary<string,Field> parameters;
 
 		public ReportEngine (Report report, IReportRenderer renderer)
 		{
@@ -91,6 +90,7 @@ namespace MonoReports.Model.Engine
 
 		public void Process ()
 		{
+			nextRecord();
 			while (!ProcessReportPage ()) {
 				nextPage ();
 			}		
@@ -219,16 +219,25 @@ namespace MonoReports.Model.Engine
 					IDataControl dc = control as IDataControl;
 					if (!string.IsNullOrEmpty (dc.FieldName)) {
 						
-						if (dc.FieldName.StartsWith ("@")) {
-							dc.Text = parameters [dc.FieldName].DefaultValue;
-						} else if (dc.FieldName.StartsWith ("#")) {
-							if (dc.FieldName == "#PageNumber") {
-								dc.Text = context.CurrentPageIndex.ToString ();
-							} else if (dc.FieldName == "#RowNumber") {
-								dc.Text = context.RowIndex.ToString ();
-							}
-						} else if (source.ContainsField (dc.FieldName))
-							dc.Text = source.GetValue (dc.FieldName, dc.FieldTextFormat);
+						switch(dc.FieldKind) {
+							case FieldKind.Parameter:
+								var parameter = parameters [dc.FieldName];
+								dc.Text = parameter.GetValue(parameter.DefaultValue,dc.FieldTextFormat);
+								break;
+							case FieldKind.Expression:
+								if (dc.FieldName == "#PageNumber") {
+									dc.Text = context.CurrentPageIndex.ToString ();
+								} else if (dc.FieldName == "#RowNumber") {
+									dc.Text = context.RowIndex.ToString ();
+								}
+								break;
+							case FieldKind.Data:
+							 	if (source.ContainsField (dc.FieldName))
+									dc.Text = source.GetValue (dc.FieldName, dc.FieldTextFormat);
+								break;
+							default:
+								break;
+						}
 					}
 				}
 
@@ -423,7 +432,7 @@ namespace MonoReports.Model.Engine
 		void nextRecord ()
 		{
 			dataSourceHasNextRow = source.MoveNext ();
-			context.RowIndex++;
+			context.RowIndex++;			
 		}
 
 		void nextSection ()
@@ -486,17 +495,16 @@ namespace MonoReports.Model.Engine
 		void setDetailsOrGroup ()
 		{
 			
-            if(!controlsFromPreviousSectionPage.ContainsKey(Report.DetailSection.Name)) {            
+            if(!controlsFromPreviousSectionPage.ContainsKey(Report.DetailSection.Name) && !beforeFirstDetailSection) {            
                 nextRecord();
             }            
 			
-			if (dataSourceHasNextRow || beforeFirstDeatail) {
-				selectCurrentSectionByTemplateSection (Report.DetailSection);
-				beforeFirstDeatail = false;
+			if (dataSourceHasNextRow || beforeFirstDetailSection) {
+				selectCurrentSectionByTemplateSection (Report.DetailSection);				
 			} else {
 				selectCurrentSectionByTemplateSection (Report.ReportFooterSection);
 			}
-
+			beforeFirstDetailSection = false;
 		}
 
 		void addControlsToCurrentPage (double span)

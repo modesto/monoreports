@@ -40,7 +40,7 @@ namespace MonoReports.Gui.Widgets
 			this.mainNotebook.CanFocus = true;
 			this.mainNotebook.Events = ((global::Gdk.EventMask)(52992));
 			this.mainNotebook.Name = "mainNotebook";
-			this.mainNotebook.CurrentPage = 1;
+			this.mainNotebook.CurrentPage = 2;
 			// Container child mainNotebook.Gtk.Notebook+NotebookChild
 			this.designScrolledWindow = new global::Gtk.ScrolledWindow ();
 			this.designScrolledWindow.CanFocus = true;

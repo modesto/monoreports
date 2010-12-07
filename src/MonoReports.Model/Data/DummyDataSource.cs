@@ -34,9 +34,9 @@ namespace MonoReports.Model.Data
 	{
  
 		 
-		public DataField[] DiscoverFields ()
+		public Field[] DiscoverFields ()
 		{
-			return new DataField[0];
+			return new Field[0];
 		}
 
 		public int CurrentRowIndex {

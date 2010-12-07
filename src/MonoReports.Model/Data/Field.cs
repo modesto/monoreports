@@ -29,7 +29,7 @@ using System.Linq.Expressions;
 
 namespace MonoReports.Model.Data
 {
-	public abstract class  DataField
+	public abstract class  Field
 	{
 		 
 
@@ -38,15 +38,26 @@ namespace MonoReports.Model.Data
 			set;
 		}
 		
-		public virtual string DefaultValue {
-			get { return string.Empty; }	
+		public virtual object DefaultValue {
+			get { return null; }	
 			set {;}
 		}
 		
 		internal Expression expression;
+		
+		public Type FieldType {get;set;}
+		
+		public FieldKind FieldKind {get;set;}
 
 		public abstract string GetValue (object current, string format);
+		
+		public override string ToString(){
+			return Name;
+		}
 	}
+	
+	
+	public enum FieldKind { Data, Expression, Parameter };
 
 	
 }

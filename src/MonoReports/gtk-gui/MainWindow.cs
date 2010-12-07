@@ -32,6 +32,7 @@ public partial class MainWindow
 	private global::MonoReports.Gui.Widgets.ReportExplorer reportExplorer;
 	private global::PropertyGrid.PropertyGrid mainPropertygrid;
 	private global::Gtk.Statusbar bottomStatusbar;
+	private global::Gtk.Label StatusBarLabel;
 
 	protected virtual void Build ()
 	{
@@ -161,11 +162,19 @@ public partial class MainWindow
 		this.bottomStatusbar = new global::Gtk.Statusbar ();
 		this.bottomStatusbar.Name = "bottomStatusbar";
 		this.bottomStatusbar.Spacing = 6;
-		this.mainVbox.Add (this.bottomStatusbar);
-		global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.mainVbox [this.bottomStatusbar]));
-		w10.Position = 3;
+		// Container child bottomStatusbar.Gtk.Box+BoxChild
+		this.StatusBarLabel = new global::Gtk.Label ();
+		this.StatusBarLabel.Name = "StatusBarLabel";
+		this.bottomStatusbar.Add (this.StatusBarLabel);
+		global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.bottomStatusbar [this.StatusBarLabel]));
+		w10.Position = 1;
 		w10.Expand = false;
 		w10.Fill = false;
+		this.mainVbox.Add (this.bottomStatusbar);
+		global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.mainVbox [this.bottomStatusbar]));
+		w11.Position = 3;
+		w11.Expand = false;
+		w11.Fill = false;
 		this.Add (this.mainVbox);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();

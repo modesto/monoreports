@@ -220,7 +220,15 @@
             <property name="MemberName" />
             <property name="Spacing">6</property>
             <child>
-              <placeholder />
+              <widget class="Gtk.Label" id="StatusBarLabel">
+                <property name="MemberName" />
+              </widget>
+              <packing>
+                <property name="Position">1</property>
+                <property name="AutoSize">True</property>
+                <property name="Expand">False</property>
+                <property name="Fill">False</property>
+              </packing>
             </child>
             <child>
               <placeholder />
@@ -252,7 +260,7 @@
         <property name="MemberName" />
         <property name="CanFocus">True</property>
         <property name="Events">ButtonPressMask, ButtonReleaseMask, KeyPressMask, KeyReleaseMask, FocusChangeMask, StructureMask</property>
-        <property name="CurrentPage">1</property>
+        <property name="CurrentPage">2</property>
         <signal name="SwitchPage" handler="OnMainNotebookSwitchPage" />
         <child>
           <widget class="Gtk.ScrolledWindow" id="designScrolledWindow">

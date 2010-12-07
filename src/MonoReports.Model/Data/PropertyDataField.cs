@@ -29,7 +29,7 @@ using System.Linq.Expressions;
 
 namespace MonoReports.Model.Data
 {
-	public class PropertyDataField<T,K> : DataField where T: class
+	public class PropertyDataField<T,K> : Field //where T: class
 	{
 		
 		 
@@ -37,16 +37,23 @@ namespace MonoReports.Model.Data
 			 
 		}
 		
-		public PropertyDataField(ParameterExpression root, Expression parent,string propertyName){
-		
-			Expression<Func<T,K>> lambda = Expression.Lambda<Func<T,K>>(Expression.Property(parent,propertyName),root);
-			compiledMethod = lambda.Compile();
-			expression = lambda;
+		public PropertyDataField(ParameterExpression root, Expression parent,string propertyName) {
+			Expression<Func<T,K>> lambda = null;
+			Type t = typeof(T);
+			Type k = typeof(K);
+			if(t == k && t.IsPrimitive || t == typeof(string) || t == typeof(DateTime)){
+				lambda = (K x) =>  x; 
+			}
+			else {
+				lambda = Expression.Lambda<Func<T,K>>(Expression.Property(parent,propertyName),root);
+			}
 			
+			compiledMethod = lambda.Compile();
+			expression = lambda;			
 		}
 		
-		string defaultValue;
-		public override  string DefaultValue {
+		object defaultValue;
+		public override  object DefaultValue {
 			get { return defaultValue; }
 			set { defaultValue = value; }
 		}
@@ -60,8 +67,10 @@ namespace MonoReports.Model.Data
 			string returnVal = String.Empty;
 			
 			try{
-				returnVal =  String.Format(format,compiledMethod(current as T) );
-			}catch{};
+				returnVal =  String.Format(format != null ? format : "{0}",compiledMethod((T)current) );
+			}catch(Exception exp){
+				Console.WriteLine(exp);
+			}
 			
 			return returnVal;
 		}				

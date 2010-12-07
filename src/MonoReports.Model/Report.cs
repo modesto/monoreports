@@ -40,9 +40,9 @@ namespace MonoReports.Model
 			Width = 560;
 			Height = 800;
 			Margin = new Thickness(10);
-			Groups = new List<Group> ();
-			Fields = new List<DataField> ();
-			Parameters = new List<DataField> ();
+			Groups = new List<Group> ();			
+			Parameters = new List<Field> ();
+			DataFields = new List<Field> ();
 			GroupHeaderSections = new List<GroupHeaderSection> ();
 			GroupFooterSections = new List<GroupFooterSection> ();
 			Pages = new List<Page> ();
@@ -73,6 +73,12 @@ namespace MonoReports.Model
 		public List<GroupFooterSection> GroupFooterSections { get; set; }
 
 		public List<Page> Pages { get; internal set; }
+		
+		public List<Field> Parameters { get; private set; }
+		
+		public List<Field> DataFields { get; private set; }
+		
+		public List<Field> Expression { get; private set; }
 
 		public List<Group> Groups { get; internal set; }
 
@@ -80,9 +86,8 @@ namespace MonoReports.Model
 
 		public double Height { get; set; }
 		
-		public double HeightWithMargins { get { return Height  + Margin.Top + Margin.Bottom;} }
-
-
+		public double HeightWithMargins { get { return Height  + Margin.Top + Margin.Bottom;} }		
+		
         double width;
         public double Width { 
             get { return width; } 
@@ -145,21 +150,23 @@ namespace MonoReports.Model
 		public object DataSource { 
 			get { return dataSource; } 
 			set {
-				dataSource = value;
-				if (dataSource != null) {
-					Type r = dataSource.GetType ();
-					Type r2 = r.GetElementType ();
-					if (r2 == null) {
-						Type t = r.GetGenericArguments () [0];
+			 	dataSource = value;
+				if (dataSource != null ) {
+
+					Type dsType = dataSource.GetType ();
+					Type elementType = dsType.GetElementType ();
+					if (elementType == null) {
+						Type genericArgumentTypes = dsType.GetGenericArguments () [0];
 						Type genericType = typeof(ObjectDataSource<>); 
-						var ttt = genericType.MakeGenericType (new Type[]{t});
-						_dataSource = (Activator.CreateInstance (ttt, dataSource))  as IDataSource;
+						var genericDatasourceType = genericType.MakeGenericType (new Type[]{genericArgumentTypes});
+						_dataSource = (Activator.CreateInstance (genericDatasourceType, dataSource))  as IDataSource;
 					} else {
-					
 						Type genericType = typeof(ObjectDataSource<>); 
-						var ttt = genericType.MakeGenericType (new Type[]{r2});
-						_dataSource = (Activator.CreateInstance (ttt, dataSource))  as IDataSource;
+						var realGeneric = genericType.MakeGenericType (new Type[]{elementType});
+						_dataSource = (Activator.CreateInstance (realGeneric, dataSource))  as IDataSource;
 					}
+				}else {
+					_dataSource = null;
 				}
 				FillFieldsFromDataSource ();
 			} 
@@ -167,17 +174,19 @@ namespace MonoReports.Model
 		}
 
 		internal IDataSource _dataSource {get; set;}
-
-		public List<DataField> Fields { get; private set; }
-
-		public List<DataField> Parameters { get; private set; }
-
+ 
 		public void FillFieldsFromDataSource ()
 		{
-			Fields = new List<DataField> ();				
+			DataFields = new List<Field> ();				
 			if (DataSource != null) {
-				Fields.AddRange( _dataSource.DiscoverFields ());				 
+				
+				foreach(var field in _dataSource.DiscoverFields () ){
+				
+					field.FieldKind = FieldKind.Data;
+					DataFields.Add( field );				 					
+				}
 			}
+				
 		}
 
  

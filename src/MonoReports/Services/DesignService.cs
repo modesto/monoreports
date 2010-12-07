@@ -157,15 +157,11 @@ namespace MonoReports.Services
 
 		public void RedrawReport (Context c)
 		{
-			
-			
-			
 			if (Zoom != 1) {
 				c.Scale (Zoom, Zoom);
 				Width = (int)(Report.Width * Zoom);
 				Height = (int)(Report.Height * Zoom);
-			}
-			
+			}			
 			
 			if (SelectedTool != null) {
 				SelectedTool.OnBeforeDraw (c);
@@ -180,7 +176,7 @@ namespace MonoReports.Services
 			
 		}
 
-		public void CreateTextBlockAtXY (string text, string fieldName,double x, double y)
+		public void CreateTextBlockAtXY (string text, string fieldName, FieldKind fieldKind, double x, double y)
 		{			
 			var point = new Cairo.PointD (x / Zoom, y / Zoom);
 			var sectionView = getSectionViewByXY (x, y);
@@ -192,6 +188,7 @@ namespace MonoReports.Services
 				var textBlock = (SelectedControl.ControlModel as TextBlock);
 				textBlock.Text = fieldName;
 				textBlock.FieldName = fieldName;
+				textBlock.FieldKind = fieldKind;
 				textBlock.Location = new MonoReports.Model.Point (localpoint.X,localpoint.Y);
 				SelectedTool.CreateMode = false;
 			}
@@ -394,25 +391,27 @@ namespace MonoReports.Services
 			Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose the pdf file to save", null, Gtk.FileChooserAction.Save, "Cancel", Gtk.ResponseType.Cancel, "Export", Gtk.ResponseType.Accept);
 			var fileFilter = new Gtk.FileFilter { Name = "pdf file" };
 			fileFilter.AddPattern ("*.pdf");
-			fc.AddFilter (fileFilter);
-			object r;
-			string msg;	
-		
+			fc.AddFilter (fileFilter);			 
 		
 			if (fc.Run () == (int)Gtk.ResponseType.Accept) {
 				
-				compilerService.Evaluate (report.DataScript, out r, out msg);					
-			    Report.DataSource = r;
+				var result = CompileAndRunDataScript();				
+			    Report.DataSource = result[0];
 				
 				using (PdfSurface pdfSurface = new PdfSurface (
-					fc.Filename,report.WidthWithMargins,report.HeightWithMargins)) {
-					
+					fc.Filename,report.WidthWithMargins,report.HeightWithMargins)) {					 
 					Cairo.Context cr = new Cairo.Context (pdfSurface);
 					cr.Translate(report.Margin.Left,report.Margin.Top);
 					ReportRenderer renderer = new ReportRenderer (){ Context = cr};
 					renderer.RegisterRenderer (typeof(TextBlock), new TextBlockRenderer ());
 					renderer.RegisterRenderer (typeof(Line), new LineRenderer ());
 					renderer.RegisterRenderer (typeof(Image), new ImageRenderer (){ PixbufRepository = PixbufRepository});
+					SectionRenderer sr = new SectionRenderer();
+					renderer.RegisterRenderer(typeof(ReportHeaderSection), sr);
+					renderer.RegisterRenderer(typeof(ReportFooterSection), sr);
+					renderer.RegisterRenderer(typeof(DetailSection), sr);
+					renderer.RegisterRenderer(typeof(PageHeaderSection), sr);
+					renderer.RegisterRenderer(typeof(PageFooterSection), sr);
 					MonoReports.Model.Engine.ReportEngine engine = new MonoReports.Model.Engine.ReportEngine (Report,renderer);
 					engine.Process ();
 					for (int i = 0; i < Report.Pages.Count; ++i) {
@@ -429,6 +428,15 @@ namespace MonoReports.Services
 		}
 		
 		
+		public object[] CompileAndRunDataScript() {
+			object result = null;
+			string meassage = null;
+			string usings = String.Empty;
+			string code = report.DataScript;
+			compilerService.Evaluate (out result, out meassage,new object[]{usings,code});
+			return result as object[];
+		}
+	  
 		
 	}
 	

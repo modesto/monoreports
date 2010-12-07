@@ -57,6 +57,8 @@ namespace MonoReports.Model.Controls
 				
 		public bool CanGrow {get;set;}		
 		
+		public string  SelectedDatasource {get;set;}		
+		
 		public bool CanShrink {get;set;}
 
         public bool KeepTogether { get; set; }		

@@ -34,7 +34,7 @@ namespace MonoReports.Model.Data
 		string GetValue(string fieldName, string format);
 		int CurrentRowIndex{get;}
 		void ApplySort(IEnumerable<string> sortingFields);
-		DataField[] DiscoverFields();
+		Field[] DiscoverFields();
 		bool ContainsField(string fieldName);		 
 	}
 }

@@ -39,9 +39,8 @@ namespace MonoReports.Model.Data
     	bool nextRes = false;
 		IEnumerator enumerator;
 		int currentRowIndex = -1;
-		List<DataField> fields;
-		Dictionary<string, DataField> propertiesDictionary;
-		Type dataType;
+		List<Field> fields;
+		Dictionary<string, Field> propertiesDictionary;
 		Type rootObjectType;
 		
 		public int CurrentRowIndex {
@@ -54,8 +53,7 @@ namespace MonoReports.Model.Data
 		public ObjectDataSource (IEnumerable<T> data)
 		{			 
 			this.data = data as IEnumerable<T>;
-			fields = new List<DataField> ();
-			dataType =  data.GetType();	
+			fields = new List<Field> ();
 			rootObjectType = typeof(T);	
 			DiscoverFields();
             nextRes = true;
@@ -68,7 +66,7 @@ namespace MonoReports.Model.Data
 			if (enumerator != null && propertiesDictionary.ContainsKey (fieldName)) {
                 if (nextRes)
                 {
-                    var property = propertiesDictionary[fieldName] as DataField;
+                    var property = propertiesDictionary[fieldName] as Field;
 					
                     return property.GetValue(enumerator.Current, format != null ? format : "{0}");                    
                 }
@@ -127,8 +125,7 @@ namespace MonoReports.Model.Data
         Type type = typeof(K);
         ParameterExpression arg = Expression.Parameter(type, "x");
         Expression expr = arg;
-        foreach(string prop in props) {
-            // use reflection (not ComponentModel) to mirror LINQ
+        foreach(string prop in props) {           
             PropertyInfo pi = type.GetProperty(prop);
             expr = Expression.Property(expr, pi);
             type = pi.PropertyType;
@@ -154,33 +151,14 @@ namespace MonoReports.Model.Data
 			prepareObjectDataSource ();
 		}
 
-		public DataField[] DiscoverFields ()
-		{
- 
-        	ParameterExpression arg = Expression.Parameter(rootObjectType, "ds");
+		public Field[] DiscoverFields ()
+		{        	
 			fields.Clear();
-			fillFields(arg,arg,null,rootObjectType);
+		    fields.AddRange( FieldBuilder.CreateFields(rootObjectType,"p",FieldKind.Data));
  			propertiesDictionary = fields.ToDictionary(pr=>pr.Name);
 			return fields.ToArray ();
 		}
-
-		void fillFields(ParameterExpression par,Expression parent,string namePrefix, Type t) {
-			PropertyInfo[] properties = t.GetProperties();
-			foreach (var property in properties) {
-				if (property.PropertyType.IsPrimitive || property.PropertyType == typeof(string) || property.PropertyType == typeof(DateTime)) {
-					
-					var genericType = typeof(PropertyDataField<,>).MakeGenericType(rootObjectType, property.PropertyType);
-				  	var p = Activator.CreateInstance(genericType,par,parent,property.Name) as DataField;
-					p.Name = string.IsNullOrEmpty(namePrefix) ?  property.Name : namePrefix + "." + property.Name;
-					fields.Add(p);
-				} else {
-					var expr = Expression.Property(parent,property.Name);
-					fillFields(par,expr,property.Name,property.PropertyType);
-				}
-			}			
-		}
-		
-
+ 
 		public void Reset ()
 		{
 			enumerator.Reset ();

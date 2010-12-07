@@ -34,57 +34,45 @@ namespace MonoReports.Services
 {
 	public class CompilerService
 	{
+		
 		public CompilerService ()
 		{
-		}
-
-		public void Init ()
-		{
-			//Evaluator.MessageOutput = Console.Out;
-			
-			//Evaluator.Init (new string[0]);
-			//AppDomain.CurrentDomain.AssemblyLoad += delegate (object sender, AssemblyLoadEventArgs e)
-			//{
-			
-			//	Evaluator.ReferenceAssembly (e.LoadedAssembly);			
-			//};
-			
-			// Add all currently loaded assemblies
-			//			foreach (Assembly a in AppDomain.CurrentDomain.GetAssemblies ()) {
-			//				try {
-			//					Evaluator.ReferenceAssembly (a);
-			//				} catch (Exception exp) {
-			//					Console.WriteLine (exp.ToString ());
-			//				}
-			//			}
-			object obj;
-			string msg;
-			Evaluate ("using System; using System.Linq; using System.Collections.Generic; using System.Collections;", out obj, out msg);
 			
 		}
-
-		public bool Evaluate (string input, out object result,out string message)
+		
+		public CompilerService (string codeTemplate):this()
 		{
+			this.codeTemplate = codeTemplate;
+		}
+		
+		LanguageCompiler cmp;
+		
+		public System.Collections.Specialized.StringCollection References {
+			
+			get {
+				
+				return cmp.Parms.ReferencedAssemblies;
+			}
+				
+		}
+
+		public bool Evaluate (out object result,out string message, object[] inputs)
+		{
+			cmp = new LanguageCompiler (LangType.CSharp,false,true,true);
 			bool result_set = false;
 			message = String.Empty;
 			result = new  object ();
-			
-			LanguageCompiler cmp = new LanguageCompiler (LangType.CSharp,false,true,true);
-			cmp.Code = @"
-using System;
-public class Te {
-    public object Test()
-    { 
-        var cos = " + input.Replace("\n","") + @";
+			try {
+			cmp.Code = String.Format(CodeTemplate,inputs);				
+			}catch(Exception exp){
+				return false;
+			}
+				
 
-        return cos;
-    }
-}
-
-";
-			result_set = cmp.RunCode ("Te", "Test", new object[]{});
+			result_set = cmp.RunCode ("GenerateDataSource", "Generate", new object[]{});
 			if (result_set) {
 				result = cmp.ResultObject;
+				message = cmp.CompileErrors;
 			} else {
 				message = cmp.CompileErrors;
 			}
@@ -99,13 +87,23 @@ public class Te {
 			CSharp,
 			VBNet
 		}
+		
+		string codeTemplate;
+		public string CodeTemplate {
+			get {
+				return this.codeTemplate;
+			}
+			set {
+				this.codeTemplate = value;
+			}
+		}
 
 		public class LanguageCompiler
 		{
 		// Fields
 			private string code;
 			private StringBuilder compileErrors = new StringBuilder ();
-			private CompilerParameters parms;
+			private CompilerParameters parameters;
 
 		// private CodeDomProvider provider = null;
 			private CompilerResults results;
@@ -115,28 +113,27 @@ public class Te {
 		// Methods
 			public LanguageCompiler (LangType lang, bool generateExecutable, bool generateInMemory, bool includeDebugInformation)			{
 				language = lang;
-				this.parms = new CompilerParameters ();
-				this.parms.GenerateExecutable = generateExecutable;
-				this.parms.GenerateInMemory = generateInMemory;
-				this.parms.IncludeDebugInformation = includeDebugInformation;
+				this.parameters = new CompilerParameters ();
+				this.parameters.GenerateExecutable = generateExecutable;
+				this.parameters.GenerateInMemory = generateInMemory;
+				this.parameters.IncludeDebugInformation = includeDebugInformation;
 			}
 
-			public void addReferencedAssembly (string assembly)
+			public void AddReferencedAssembly (string assembly)
 			{
-				this.parms.ReferencedAssemblies.Add (assembly);
+				this.parameters.ReferencedAssemblies.Add (assembly);
 			}
 
 			public bool CompileCode ()
 			{
 				this.compileErrors = new StringBuilder ();
-				this.results = new NetLanguageProviderFactory ().createLanguageCompiler (language).CompileAssemblyFromSource (this.parms, new string[] { this.code });
+				this.results = new NetLanguageProviderFactory ().createLanguageCompiler (language).CompileAssemblyFromSource (this.parameters, new string[] { this.code });
 				if (this.results.Errors.Count > 0) {
 					foreach (CompilerError error in this.results.Errors) {
 
 						this.compileErrors.Append (error.ToString () + System.Environment.NewLine + error.ErrorText);
 					}
-				} else {
-					this.compileErrors.Append ("Compilation success!" + System.Environment.NewLine);
+				} else {					
 					return true;
 				}
 				return false;
@@ -166,8 +163,9 @@ public class Te {
 				}
 				return false;
 			}
-
-		// Properties
+			
+			
+		 
 			public string Code {
 				get {
 					return this.code;
@@ -185,10 +183,10 @@ public class Te {
 
 			public CompilerParameters Parms {
 				get {
-					return this.parms;
+					return this.parameters;
 				}
 				set {
-					this.parms = value;
+					this.parameters = value;
 				}
 			}
 

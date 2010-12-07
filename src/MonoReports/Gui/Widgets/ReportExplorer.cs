@@ -78,15 +78,16 @@ namespace MonoReports.Gui.Widgets
 
 		void HandleDesignServiceOnReportDataFieldsRefreshed (object sender, EventArgs e)
 		{
-			updateFieldTree ();
+			updateTreeNode(dataFieldsNode,designService.Report.DataFields); 
+			updateTreeNode(parametersNode,designService.Report.Parameters); 
 		}
  
 		void HandleDesignServiceOnReportChanged (object sender, EventArgs e)
-		{
-			updateFieldTree ();
-			updateParameterTree ();
-			updateGroupTree ();
-			updateImageTree();
+		{			
+			updateTreeNode(dataFieldsNode,designService.Report.DataFields); 
+			updateTreeNode(parametersNode,designService.Report.Parameters); 
+			updateTreeNode(groupsNode,designService.Report.Groups); 
+			updateTreeNode(imagesNode,designService.Report.ResourceRepository); 
 		}
 
 		public IWorkspaceService Workspace {get; set;}
@@ -94,32 +95,23 @@ namespace MonoReports.Gui.Widgets
 		public ReportExplorer ()
 		{
 			this.Build ();
-			
-			Gtk.TreeViewColumn objectColumn = new Gtk.TreeViewColumn ();
-			objectColumn.Title = "Report";
-			Gtk.CellRendererText cell = new Gtk.CellRendererText ();
-			objectColumn.PackStart (cell, true);
-			
-			exporerTreeview.AppendColumn (objectColumn);
-			objectColumn.AddAttribute (cell, "text", 0);
-			theModel = new Gtk.TreeStore (typeof(string));	
+		   	var reportCellRenderer = new Gtk.CellRendererText ();
+			var reportColumn = exporerTreeview.AppendColumn ("Report", reportCellRenderer, "text", 0);
+			reportColumn.SetCellDataFunc(reportCellRenderer,new Gtk.TreeCellDataFunc (renderReportCell));
+			theModel = new Gtk.TreeStore (typeof(TreeItemWrapper));	
 			exporerTreeview.Model = theModel;
 			
-			reportNode =  theModel.AppendValues("Report");
-			staticDataFieldsNode = theModel.AppendValues (reportNode,"Static Fields");
-			theModel.AppendValues (staticDataFieldsNode, "#PageNumber");
-			theModel.AppendValues (staticDataFieldsNode, "#NumberOfPages");
-			theModel.AppendValues (staticDataFieldsNode, "#RowNumber");
 			
 			
-			dataFieldsNode = theModel.AppendValues (reportNode,"Data Fields");
-			
-			parametersNode = theModel.AppendValues (reportNode,"Parameters");
-			
-			groupsNode = theModel.AppendValues (reportNode,"Groups");
-			
-			imagesNode = theModel.AppendValues (reportNode,"Images");
-			
+			reportNode =  theModel.AppendValues(new TreeItemWrapper("Report"));
+			parametersNode = theModel.AppendValues (reportNode,new TreeItemWrapper("Parameters"));
+			dataFieldsNode = theModel.AppendValues (reportNode,new TreeItemWrapper("Data"));
+			staticDataFieldsNode = theModel.AppendValues (reportNode,new TreeItemWrapper("Expressions"));
+			theModel.AppendValues (staticDataFieldsNode, new TreeItemWrapper("#PageNumber"));
+			theModel.AppendValues (staticDataFieldsNode, new TreeItemWrapper("#NumberOfPages"));
+			theModel.AppendValues (staticDataFieldsNode, new TreeItemWrapper("#RowNumber"));		
+			groupsNode = theModel.AppendValues (reportNode,new TreeItemWrapper("Groups"));
+			imagesNode = theModel.AppendValues (reportNode,new TreeItemWrapper("Images"));
 			exporerTreeview.Selection.Changed += HandleExporerTreeviewSelectionChanged;
 
 			Gtk.Drag.SourceSet (exporerTreeview, 
@@ -156,75 +148,36 @@ namespace MonoReports.Gui.Widgets
 				
 		}
 
-		void updateFieldTree ()
+		void updateTreeNode<T> (TreeIter theNode , IEnumerable<T> objects)
 		{
 			TreeIter item;
-			if (theModel.IterChildren (out item, dataFieldsNode)) {
-				int depth = theModel.IterDepth (dataFieldsNode);
-	
-				while (theModel.Remove (ref item) && 
-					theModel.IterDepth (item) > depth)
-					;
-			}
-				
-			foreach (var field in designService.Report.Fields) {
-				theModel.AppendValues (dataFieldsNode, field.Name);
-			}
-			
-			exporerTreeview.ExpandRow(theModel.GetPath(dataFieldsNode),true);
-		}
-
-		void updateParameterTree ()
-		{
-			TreeIter item;
-			if (theModel.IterChildren (out item, parametersNode)) {
-				int depth = theModel.IterDepth (parametersNode);
-	
-				while (theModel.Remove (ref item) && 
-					theModel.IterDepth (item) > depth)
-					;
-			}
-				
-			foreach (var parameter in designService.Report.Parameters) {
-				theModel.AppendValues (parametersNode, parameter.Name);
-			}
-			exporerTreeview.ExpandRow(theModel.GetPath(parametersNode),true);				
-		}
-
-		void updateGroupTree ()
-		{
-			TreeIter item;
-			if (theModel.IterChildren (out item, groupsNode)) {
-				int depth = theModel.IterDepth (groupsNode);
-	
-				while (theModel.Remove (ref item) && 
-					theModel.IterDepth (item) > depth)
-					;
-			}
-				
-			foreach (var gr in designService.Report.Groups) {
-				theModel.AppendValues (groupsNode, gr.GroupingFieldName);
-			}
-				
-		}
-		
-		void updateImageTree ()
-		{
-			TreeIter item;
-			if (theModel.IterChildren (out item, imagesNode)) {
-				int depth = theModel.IterDepth (imagesNode);
+			if (theModel.IterChildren (out item, theNode)) {
+				int depth = theModel.IterDepth (theNode);
 	
 				while (theModel.Remove (ref item) && 
 					theModel.IterDepth (item) > depth)
 					;
 			}
 			int i=0;
-			foreach (var image in designService.Report.ResourceRepository) {
+			foreach (T o in objects) {
 				 
-				theModel.AppendValues (imagesNode, i.ToString());
+				theModel.AppendValues (theNode, new TreeItemWrapper(o));
 				i++;
 			}
-			exporerTreeview.ExpandRow(theModel.GetPath(imagesNode),true);				
+			exporerTreeview.ExpandRow(theModel.GetPath(theNode),true);				
+		}
+		
+		private void renderReportCell (Gtk.TreeViewColumn column, Gtk.CellRenderer cell, Gtk.TreeModel model, Gtk.TreeIter iter)
+		{
+		TreeItemWrapper w = (TreeItemWrapper) model.GetValue (iter, 0);
+ 		
+//		if (song.Artist.StartsWith ("X") == true) {
+//			(cell as Gtk.CellRendererText).Foreground = "red";
+//		} else {
+//			(cell as Gtk.CellRendererText).Foreground = "darkgreen";
+//		}
+ 
+		(cell as Gtk.CellRendererText).Text = w.ToString();
 		}
 
 		protected virtual void OnUpdateFieldsFromDataSourceButtonButtonPressEvent (object o, Gtk.ButtonPressEventArgs args)
@@ -268,10 +221,11 @@ namespace MonoReports.Gui.Widgets
 								if (argss.ResponseId == ResponseType.Ok) {
 									if (index == 1){
 										//DesignService.Report.Fields.Add (new PropertyDataField (){ Name = pfe.PropertyName});
-										updateFieldTree ();
+										updateTreeNode(dataFieldsNode,designService.Report.DataFields); 
+			
 									}else {
-										//DesignService.Report.Parameters.Add (new PropertyDataField (){ Name = pfe.PropertyName, DefaultValue = pfe.DefaultValue });
-										updateParameterTree ();
+										//DesignService.Report.Parameters.Add (new PropertyDataField< (){ Name = pfe.PropertyName, DefaultValue = pfe.DefaultValue });
+										updateTreeNode(parametersNode,designService.Report.Parameters); 
 									}
 									
 									pfe.Destroy ();
@@ -312,7 +266,7 @@ namespace MonoReports.Gui.Widgets
 								}
 		
 								fc.Destroy ();																								
-								updateImageTree();
+								updateTreeNode(imagesNode,designService.Report.ResourceRepository); 
 							};
 						jBox.ShowAll ();
 						jBox.Popup ();	
@@ -325,7 +279,7 @@ namespace MonoReports.Gui.Widgets
 						int index = path.Indices [1];
 						
 						if (index == 1) {
-							Workspace.ShowInPropertyGrid( designService.Report.Fields[path.Indices[2]]);
+							Workspace.ShowInPropertyGrid( designService.Report.DataFields[path.Indices[2]]);
 						} else if (index == 2) {
 							Workspace.ShowInPropertyGrid( designService.Report.Parameters[path.Indices[2]]);
 						}
@@ -336,6 +290,27 @@ namespace MonoReports.Gui.Widgets
 			}
 		
 
+		}
+	}
+	
+	public class TreeItemWrapper {
+		
+		public TreeItemWrapper () {
+		}
+		
+		public TreeItemWrapper (object obj) {
+			this.obj = obj;
+		}
+		
+		object obj;
+		public object Object {
+			get { return obj; }
+			set { obj = value; }
+		}
+		
+		public override string ToString ()
+		{
+			 return obj.ToString();
 		}
 	}
 

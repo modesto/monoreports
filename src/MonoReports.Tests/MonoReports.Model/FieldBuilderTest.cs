@@ -1,5 +1,5 @@
 // 
-// IDataControl.cs
+// FieldBuilderTest
 //  
 // Author:
 //       Tomasz Kubacki <tomasz (dot ) kubacki (at) gmail (dot) com>
@@ -24,31 +24,66 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using NUnit.Framework;
+using MonoReports.Model.Engine;
+using MonoReports.Model;
+using System.Linq;
+using MonoReports.Model.Controls;
 using MonoReports.Model.Data;
+using System.Collections.Generic;
 
-namespace MonoReports.Model.Controls
+namespace MonoReports.Tests
 {
-	public interface IDataControl
+	[TestFixture()]
+	public class FieldBuilderTest
 	{
+				
+		[Test()]
+		public void CreateFields_ForClass_ReturnsFieldsWithAllProperties ()
+		{
+			TestClass tc = new TestClass();
+		 	var fields = new List<Field>( FieldBuilder.CreateFields(tc,"kl",FieldKind.Data));
+			
+			Assert.AreEqual(4,fields.Count);
 		
-		string FieldName {
-			get;
-			set;
 		}
 		
-		FieldKind FieldKind {
-			get;
-			set;
+		[Test()]
+		public void CreateFields_ForString_ShouldCreateFieldWithName ()
+		{
+			 
+		 	var fields = FieldBuilder.CreateFields(typeof(string),"sdf",FieldKind.Parameter);
+			
+			Assert.IsNotNull(fields);
+			Assert.AreEqual(1,fields.Length);
+			Assert.IsNotNull( fields[0].Name);
+			
 		}
- 
-		string FieldTextFormat {
-			get;
-			set;
-		}
-		
-		string Text {
-			get;
-			set;
+				
+				
+		public class TestClass {
+			public string Name {
+				get;
+				set;
+			}		
+				
+				
+			public int Count {
+				get;
+				set;
+			}		
+				
+				
+			public double Price {
+				get;
+				set;
+			}	
+				
+			public DateTime Date {
+				get;
+				set;
+			}					
+				
 		}
 	}
 }

@@ -68,6 +68,8 @@ namespace MonoReports.Model.Controls
 		
 		public string FieldName {get;set;}
 		
+		public FieldKind FieldKind {get;set;}
+		
 		public string FieldTextFormat {get;set;}
 		
 		public HorizontalAlignment HorizontalAlignment {get;set;}
@@ -93,6 +95,7 @@ namespace MonoReports.Model.Controls
 			textBlock.FontWeight =   FontWeight;
 			textBlock.FontColor =   new Color(FontColor.R,FontColor.G,FontColor.B,FontColor.A);
 			textBlock.FieldName =   FieldName;
+			textBlock.FieldKind =   FieldKind;
 			textBlock.FieldTextFormat = FieldTextFormat;
 			textBlock.HorizontalAlignment =   HorizontalAlignment;
 			textBlock.VerticalAlignment =   VerticalAlignment;
