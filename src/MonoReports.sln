@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Propertygrid", "Propertygri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoReports.Tests", "MonoReports.Tests\MonoReports.Tests.csproj", "{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoReports.Shell", "MonoReports.Shell\MonoReports.Shell.csproj", "{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,16 @@ Global
 		{4A065C05-84D3-4DF0-B49B-412786C30513}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4A065C05-84D3-4DF0-B49B-412786C30513}.Release|x86.ActiveCfg = Release|Any CPU
 		{4A065C05-84D3-4DF0-B49B-412786C30513}.Release|x86.Build.0 = Release|Any CPU
+		{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}.Debug|x86.Build.0 = Debug|Any CPU
+		{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}.Default|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}.Default|Any CPU.Build.0 = Debug|Any CPU
+		{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}.Release|x86.ActiveCfg = Release|Any CPU
+		{E1CB07A4-6AA7-4F78-92FC-C2CB0B337CDF}.Release|x86.Build.0 = Release|Any CPU
 		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB6807AF-0EC1-45C8-BCF2-BAF6C4FE31E1}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -54,7 +66,7 @@ Global
 		{FFEC9CAB-1AC0-4BC9-8656-D4A7A4D361C5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = MonoReports\MonoReports.csproj
+		StartupItem = MonoReports.Shell\MonoReports.Shell.csproj
 		Policies = $0
 		$0.StandardHeader = $1
 		$1.inheritsSet = MITX11License
@@ -75,6 +87,7 @@ Global
 		$0.TextStylePolicy = $7
 		$7.FileWidth = 120
 		$7.TabWidth = 4
+		$7.EolMarker = Unix
 		$7.inheritsSet = Mono
 		$7.inheritsScope = text/plain
 		$7.scope = text/plain

@@ -71,6 +71,21 @@ namespace MonoReports.Model.Controls
 			 
 		}
 		
+		public override double Width {
+			get {
+				if(this.Location.X  == this.End.X) {
+					return Math.Max(this.Location.Y,  this.End.Y) - Math.Min(this.Location.Y,  this.End.Y);
+				}
+				else if(this.Location.Y == this.End.Y){
+					return Math.Max(this.Location.X,  this.End.X) - Math.Min(this.Location.X,  this.End.X);
+				}else {
+					//TODO 3tk
+					return 0;
+				}
+			}
+			
+		}
+		
 		public override double Left {
 			get {
 				return Math.Min(Location.X,End.X);

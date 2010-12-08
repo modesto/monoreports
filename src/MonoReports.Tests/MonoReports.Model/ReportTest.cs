@@ -1,8 +1,8 @@
 // 
-// ControlRendererBase.cs
+// ReportTest.cs
 //  
 // Author:
-//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz (dot) kubacki (at) gmail (dot ) com>
 // 
 // Copyright (c) 2010 Tomasz Kubacki
 // 
@@ -24,18 +24,27 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using NUnit.Framework;
+using MonoReports.Model.Engine;
+using MonoReports.Model;
+using System.Linq;
+using MonoReports.Model.Controls;
 
-namespace MonoReports.Core
+namespace MonoReports.Tests
 {
-	public class ControlRendererBase
+	[TestFixture()]
+	public class ReportTest
 	{
-		public ControlRendererBase ()
+		
+		[Test()]
+		[ExpectedException(typeof(InvalidOperationException))]
+		public void FillFieldsFromDataSource_WithNullDataSource_ShouldThrowException ()
 		{
+			
+			Report r = new Report();
+			r.FillFieldsFromDataSource();
+			
 		}
-		
-		public double DPI {get;set;}
-		
-		public bool DesignMode {get;set;}
 	}
 }
 

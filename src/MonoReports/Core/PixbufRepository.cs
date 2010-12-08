@@ -34,41 +34,57 @@ namespace MonoReports.Core
 	{
 		public PixbufRepository ()
 		{
-			pixbufDictionary = new Dictionary<int, Pixbuf>();
+			pixbufDictionary = new Dictionary<string, Pixbuf>();
+		}
+		
+		public PixbufRepository (Dictionary<string,byte[]> imagesRepository)
+		{
+			pixbufDictionary = new Dictionary<string, Pixbuf>();
+			foreach (KeyValuePair<string, byte[]> kvp in imagesRepository) {
+				pixbufDictionary.Add(kvp.Key,new Gdk.Pixbuf (kvp.Value));
+			}
 		}
 		
 		
 		public Report Report {get;set;}
 		
 		
-		public Dictionary<int,Pixbuf> pixbufDictionary {get;set;}
+		public Dictionary<string,Pixbuf> pixbufDictionary {get;set;}
 		
 		
-		public Pixbuf this [int index] {
+		public Pixbuf this [string key] {
 			get {
 				
-				if(!pixbufDictionary.ContainsKey(index)){
-					pixbufDictionary.Add(index,	 new Gdk.Pixbuf (Report.ResourceRepository[index]));
+				if(!pixbufDictionary.ContainsKey (key)){
+					pixbufDictionary.Add(key,	 new Gdk.Pixbuf (Report.ResourceRepository[key]));
 				}
 
-				return pixbufDictionary[index];
+				return pixbufDictionary[key];
 			}
 		}
 		
-		public void AddOrUpdatePixbufAtIndex(int index) {
-			if (Report.ResourceRepository.Count > index) {
-				var pixbuf = new Gdk.Pixbuf (Report.ResourceRepository[index]);
-				if (pixbufDictionary.ContainsKey(index)) {
-					pixbufDictionary[index] = pixbuf;
+		
+		public bool ContainsKey (string key) {
+			return pixbufDictionary.ContainsKey(key);
+		}
+		
+		public void AddOrUpdatePixbufByName(string key) {
+			if (Report.ResourceRepository.ContainsKey(key)) {
+				var pixbuf = new Gdk.Pixbuf (Report.ResourceRepository[key]);
+				if (pixbufDictionary.ContainsKey(key)) {
+					Gdk.Pixbuf pb =  pixbufDictionary[key];
+					pb.Dispose();
+					pixbufDictionary[key] = pixbuf;
+					
 				} else {
-					pixbufDictionary.Add(index,pixbuf);
+					pixbufDictionary.Add(key,pixbuf);
 				}
 			}
 		}
 		
-		public void DeletePixbufAtIndex(int index){
-			var pixbuf = pixbufDictionary[index];			
-			pixbufDictionary.Remove(index);
+		public void DeletePixbufAtIndex(string key){
+			var pixbuf = pixbufDictionary[key];			
+			pixbufDictionary.Remove(key);
 			pixbuf.Dispose();			
 		}
 		

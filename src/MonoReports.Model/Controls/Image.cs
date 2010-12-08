@@ -36,7 +36,7 @@ namespace MonoReports.Model.Controls
 			BackgroundColor = new Color(0.8,0.8,0.8);
 		}
 
-		public int ImageIndex { get; set; }
+		public string ImageKey { get; set; }
 		public Border Border { get; set; }
 
 		
@@ -44,7 +44,7 @@ namespace MonoReports.Model.Controls
 		{
 			Image img = new Image ();
 			CopyBasicProperties (img);			
-			img.ImageIndex = ImageIndex;
+			img.ImageKey = ImageKey;
 			img.Border = (Border)Border.Clone ();
 			img.Offset = new Point(offset.X,offset.Y);
 			return img;

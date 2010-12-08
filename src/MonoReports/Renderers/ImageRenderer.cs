@@ -51,8 +51,8 @@ namespace MonoReports.Renderers
 			c.ClipRectangle (borderRect);
 			borderRect = new Rectangle (image.Location.X, image.Location.Y, image.Width, image.Height);
 			c.FillRectangle (borderRect, image.BackgroundColor.ToCairoColor ());
-			if ( PixbufRepository.Count > image.ImageIndex) {
-			var pixbuf = PixbufRepository[image.ImageIndex];
+			if ( PixbufRepository.ContainsKey(image.ImageKey)) {
+			var pixbuf = PixbufRepository[image.ImageKey];
 				c.DrawPixbuf (pixbuf, image.Location.ToCairoPointD (), image.Offset.ToCairoPointD ());
 			}
 			c.DrawInsideBorder (borderRect, image.Border, true);				

@@ -38,8 +38,7 @@ namespace MonoReports.Model.Data
  
 		public static IEnumerable<Field> CreateFields (object obj,string name, FieldKind fieldKind ) {
 			Type rootObjectType = obj.GetType();
-			foreach(var field in CreateFields (rootObjectType, name,  fieldKind )){
-				Console.WriteLine(field);
+			foreach(var field in CreateFields (rootObjectType, name,  fieldKind )){				
 			   	field.DefaultValue = obj;
 				yield return field;
 			}

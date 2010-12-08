@@ -38,11 +38,13 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="Mono.Cairo" />
+    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MonoReports.Model\ReportEngineTest.cs" />
     <Compile Include="Monoreports\Renderers\TextBlockRenderer.cs" />
     <Compile Include="MonoReports.Model\FieldBuilderTest.cs" />
+    <Compile Include="MonoReports.Model\ReportTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

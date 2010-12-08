@@ -46,21 +46,26 @@ using MonoReports.Model;
 using MonoReports.Extensions.JsonNetExtenssions;
 using MonoReports.Extensions.PropertyGridEditors;
 
-public partial class MainWindow : Gtk.Window
+namespace MonoReports.Gui.Widgets {
+
+[System.ComponentModel.ToolboxItem(true)]
+public partial class MonoreportsDesignerControl : Gtk.Bin
 {
 
 	DesignService designService;
 	ToolBoxService toolBoxService;
 	WorkspaceService workspaceService;
 	CompilerService compilerService;
+	double dpi;
+	
 
-	public MainWindow () : base(Gtk.WindowType.Toplevel)
+	public MonoreportsDesignerControl ()  
 	{
 		Build ();
+		dpi =   Gdk.Screen.Default.Resolution;
 		
 		Report startReport = new Report(){ 
 			DataScript = @"
-//default datasource for detils section
 datasource = new [] {
      new { Name=""Alfred"", Surname = ""Tarski"", Age = ""82"" },
      new { Name=""Saul"", Surname = ""Kripke"", Age = ""70"" },
@@ -68,7 +73,7 @@ datasource = new [] {
      new { Name=""Kurt"", Surname = ""Gödel"", Age = ""72"" }, 
 };
 
-parameters.Add(""Title"",""The Logicans"");
+parameters.Add(""Title"",new { Title = ""The Logicans"", SubTitle = ""...and philosophers...""});
 
 "};
 		
@@ -103,10 +108,10 @@ public sealed class GenerateDataSource {{
 		maindesignview1.Compiler = compilerService;
 		
 		var reportRenderer = new ReportRenderer();
-        reportRenderer.RegisterRenderer(typeof(Controls.TextBlock), new TextBlockRenderer());
-        reportRenderer.RegisterRenderer(typeof(Controls.Line), new LineRenderer());
-		reportRenderer.RegisterRenderer(typeof(MonoReports.Model.Controls.Image), new ImageRenderer(){ PixbufRepository = designService.PixbufRepository});
-		SectionRenderer sr = new SectionRenderer();
+        reportRenderer.RegisterRenderer(typeof(Controls.TextBlock), new TextBlockRenderer(){ DPI = dpi});
+        reportRenderer.RegisterRenderer(typeof(Controls.Line), new LineRenderer(){ DPI = dpi});
+		reportRenderer.RegisterRenderer(typeof(MonoReports.Model.Controls.Image), new ImageRenderer(){ PixbufRepository = designService.PixbufRepository, DPI = dpi});
+		SectionRenderer sr = new SectionRenderer() { DPI = dpi};
 		reportRenderer.RegisterRenderer(typeof(Controls.ReportHeaderSection), sr);
 		reportRenderer.RegisterRenderer(typeof(Controls.ReportFooterSection), sr);
 		reportRenderer.RegisterRenderer(typeof(Controls.DetailSection), sr);
@@ -139,9 +144,7 @@ public sealed class GenerateDataSource {{
 		mainToolbar.Insert (exportPdfToolButton,7);		
 		
 		mainPropertygrid.LoadMonoreportsExtensions();
-		
-		
-		//designService.Report = exampleReport();
+ 
 	}
 
 	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
@@ -149,58 +152,7 @@ public sealed class GenerateDataSource {{
 		Application.Quit ();
 		a.RetVal = true;
 	}
-
-//	Model.Report exampleReport ()
-//	{
-//			
-//		var currentReport = new Model.Report ();
-//		
-//		
-//		currentReport.DataScript = @"
-//new[]{ new { Name = ""Alfred"", Surname = ""Tarski"", Age = 33 }, 
-//        new { Name =""Gotlob"", Surname = ""Frege"", Age = 42 }, 
-//        new { Name = ""Kurt"", Surname =""Gödel"", Age = 22 }, 
-//        new { Name = ""Unknown"", Surname = ""Logican"", Age = 33 }, 
-//        new { Name = ""Józef"", Surname = ""Bocheński"", Age = 22 }, 
-//        new { Name = ""Stanisław"", Surname = ""Leśniewski"", Age = 79 }, 
-//        new { Name = ""Saul"", Surname = ""Kripke"", Age = 40 }, 
-//        new { Name = ""George"", Surname = ""Boolos"", Age = 79 } 
-//	 };";
-//		
-//		currentReport.ReportHeaderSection.Controls.Add (
-//			new Controls.TextBlock { FontSize = 16, FontName = "Helvetica", Text = "First textblock - mono zelot", FontColor = new Model.Color(1,0,0),
-//			CanGrow = true, Location = new Model.Point (1, 2), Size = new Model.Size (200, 25) });
-//		
-//		
-//		var _assembly = Assembly.GetExecutingAssembly ();				
-//		var _imageStream = _assembly.GetManifestResourceStream ("tarski.png");
-//		byte[] bytes = new byte[_imageStream.Length];
-//		_imageStream.Read (bytes, 0, (int)_imageStream.Length);		
-//		currentReport.ResourceRepository.Add (bytes);
-//		var img = new MonoReports.Model.Controls.Image { ImageIndex = 0, Location = new Model.Point (3, 2), Size = new Model.Size (298, 272) };
-//		currentReport.DetailSection.Controls.Add (img);
-//			
-//		
-//		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 24, FontName = "Helvetica", 
-//			Text = "Second example section - żwawy żółw", FontColor = new Model.Color(1,0,0), Location = new Model.Point (123, 1), CanGrow = false, Size = new Model.Size (160, 30) });
-//		
-//		currentReport.PageHeaderSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "third example text - chyży ślimak", FontColor = new Model.Color(1,0,0), Location = new Controls.Point (300, 7), CanGrow = true, Size = new Model.Size (100, 20) });
-//		
-//		currentReport.DetailSection.Size = new Model.Size (600, 300);
-//		
-//		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Chars", FontColor = new Model.Color(1,0,0), Location = new Controls.Point (300, 42), Size = new Model.Size (200, 30), FieldName = "Name", BackgroundColor = new Model.Color(0,0,0,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Model.Border { WidthAll = 0 },
-//		CanGrow = true });
-//		
-//		currentReport.DetailSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Helvetica", Text = "Surname", FontColor = new Model.Color(1,0,0), Location = new Controls.Point (300, 12), Size = new Model.Size (200, 30), FieldName = "Surname", BackgroundColor = new Model.Color(1,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Model.Border { WidthAll = 0 },
-//		CanGrow = true });
-//		
-//		currentReport.PageFooterSection.Controls.Add (new Controls.TextBlock { FontSize = 12, FontName = "Times", Text = "fourth text - szybki jeż", FontColor = new Model.Color(1,1,1), Location = new Controls.Point (23, 3), Size = new Model.Size (400,25), BackgroundColor = new Model.Color(0.2,1,0), HorizontalAlignment = Controls.HorizontalAlignment.Left, Border = new Model.Border { WidthAll = 0 }, CanGrow = false });
-//		
-//		
-//		currentReport.PageFooterSection.Controls.Add (new Controls.Line { Location = new Controls.Point (20, 1), End = new Controls.Point (200, 1) });
-//	//	currentReport.AddGroup ("Age");
-//		return currentReport;
-//	}
+ 
 
 	protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
 	{
@@ -229,26 +181,15 @@ public sealed class GenerateDataSource {{
 
 	protected virtual void OnSaveActionActivated (object sender, System.EventArgs e)
 	{
-		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose the Monoreports file to save", this, FileChooserAction.Save, "Cancel", ResponseType.Cancel, "Save", ResponseType.Accept);
+		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose Monoreports file to save", ((Gtk.Window)this.Toplevel), FileChooserAction.Save, "Cancel", ResponseType.Cancel, "Save", ResponseType.Accept);
 		var fileFilter = new FileFilter { Name = "Monoreports project" };
 		fileFilter.AddPattern ("*.mrp");
 		fc.AddFilter (fileFilter);
+		fc.CurrentName = "untiteled.mrp";
 		
 		designService.Report.DataSource = null;
-		if (fc.Run () == (int)ResponseType.Accept) {
-			
-			using (System.IO.FileStream file = System.IO.File.OpenWrite (fc.Filename)) {
-			
-				var serializedProject = JsonConvert.SerializeObject (designService.Report,
-					Formatting.None, 
-					new JsonSerializerSettings { ContractResolver = new MonoReportsContractResolver(), TypeNameHandling = TypeNameHandling.Objects }
-				);
-				byte[] bytes = System.Text.Encoding.UTF8.GetBytes (serializedProject);
-				file.SetLength (bytes.Length);
-				file.Write (bytes, 0, bytes.Length);
-			
-				file.Close ();
-			}
+		if (fc.Run () == (int)ResponseType.Accept) {						
+			designService.Save(fc.Filename);
 		}
 		
 		fc.Destroy ();
@@ -257,27 +198,14 @@ public sealed class GenerateDataSource {{
 
 	protected virtual void OnOpenActionActivated (object sender, System.EventArgs e)
 	{
-		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose the Monoreports file to open", this, FileChooserAction.Open, "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
+		Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose the Monoreports file to open", ((Gtk.Window)this.Toplevel), FileChooserAction.Open, "Cancel", ResponseType.Cancel, "Open", ResponseType.Accept);
 		var fileFilter = new FileFilter { Name = "Monoreports project" };
 		fileFilter.AddPattern ("*.mrp");
 		fc.AddFilter (fileFilter);
 		
 		if (fc.Run () == (int)ResponseType.Accept) {
-			System.IO.FileStream file = System.IO.File.OpenRead (fc.Filename);
-			byte[] bytes = new byte[file.Length];
-			file.Read (bytes, 0, (int)file.Length);
 			ShowInPropertyGrid (null);
-			var report = JsonConvert.DeserializeObject<Report> (System.Text.Encoding.UTF8.GetString (bytes), 
-				new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Objects,
-				Converters = new List<JsonConverter> (
-					new JsonConverter[] { 
-					new MonoReports.Extensions.PointConverter (), 
-					new MonoReports.Extensions.SizeConverter (),
-					new MonoReports.Extensions.ColorConverter (),
-				}) 
-			});
-			designService.Report = report;
-			file.Close ();
+			designService.Load(fc.Filename);
 		}
 		
 		fc.Destroy ();
@@ -344,5 +272,7 @@ THE SOFTWARE.
 	}
 	
 	
+}
+
 }
 

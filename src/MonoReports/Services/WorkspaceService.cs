@@ -37,15 +37,15 @@ namespace MonoReports.Services
 		DrawingArea designArea;
 		DrawingArea previewArea;
 		PropertyGrid.PropertyGrid propertyGrid;
-		Gtk.Window mainWindow;
+		Gtk.Bin mainControl;
 		Gtk.Label StatusLabel {get;set;}
 		
-		public WorkspaceService (Gtk.Window mainWindow, DrawingArea designArea,DrawingArea previewArea, PropertyGrid.PropertyGrid propertyGrid,Gtk.Label statusLabel)
+		public WorkspaceService (Gtk.Bin mainWindow, DrawingArea designArea,DrawingArea previewArea, PropertyGrid.PropertyGrid propertyGrid,Gtk.Label statusLabel)
 		{
 			this.designArea = designArea;
 			this.previewArea = previewArea;
 			this.propertyGrid = propertyGrid;
-			this.mainWindow = mainWindow;			
+			this.mainControl = mainWindow;			
 			this.StatusLabel = statusLabel;
 		}
 		
@@ -58,7 +58,7 @@ namespace MonoReports.Services
 
 		public void SetCursor (Gdk.CursorType cursorType)
 		{
-		 	mainWindow.GdkWindow.Cursor = new Gdk.Cursor (cursorType);
+		 	mainControl.GdkWindow.Cursor = new Gdk.Cursor (cursorType);
 		}
 
 		public void InvalidateDesignArea ()

@@ -39,6 +39,7 @@ using MonoReports.Services;
 using Gdk;
 using Gtk;
 using MonoReports.Model.Data;
+using System.Linq;
 
 namespace MonoReports.Gui.Widgets
 {
@@ -96,7 +97,7 @@ namespace MonoReports.Gui.Widgets
 		{
 			this.Build ();
 		   	var reportCellRenderer = new Gtk.CellRendererText ();
-			var reportColumn = exporerTreeview.AppendColumn ("Report", reportCellRenderer, "text", 0);
+			var reportColumn = exporerTreeview.AppendColumn ("Report", reportCellRenderer);
 			reportColumn.SetCellDataFunc(reportCellRenderer,new Gtk.TreeCellDataFunc (renderReportCell));
 			theModel = new Gtk.TreeStore (typeof(TreeItemWrapper));	
 			exporerTreeview.Model = theModel;
@@ -107,9 +108,17 @@ namespace MonoReports.Gui.Widgets
 			parametersNode = theModel.AppendValues (reportNode,new TreeItemWrapper("Parameters"));
 			dataFieldsNode = theModel.AppendValues (reportNode,new TreeItemWrapper("Data"));
 			staticDataFieldsNode = theModel.AppendValues (reportNode,new TreeItemWrapper("Expressions"));
-			theModel.AppendValues (staticDataFieldsNode, new TreeItemWrapper("#PageNumber"));
-			theModel.AppendValues (staticDataFieldsNode, new TreeItemWrapper("#NumberOfPages"));
-			theModel.AppendValues (staticDataFieldsNode, new TreeItemWrapper("#RowNumber"));		
+			
+			var pageNumberField = MonoReports.Model.Data.FieldBuilder.CreateFields(0,"#PageNumber",FieldKind.Expression).Single();
+			pageNumberField.Name = "#PageNumber";
+			var numberOfPagesField = MonoReports.Model.Data.FieldBuilder.CreateFields(0,"#NumberOfPages",FieldKind.Expression).Single();
+			numberOfPagesField.Name = "#NumberOfPages";
+			var rowNumberField = MonoReports.Model.Data.FieldBuilder.CreateFields(0,"#RowNumber",FieldKind.Expression).Single();
+			rowNumberField.Name = "#RowNumber";
+			
+			theModel.AppendValues (staticDataFieldsNode, new TreeItemWrapper(pageNumberField));
+			theModel.AppendValues (staticDataFieldsNode, new TreeItemWrapper(numberOfPagesField));
+			theModel.AppendValues (staticDataFieldsNode, new TreeItemWrapper(rowNumberField));		
 			groupsNode = theModel.AppendValues (reportNode,new TreeItemWrapper("Groups"));
 			imagesNode = theModel.AppendValues (reportNode,new TreeItemWrapper("Images"));
 			exporerTreeview.Selection.Changed += HandleExporerTreeviewSelectionChanged;
@@ -206,6 +215,7 @@ namespace MonoReports.Gui.Widgets
 					if(path.Depth > 1 ) {
 					int index = path.Indices [1];
 					if ((index == 2 || index == 1) && path.Depth == 2) {
+					    /*TODO 3tk - at the moment user added datafields are disabled
 						Gtk.Menu jBox = new Gtk.Menu ();
 						if (index == 1) {
 							addNewMenuItem = new MenuItem ("add field");
@@ -239,10 +249,11 @@ namespace MonoReports.Gui.Widgets
 						
 						jBox.ShowAll ();
 						jBox.Popup ();	
+						*/
 					}else if (index == 4 && path.Depth == 2) {
 						 Gtk.Menu jBox = new Gtk.Menu ();
 						 
-							addNewMenuItem = new MenuItem ("add images");
+							addNewMenuItem = new MenuItem ("add image");
 							jBox.Add (addNewMenuItem);
 							addNewMenuItem.Activated += delegate(object sender, EventArgs e) {
 								
@@ -259,9 +270,11 @@ namespace MonoReports.Gui.Widgets
 		
 								if (fc.Run () == (int)ResponseType.Accept) {
 									System.IO.FileStream file = System.IO.File.OpenRead (fc.Filename);
+								 
 									byte[] bytes = new byte[file.Length];
 									file.Read (bytes, 0, (int)file.Length);
-									designService.Report.ResourceRepository.Add(bytes);
+									string fileName = System.IO.Path.GetFileName(fc.Filename);
+									designService.Report.ResourceRepository.Add(fileName, bytes);
 									file.Close ();
 								}
 		
@@ -280,7 +293,7 @@ namespace MonoReports.Gui.Widgets
 						
 						if (index == 1) {
 							Workspace.ShowInPropertyGrid( designService.Report.DataFields[path.Indices[2]]);
-						} else if (index == 2) {
+						} else if (index == 0) {
 							Workspace.ShowInPropertyGrid( designService.Report.Parameters[path.Indices[2]]);
 						}
 					}

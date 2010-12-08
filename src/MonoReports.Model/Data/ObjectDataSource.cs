@@ -154,7 +154,7 @@ namespace MonoReports.Model.Data
 		public Field[] DiscoverFields ()
 		{        	
 			fields.Clear();
-		    fields.AddRange( FieldBuilder.CreateFields(rootObjectType,"p",FieldKind.Data));
+		    fields.AddRange( FieldBuilder.CreateFields(rootObjectType,null,FieldKind.Data));
  			propertiesDictionary = fields.ToDictionary(pr=>pr.Name);
 			return fields.ToArray ();
 		}

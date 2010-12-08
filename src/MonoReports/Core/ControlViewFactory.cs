@@ -65,10 +65,9 @@ namespace MonoReports.Core
 				.Add(
 				     typeof(Image),
 				     	(ctrl, section) => {
-								var image = ctrl as Image;					
-								designService.PixbufRepository.AddOrUpdatePixbufAtIndex(image.ImageIndex);
-								
-					
+								var image = ctrl as Image;		
+								if(!string.IsNullOrEmpty(image.ImageKey))
+									designService.PixbufRepository.AddOrUpdatePixbufByName(image.ImageKey);													
 			                    return new ImageView(image,section,designService.PixbufRepository);
 						}
 				);

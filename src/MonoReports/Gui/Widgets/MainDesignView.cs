@@ -123,8 +123,9 @@ namespace MonoReports.Gui.Widgets
 						if(wrapper.Object is Field) {
 							Field f = wrapper.Object as Field;
 							designService.CreateTextBlockAtXY (f.Name,f.Name, f.FieldKind,args.X, args.Y);
-						} else {
-							//designService.CreateImageAtXY(int.Parse(fieldName), args.X, args.Y);
+						} else if(wrapper.Object is KeyValuePair<string,byte[]>) {
+							var kvp = (KeyValuePair<string,byte[]>)wrapper.Object;
+							designService.CreateImageAtXY(kvp.Key, args.X, args.Y);
 						}  
 					}
 			};								
@@ -257,13 +258,14 @@ namespace MonoReports.Gui.Widgets
 			 
 			string usings = String.Empty;
 			string code = codeTextview.Buffer.Text;
+			designService.Report.Parameters.Clear();
+			designService.Report.DataSource = null;
 			
 			if( Compiler.Evaluate (out result, out meassage,new object[]{usings,code})  ) {
 				var ds = (result as object[]);
 				var datasource = ds[0] ;
 				Dictionary<string,object> parametersDictionary = ds[1] as Dictionary<string,object>;
-				designService.Report.Parameters.Clear();
-				foreach (KeyValuePair<string, object> kvp in parametersDictionary) {
+ 				foreach (KeyValuePair<string, object> kvp in parametersDictionary) {
 					 designService.Report.Parameters.AddRange(FieldBuilder.CreateFields(kvp.Value, kvp.Key,FieldKind.Parameter));
 				}
 					

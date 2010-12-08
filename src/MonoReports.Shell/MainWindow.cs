@@ -1,10 +1,10 @@
 // 
-// Main.cs
+// MainWindow.cs
 //  
 // Author:
-//       Tomasz Kubacki <Tomasz.Kubacki(at)gmail.com>
+//       Tomasz Kubacki <tomasz (dot) kubacki (at) gmail (dot ) com>
 // 
-// Copyright (c) 2010 Tomasz Kubacki 2010
+// Copyright (c) 2010 Tomasz Kubacki
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -26,17 +26,51 @@
 using System;
 using Gtk;
 
-namespace MonoReports
-{
-	class MainClass
+public partial class MainWindow: Gtk.Window
+{	
+	public MainWindow (): base (Gtk.WindowType.Toplevel)
 	{
-		public static void Main (string[] args)
-		{
-			Application.Init ();
-			MainWindow win = new MainWindow ();
-			win.Show ();
-			Application.Run ();
-		}
+		Build ();
 	}
-}
 
+	protected void OnDeleteEvent (object sender, DeleteEventArgs a)
+	{
+		Application.Quit ();
+		a.RetVal = true;
+	}
+	protected virtual void OnQuitActionActivated (object sender, System.EventArgs e)
+	{
+	}
+	
+	protected virtual void OnAboutActionActivated (object sender, System.EventArgs e)
+	{
+	}
+	
+	protected virtual void OnOpenActionActivated (object sender, System.EventArgs e)
+	{
+	}
+	
+	protected virtual void OnSaveActionActivated (object sender, System.EventArgs e)
+	{
+	}
+	
+	protected virtual void OnEditActionActivated (object sender, System.EventArgs e)
+	{
+	}
+	
+	protected virtual void OnReportSettingsActionActivated (object sender, System.EventArgs e)
+	{
+	}
+	
+	protected virtual void OnExecuteActionActivated (object sender, System.EventArgs e)
+	{
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+}

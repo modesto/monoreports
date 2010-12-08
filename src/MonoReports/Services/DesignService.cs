@@ -153,6 +153,9 @@ namespace MonoReports.Services
 			
 			addSectionView (report.PageFooterSection);
 			addSectionView (report.ReportFooterSection);
+			
+				
+		
 		}
 
 		public void RedrawReport (Context c)
@@ -194,15 +197,17 @@ namespace MonoReports.Services
 			}
 		}
 
-		public void CreateImageAtXY (int index,double x, double y)
+		public void CreateImageAtXY (string imageKey,double x, double y)
 		{
+			
+			PixbufRepository.AddOrUpdatePixbufByName(imageKey);
 			var point = new Cairo.PointD (x / Zoom, y / Zoom);
 			var sectionView = getSectionViewByXY (x, y);
 			var localpoint = sectionView.PointInSectionByAbsolutePoint (point);
 			ToolBoxService.SetToolByName ("ImageTool");	
 			SelectedTool.CreateNewControl (sectionView);
 			var image = (SelectedControl.ControlModel as Image);
-			image.ImageIndex = index;
+			image.ImageKey = imageKey;
 			image.Location = new MonoReports.Model.Point (localpoint.X,localpoint.Y);
 			SelectedTool.CreateMode = false;
 		}
@@ -313,6 +318,24 @@ namespace MonoReports.Services
 			WorkspaceService.InvalidateDesignArea ();
 			
 		}
+		
+		
+		public void Load(string path){
+			Report.Load(path);
+			initReport ();
+				if (OnReportChanged != null)
+					OnReportChanged (this, new EventArgs ());
+		}
+		
+		public void Save(string path){
+			
+			if ( string.IsNullOrEmpty (Report.Title))
+			{
+				Report.Title = System.IO.Path.GetFileName(path);	
+			}
+			
+			Report.Save(path);
+		}
 
 		public void MouseMove (double x, double y)
 		{
@@ -391,53 +414,20 @@ namespace MonoReports.Services
 			Gtk.FileChooserDialog fc = new Gtk.FileChooserDialog ("Choose the pdf file to save", null, Gtk.FileChooserAction.Save, "Cancel", Gtk.ResponseType.Cancel, "Export", Gtk.ResponseType.Accept);
 			var fileFilter = new Gtk.FileFilter { Name = "pdf file" };
 			fileFilter.AddPattern ("*.pdf");
-			fc.AddFilter (fileFilter);			 
+			
+			fc.AddFilter (fileFilter);
+			fc.CurrentName = string.IsNullOrEmpty( Report.Title) ? "untitled_report.pdf" : Report.Title ;
+				
 		
 			if (fc.Run () == (int)Gtk.ResponseType.Accept) {
-				
-				var result = CompileAndRunDataScript();				
-			    Report.DataSource = result[0];
-				
-				using (PdfSurface pdfSurface = new PdfSurface (
-					fc.Filename,report.WidthWithMargins,report.HeightWithMargins)) {					 
-					Cairo.Context cr = new Cairo.Context (pdfSurface);
-					cr.Translate(report.Margin.Left,report.Margin.Top);
-					ReportRenderer renderer = new ReportRenderer (){ Context = cr};
-					renderer.RegisterRenderer (typeof(TextBlock), new TextBlockRenderer ());
-					renderer.RegisterRenderer (typeof(Line), new LineRenderer ());
-					renderer.RegisterRenderer (typeof(Image), new ImageRenderer (){ PixbufRepository = PixbufRepository});
-					SectionRenderer sr = new SectionRenderer();
-					renderer.RegisterRenderer(typeof(ReportHeaderSection), sr);
-					renderer.RegisterRenderer(typeof(ReportFooterSection), sr);
-					renderer.RegisterRenderer(typeof(DetailSection), sr);
-					renderer.RegisterRenderer(typeof(PageHeaderSection), sr);
-					renderer.RegisterRenderer(typeof(PageFooterSection), sr);
-					MonoReports.Model.Engine.ReportEngine engine = new MonoReports.Model.Engine.ReportEngine (Report,renderer);
-					engine.Process ();
-					for (int i = 0; i < Report.Pages.Count; ++i) {
-						renderer.RenderPage (Report.Pages [i]);
-						cr.ShowPage ();
-					}			
-					pdfSurface.Finish ();
-			
-				}
+
+				Report.ExportToPdf(fc.Filename);
 			}
 		
 			fc.Destroy ();
 			
 		}
-		
-		
-		public object[] CompileAndRunDataScript() {
-			object result = null;
-			string meassage = null;
-			string usings = String.Empty;
-			string code = report.DataScript;
-			compilerService.Evaluate (out result, out meassage,new object[]{usings,code});
-			return result as object[];
-		}
-	  
-		
+ 
 	}
 	
 	

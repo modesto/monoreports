@@ -7,9 +7,9 @@
   <import>
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../../Propertygrid/bin/Debug/Propertygrid.dll" />
-    <widget-library name="../../../build/MonoReports.exe" internal="true" />
+    <widget-library name="../../../build/MonoReports.dll" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="MainWindow" design-size="1027 697">
+  <widget class="Gtk.Bin" id="MonoReports.Gui.Widgets.MonoreportsDesignerControl" design-size="1027 697">
     <action-group name="Default">
       <action id="FileAction">
         <property name="Type">Action</property>
@@ -43,10 +43,6 @@
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-execute</property>
       </action>
-      <action id="Action">
-        <property name="Type">Action</property>
-        <property name="Label" translatable="yes" />
-      </action>
       <action id="aboutAction">
         <property name="Type">Action</property>
         <property name="Label" translatable="yes">About</property>
@@ -58,10 +54,6 @@
         <property name="Type">Action</property>
         <property name="Label" translatable="yes" />
         <property name="StockId">gtk-zoom-fit</property>
-      </action>
-      <action id="Action1">
-        <property name="Type">Action</property>
-        <property name="Label" translatable="yes" />
       </action>
       <action id="openAction">
         <property name="Type">Action</property>
@@ -113,9 +105,7 @@
       </action>
     </action-group>
     <property name="MemberName" />
-    <property name="Title" translatable="yes">MonoReports</property>
-    <property name="WindowPosition">Center</property>
-    <property name="AllowShrink">True</property>
+    <property name="Visible">False</property>
     <signal name="DeleteEvent" handler="OnDeleteEvent" />
     <child>
       <widget class="Gtk.VBox" id="mainVbox">
@@ -167,7 +157,7 @@
               <widget class="Gtk.HPaned" id="mainHPaned">
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
-                <property name="Position">606</property>
+                <property name="Position">721</property>
                 <child>
                   <widget class="MonoReports.Gui.Widgets.MainDesignView" id="maindesignview1">
                     <property name="MemberName" />

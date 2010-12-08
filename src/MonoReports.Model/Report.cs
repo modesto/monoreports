@@ -37,16 +37,16 @@ namespace MonoReports.Model
 
 		public Report ()
 		{
-			Width = 560;
-			Height = 800;
-			Margin = new Thickness(10);
+			Width = 538.582677165354; // 210 - 20  = 190 mm (-20mm for marings)
+			Height = 785.196850393701;//297 - 20 = 277 mm (-20mm for marings)
+			Margin = new Thickness(28.3464566929134);
 			Groups = new List<Group> ();			
 			Parameters = new List<Field> ();
 			DataFields = new List<Field> ();
 			GroupHeaderSections = new List<GroupHeaderSection> ();
 			GroupFooterSections = new List<GroupFooterSection> ();
 			Pages = new List<Page> ();
-			ResourceRepository = new List<byte[]> ();
+			ResourceRepository = new Dictionary<string,byte[]> ();
 			ReportHeaderSection = new Controls.ReportHeaderSection { Location = new Point (0, 0), Size = new Model.Size (Width, 50) };
 			PageHeaderSection = new Controls.PageHeaderSection { Location = new Point (0, 0), Size = new Model.Size (Width, 30) };
 			DetailSection = new Controls.DetailSection { Location = new Point (0, 150), Size = new Model.Size (Width, 50) };
@@ -82,7 +82,7 @@ namespace MonoReports.Model
 
 		public List<Group> Groups { get; internal set; }
 
-		public List<byte[]> ResourceRepository { get; set; }
+		public Dictionary<string,byte[]> ResourceRepository { get; set; }
 
 		public double Height { get; set; }
 		
@@ -151,6 +151,7 @@ namespace MonoReports.Model
 			get { return dataSource; } 
 			set {
 			 	dataSource = value;
+				DataFields = new List<Field> ();	
 				if (dataSource != null ) {
 
 					Type dsType = dataSource.GetType ();
@@ -165,10 +166,11 @@ namespace MonoReports.Model
 						var realGeneric = genericType.MakeGenericType (new Type[]{elementType});
 						_dataSource = (Activator.CreateInstance (realGeneric, dataSource))  as IDataSource;
 					}
+					FillFieldsFromDataSource ();
 				}else {
 					_dataSource = null;
 				}
-				FillFieldsFromDataSource ();
+				
 			} 
 		
 		}
@@ -185,8 +187,26 @@ namespace MonoReports.Model
 					field.FieldKind = FieldKind.Data;
 					DataFields.Add( field );				 					
 				}
-			}
+			}else 
+				throw new InvalidOperationException("Datasource can't be null while discovering data fields");
 				
+		}
+		
+		public void CopyToReport (Report r) {
+			r.Title = Title;
+			r.ResourceRepository = ResourceRepository;
+			r.PageHeaderSection = PageHeaderSection;
+			r.PageFooterSection = PageFooterSection;
+			r.ReportHeaderSection = ReportHeaderSection;
+			r.ReportFooterSection = ReportFooterSection;
+			r.DataScript = DataScript;
+			r.DetailSection = DetailSection;
+			r.GroupHeaderSections = GroupHeaderSections;
+			r.GroupFooterSections = GroupFooterSections;
+			r.Height = Height;
+			r.Width = Width;
+			r.Margin = Margin;
+			r.Unit = Unit;			
 		}
 
  

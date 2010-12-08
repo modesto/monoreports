@@ -1,8 +1,8 @@
 // 
-// ControlRendererBase.cs
+// Main.cs
 //  
 // Author:
-//       Tomasz Kubacki <tomasz.kubacki (at) gmail.com>
+//       Tomasz Kubacki <tomasz (dot) kubacki (at) gmail (dot ) com>
 // 
 // Copyright (c) 2010 Tomasz Kubacki
 // 
@@ -24,18 +24,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using Gtk;
 
-namespace MonoReports.Core
+namespace MonoReports.Shell
 {
-	public class ControlRendererBase
+	class MainClass
 	{
-		public ControlRendererBase ()
+		public static void Main (string[] args)
 		{
+			Application.Init ();
+			MainWindow win = new MainWindow ();
+			win.Show ();
+			Application.Run ();
 		}
-		
-		public double DPI {get;set;}
-		
-		public bool DesignMode {get;set;}
 	}
 }
-
