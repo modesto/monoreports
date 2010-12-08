@@ -97,7 +97,7 @@ namespace MonoReports.ControlView
 	 
 		public override bool ContainsPoint (double x, double y)
 		{
-			double span = line.Width / 2 + 8;
+			double span = line.LineWidth / 2 + 8;
 			Cairo.PointD p1 = ParentSection.AbsolutePointByLocalPoint(line.Location.X,line.Location.Y);
 			Cairo.PointD p2 = ParentSection.AbsolutePointByLocalPoint(line.End.X, line.End.Y);
 			Cairo.PointD hitPoint = new Cairo.PointD(x,y);
