@@ -13,7 +13,7 @@
   <widget class="Gtk.Window" id="MainWindow" design-size="1056 758">
     <action-group name="Default" />
     <property name="MemberName" />
-    <property name="Title" translatable="yes">MainWindow</property>
+    <property name="Title" translatable="yes">Monoreports pre</property>
     <property name="WindowPosition">Center</property>
     <signal name="DeleteEvent" handler="OnDeleteEvent" />
     <child>
