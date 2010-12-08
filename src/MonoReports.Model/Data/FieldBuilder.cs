@@ -68,6 +68,15 @@ namespace MonoReports.Model.Data
 						field.Name = string.IsNullOrEmpty(namePrefix) ?  property.Name : namePrefix + "." + property.Name;
 						fields.Add(field);
 					} else {
+						
+						if(property.PropertyType.IsArray)
+							continue;						
+						if(property.PropertyType.IsGenericType){
+							var genType = property.PropertyType.GetGenericTypeDefinition();
+							if((typeof(List<>)).IsAssignableFrom(genType))
+								continue;
+						}
+						
 						var expr = Expression.Property(parent,property.Name);
 						fillFields(rootObjectType,fields, par,expr,property.Name,property.PropertyType,fieldKind);
 					}

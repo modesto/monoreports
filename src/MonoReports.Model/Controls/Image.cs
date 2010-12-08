@@ -34,6 +34,7 @@ namespace MonoReports.Model.Controls
 		{
 			Border = new Border { WidthAll = 0, Color = new Color(0,0,0) };		
 			BackgroundColor = new Color(0.8,0.8,0.8);
+			ImageKey = String.Empty;
 		}
 
 		public string ImageKey { get; set; }

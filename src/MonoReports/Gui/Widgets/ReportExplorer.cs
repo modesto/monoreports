@@ -275,6 +275,7 @@ namespace MonoReports.Gui.Widgets
 									file.Read (bytes, 0, (int)file.Length);
 									string fileName = System.IO.Path.GetFileName(fc.Filename);
 									designService.Report.ResourceRepository.Add(fileName, bytes);
+									designService.PixbufRepository.AddOrUpdatePixbufByName(fileName);
 									file.Close ();
 								}
 		

@@ -29,7 +29,7 @@ using System.Linq.Expressions;
 
 namespace MonoReports.Model.Data
 {
-	public class PropertyDataField<T,K> : Field //where T: class
+	public class PropertyDataField<T,K> : Field
 	{
 		
 		 
@@ -76,7 +76,7 @@ namespace MonoReports.Model.Data
 		}				
 		
 		public void Compile() {
-			compiledMethod = (Func<T,K>) (expression as LambdaExpression) .Compile();
+			compiledMethod = (Func<T,K>) (expression as LambdaExpression) .Compile();		 
 		}
 		
 		Func<T,K> compiledMethod;

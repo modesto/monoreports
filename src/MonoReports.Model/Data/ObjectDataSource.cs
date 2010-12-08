@@ -110,8 +110,7 @@ namespace MonoReports.Model.Data
 				}
 				
 			
-			}
-			
+			}						
 			enumerator = queryableData.GetEnumerator ();
 			enumerator = data.GetEnumerator();
 		}

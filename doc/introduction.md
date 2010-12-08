@@ -1,43 +1,44 @@
 Introduction to Monoreports
 ===========================
 
-
 QuickStart
 ----------
-If you can't wait/don't have time here is quickstart to make report and see "something working"
+If you can't wait to see something, here is quickstart to make 'hello world' report
 
 1. run Monoreports designer
 
 2. press datasource tab.
 
-3. copy below and paste in textview:
-
-	new []{ 
-	new  { Site = "Monoreports site",  Link = "https://github.com/tomaszkubacki/monoreports"} ,
-	new  { Site = "Alfred Tarski",  Link = "http://en.wikipedia.org/wiki/Alfred_Tarski"} 
-	}
-
 4. press execute button (at bottom)
 
-5. press design tab
+5. go back to design tab
 
-6. on right report explorer treeview expand data fields node
+6. drag *name* field and drop on details section
 
-7. drag name field and drop on details section
+7. press preview tab
 
-8. press preview tab
+8. press export to pdf icon
 
-9. press export to pdf icon
-
+Run report from code
+--------------------
+If you don't like/need designer, there is a project demonstrating how to create and run report from code in ****doc/example/MrptInvoiceExample****.
 
 Basic Concepts
 ==============
 
-Monoreports is a reporting tool to design and generate reports from datasources. Datasource can anything from database data or file to dynamically generated data.
+What is Monoreports ?
+---------------------
+Monoreports is a reporting tool used to design and generate reports from object datasources. Datasource can anything from database data or file to dynamically generated data.
 
-Report Designer
----------------
-Report designer is a gui application where you can design report layout. Report consists of sections which consist of controls.
+Monoreports consists of two main parts:
+
+***report designer***  gtk-sharp application to design reports
+***report engine***  engine is responsible for generating report from report designed in designer and data pushed to datasource
+
+Report
+------
+Report is a template for result report. Every report has serveral sections. In sections you place controls.
+Controls can be bound to datasource or parameters  to display datasource data.
 
 Sections
 --------
@@ -52,12 +53,16 @@ Section is empty space on the report. Sections differ by location and [...]
 
 Controls
 --------
+There are three basic types of controls:
 
-Sections are filled with controls of different type. Most popular are:
+1. Textblock - represents text on report, can be bound to datafield, has background, border and font related properties
+2. Line  - can be vertical horizontal (to make things easier in a designer)
+3. Image - at the moment only static images are supported
 
-1. Textblock 
-2. Line 
-3. Image
+and one more complex:
+
+***Subreport control*** (currently not supported)
+
 
 
 

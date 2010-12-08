@@ -221,8 +221,10 @@ namespace MonoReports.Model.Engine
 						
 						switch(dc.FieldKind) {
 							case FieldKind.Parameter:
-								var parameter = parameters [dc.FieldName];
-								dc.Text = parameter.GetValue(parameter.DefaultValue,dc.FieldTextFormat);
+								if (parameters.ContainsKey (dc.FieldName)) {
+									var parameter = parameters [dc.FieldName];
+									dc.Text = parameter.GetValue(parameter.DefaultValue,dc.FieldTextFormat);
+								}
 								break;
 							case FieldKind.Expression:
 								if (dc.FieldName == "#PageNumber") {

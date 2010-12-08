@@ -59,6 +59,8 @@ namespace MonoReports.Tests
 			Assert.IsNotNull( fields[0].Name);
 			
 		}
+		
+		 
 				
 				
 		public class TestClass {
@@ -71,8 +73,8 @@ namespace MonoReports.Tests
 			public int Count {
 				get;
 				set;
-			}		
-				
+			}
+									
 				
 			public double Price {
 				get;
@@ -84,6 +86,15 @@ namespace MonoReports.Tests
 				set;
 			}					
 				
+		}
+		
+		
+		public class InnerClass {
+			
+			public object Obj {
+				get;
+				set;
+			}
 		}
 	}
 }

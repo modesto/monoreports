@@ -32,6 +32,7 @@ using Cairo;
 using MonoReports.Core;
 using MonoReports.Renderers;
 using MonoReports.Model.Controls;
+using MonoReports.Model.Data;
 
  
 
@@ -79,6 +80,17 @@ namespace MonoReports.Model
 			}
 		}
 		
+		public static void ExportToPdf(this Report report ,string path, IDictionary<string,object> parameters) {
+			report.Parameters.Clear();
+			
+			foreach (KeyValuePair<string, object> kvp in parameters) {
+					 report.Parameters.AddRange(FieldBuilder.CreateFields(kvp.Value, kvp.Key,FieldKind.Parameter));
+			}
+			
+			
+			report.ExportToPdf(path);			
+		}
+		
 		public static void ExportToPdf(this Report report ,string path) {
 			using (PdfSurface pdfSurface = new PdfSurface (
 				path,report.WidthWithMargins,report.HeightWithMargins)) {
@@ -103,6 +115,9 @@ namespace MonoReports.Model
 				pdfSurface.Finish ();		
 			}
 		}
+		
+		
+		
 	}
 }
 
