@@ -2,6 +2,7 @@ $(if $(wildcard config.make),,$(error You need to run './configure' before runni
 include config.make
 conf=Debug
 SLN=src/MonoReports.sln
+EXAMPLE=doc/example/MrptInvoiceExample/MrptInvoiceExample.sln
 VERBOSITY=normal
 version=0.0.1
 XBUILD_ARGS=/verbosity:$(VERBOSITY) /nologo
@@ -23,6 +24,9 @@ run-tests: all
 clean:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf) /t:Clean
 	rm -rf build/*
+example: all
+	$(XBUILD) $(EXAMPLE) /property:Configuration=$(conf)
+
 
 #install: install-bin 
 
