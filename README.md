@@ -21,7 +21,7 @@ Status
 ------
 Monoreports is in pre 0.1 version state. 
 
-Yuotube demo
+Youtube demo
 -----------
 There is a [six minutes monoreports demo on youtube](http://www.youtube.com/watch?v=P7jHXFyMstM) 
 
