@@ -20,3 +20,4 @@ config.log
 config.make
 MonoReports.suo
 build
+src/test-results/*

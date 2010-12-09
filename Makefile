@@ -16,7 +16,7 @@ all:
 	$(XBUILD) $(SLN) /property:Configuration=$(conf)
 
 run-tests: all
-	$(NUNIT_CONSOLE) build/ManoReports.Tests.dll
+	$(NUNIT_CONSOLE) build/MonoReports.Tests.dll
 
 #update-docs: all
 #	mdoc update -o ./docs/api/en ./build/MonoReports.Model.dll
