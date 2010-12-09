@@ -20,4 +20,5 @@ config.log
 config.make
 MonoReports.suo
 build
+TestResult.xml
 src/test-results/*

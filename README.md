@@ -5,21 +5,27 @@ Monoreports features
 --------------------
 - simple layouting - if control in section is growable and will grow due to assigned data, engine will do layouting to make report look properly
 - page breaking - Monoreports engine will break or keep together report sections whatever is needed
-- generating and running reports from designer and code. Simple code generated report example:
+- generating and running reports from designer and code. 
+
+Simple code generated report example example:
 		
 		Report report = new Report;
-		//add some controls
 		report.Details.Controls.Add(new Textblock(){ FieldName = "InvoiceNumber" });
 		report.Datasource = myInvoicesCollection;
 		report.ExportToPdf();
 		
 - pdf export
-
 - reporting engine is not tightly coupled with gtk/cairo stuff, therefore it's reasonably easy to write new export backends (e.g. html, xls etc)
 
 Status
 ------
 Monoreports is in pre 0.1 version state. 
+
+
+Binary version
+--------------
+
+You can grab current binary verision in monoreports downloads on github site
 
 TODO
 ----
