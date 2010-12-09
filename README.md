@@ -40,7 +40,7 @@ Other things in roadmap are:
 
 - improve designer to support multiselections, undo/redo
 - imporove report engine quality by writing more unit tests
-
+- make designer resolution independent, add milimeters and inches as units
 
 Final Remarks
 -------------
