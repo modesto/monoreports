@@ -1,24 +1,47 @@
-Monoreports
-
-Monoreport is a report designer and reporting engine for .net/mono  
+Monoreports is a cross-platform  report designer and reporting engine for .net/mono  
 It's similar to the CrystalReport (TM) and other tools like that.
 
-Monoreports features:
-
-- sections - every report consists of few sections e.g. report header detail, page heder/footer each section can be formated independly
+Monoreports features
+--------------------
+- simple layouting - if control in section is growable and will grow due to assigned data, engine will do layouting to make report look properly
 
 - page breaking - Monoreports engine will break or keep together report sections whatever is needed
 
-Near Future
+- generating and running reports from designer and code. Simple code generated report example:
 
-At the moment Monoreports lack of two feauters commonly used in this kind of tools. Those are functinalities i'm currently working on:
+	Report report = new Report;
+	//add some controls
+	report.Details.Controls.Add(new Textblock(){ FieldName = "InvoiceNumber" });
+	report.Datasource = myInvoicesCollection;
+	report.ExportToPdf();
 
-- Group section - detail section records are broken by group header and group footer sections when grouping field change
+- pdf export
 
-- Subreports - including report in report
+- reporting engine is not tightly coupled with gtk/cairo stuff, therefore it's reasonably easy to write new export backends (e.g. html, xls etc)
+
+Status
+------
+
+Monoreports is in pre 0.1 version state. 
+
+
+TODO
+----
+At the moment Monoreports lack of two features commonly used in this kind of tools.
+
+- group section - group header section appears before details every time value of group expression is changed.
+- subreports - report in report
+ 
+Other this in roadmap are:
+
+- improve designer to support multiselections, undo/redo
+
+- imporove report engine quality by writing more unit tests
+
 
 Final Remarks
-
-Monoreports is still not ready to day 0 so be patient please :)
+-------------
+I'm not a Novell employee and Monoreports is not a mono team (www.go-mono.org) project (however monoreports is using mono to run it on linux).
+I've named this project Monoreports simply because i didn't have better idea for name.
 
 
