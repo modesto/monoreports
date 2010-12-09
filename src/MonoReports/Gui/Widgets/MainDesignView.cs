@@ -247,15 +247,16 @@ namespace MonoReports.Gui.Widgets
 		
 		protected virtual void OnExecuteActionActivated (object sender, System.EventArgs e)
 		{
-			evaluate();			
-			designService.RefreshDataFieldsFromDataSource();
+			if(evaluate()){
+				designService.RefreshDataFieldsFromDataSource();
+			}
 		}
 		
-		void evaluate() {			
+		bool evaluate() {			
  
 			object result = null;
 			string meassage = null;			 
-			 
+			bool res = false;
 			string usings = String.Empty;
 			string code = codeTextview.Buffer.Text;
 			designService.Report.Parameters.Clear();
@@ -264,6 +265,7 @@ namespace MonoReports.Gui.Widgets
 			if( Compiler.Evaluate (out result, out meassage,new object[]{usings,code})  ) {
 				var ds = (result as object[]);
 				var datasource = ds[0] ;
+				
 				Dictionary<string,object> parametersDictionary = ds[1] as Dictionary<string,object>;
  				foreach (KeyValuePair<string, object> kvp in parametersDictionary) {
 					 designService.Report.Parameters.AddRange(FieldBuilder.CreateFields(kvp.Value, kvp.Key,FieldKind.Parameter));
@@ -271,11 +273,13 @@ namespace MonoReports.Gui.Widgets
 					
 				if (datasource != null) {
 					designService.Report.DataSource = datasource;
-					designService.Report.DataScript = codeTextview.Buffer.Text;			
+					designService.Report.DataScript = codeTextview.Buffer.Text;		
+					res = true;
 				}
 			}
 			
 			outputTextview.Buffer.Text = meassage;
+			return res;
 		}
 		
 	}
