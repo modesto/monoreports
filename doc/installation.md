@@ -13,7 +13,8 @@ To build MonoReports you need to have mono 2.6 or higher
 Binary version
 ------------------
 I've found that on Windows and  Ubuntu 10.10 binary version works out of box
-so if you want to play with designer simply grab binary package monoreports.zip
+so if you want to play with designer simply grab binary package at:
+http://github.com/downloads/tomaszkubacki/monoreports/monoreports_pre.zip
 
 
 Building from source

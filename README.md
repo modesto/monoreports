@@ -8,13 +8,13 @@ Monoreports features
 - page breaking - Monoreports engine will break or keep together report sections whatever is needed
 
 - generating and running reports from designer and code. Simple code generated report example:
-
+[
 	Report report = new Report;
 	//add some controls
 	report.Details.Controls.Add(new Textblock(){ FieldName = "InvoiceNumber" });
 	report.Datasource = myInvoicesCollection;
 	report.ExportToPdf();
-
+]
 - pdf export
 
 - reporting engine is not tightly coupled with gtk/cairo stuff, therefore it's reasonably easy to write new export backends (e.g. html, xls etc)
