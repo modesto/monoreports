@@ -12,7 +12,7 @@ Simple code generated report example example:
 		Report report = new Report;
 		report.Details.Controls.Add(new Textblock(){ FieldName = "InvoiceNumber" });
 		report.Datasource = myInvoicesCollection;
-		report.ExportToPdf();
+		report.ExportToPdf(path);
 		
 - pdf export
 - reporting engine is not tightly coupled with gtk/cairo stuff, therefore it's reasonably easy to write new export backends (e.g. html, xls etc)
@@ -21,11 +21,13 @@ Status
 ------
 Monoreports is in pre 0.1 version state. 
 
+Yutube demo
+-----------
+There is a [six minutes monoreports demo on youtube](http://www.youtube.com/watch?v=P7jHXFyMstM) 
 
 Binary version
 --------------
-
-You can grab current binary verision in monoreports downloads on github site
+You can grab current binary verision in Monoreports downloads on github site
 
 TODO
 ----
@@ -34,7 +36,7 @@ At the moment Monoreports lack of two features commonly used in this kind of too
 - group section - group header section appears before details every time value of group expression is changed.
 - subreports - report in report
  
-Other this in roadmap are:
+Other things in roadmap are:
 
 - improve designer to support multiselections, undo/redo
 - imporove report engine quality by writing more unit tests
