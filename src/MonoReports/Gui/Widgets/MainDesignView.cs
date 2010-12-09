@@ -173,7 +173,7 @@ namespace MonoReports.Gui.Widgets
 				cr.FillRectangle(r,backgroundPageColor);
 				cr.Translate(designService.Report.Margin.Left,designService.Report.Margin.Top);
 				reportRenderer.RenderPage (designService.Report.Pages [pageNumber]);
-				area.SetSizeRequest ((int)designService.Report.Width,(int) designService.Report.Height + 10);
+				area.SetSizeRequest ((int)designService.Report.HeightWithMargins,(int) designService.Report.HeightWithMargins+5);
 			
 				(cr as IDisposable).Dispose ();
 			}
