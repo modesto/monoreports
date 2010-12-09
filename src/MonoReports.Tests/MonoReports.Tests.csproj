@@ -45,6 +45,7 @@
     <Compile Include="Monoreports\Renderers\TextBlockRenderer.cs" />
     <Compile Include="MonoReports.Model\FieldBuilderTest.cs" />
     <Compile Include="MonoReports.Model\ReportTest.cs" />
+    <Compile Include="MonoReports.Model\ObjectDataSourceTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

@@ -90,7 +90,9 @@ namespace MonoReports.Model.Engine
 
 		public void Process ()
 		{
+
 			nextRecord();
+		
 			while (!ProcessReportPage ()) {
 				nextPage ();
 			}		
@@ -104,7 +106,8 @@ namespace MonoReports.Model.Engine
 					}
 				}
 			}
-			
+			if(source != null)
+				source.Reset();
 			
 			onAfterReportProcess ();
 		}

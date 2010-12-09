@@ -15,6 +15,7 @@ src/MonoReports.Tests/obj/*
 src/MonoReports.Tests/obj/Debug/*
 src/Propertygrid/obj/*
 src/Propertygrid/obj/Debug/*
+doc/example/MrptInvoiceExample/MrptInvoiceExample/obj/*
 config.log
 config.make
 MonoReports.suo

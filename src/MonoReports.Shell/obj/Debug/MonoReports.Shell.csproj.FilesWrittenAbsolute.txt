@@ -1,0 +1,5 @@
+/home/tomek/projekty/monoreports/src/MonoReports.Shell/obj/Debug/MonoReports.Shell.gtk-gui.gui.stetic
+/home/tomek/projekty/monoreports/build/MonoReports.Shell.exe.mdb
+/home/tomek/projekty/monoreports/build/MonoReports.Shell.exe
+/home/tomek/projekty/monoreports/src/MonoReports.Shell/obj/Debug/MonoReports.Shell.exe
+/home/tomek/projekty/monoreports/src/MonoReports.Shell/obj/Debug/MonoReports.Shell.exe.mdb

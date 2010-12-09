@@ -159,10 +159,10 @@ namespace MonoReports.Model.Data
 		}
  
 		public void Reset ()
-		{
+		{			
 			enumerator.Reset ();
 			currentRowIndex = -1;
-			
+			nextRes = true;
 		}
 
 		public object Current {

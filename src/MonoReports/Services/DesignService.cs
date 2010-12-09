@@ -418,9 +418,9 @@ namespace MonoReports.Services
 			fc.AddFilter (fileFilter);
 			fc.CurrentName = string.IsNullOrEmpty( Report.Title) ? "untitled_report.pdf" : Report.Title ;
 				
-		
+			 
 			if (fc.Run () == (int)Gtk.ResponseType.Accept) {
-
+				 
 				Report.ExportToPdf(fc.Filename);
 			}
 		

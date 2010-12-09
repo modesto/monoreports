@@ -113,6 +113,7 @@ namespace MonoReports.Model
 					cr.ShowPage ();
 				}			
 				pdfSurface.Finish ();		
+				(cr as IDisposable).Dispose ();
 			}
 		}
 		

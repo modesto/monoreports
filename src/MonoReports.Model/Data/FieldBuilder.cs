@@ -58,7 +58,7 @@ namespace MonoReports.Model.Data
 			
 			if(t.IsPrimitive || t == typeof(string) || t == typeof(DateTime)){
 				var field = CreateSimpleProperty(t,t,par,parent,namePrefix,fieldKind);
-				field.Name = namePrefix;
+				field.Name = string.IsNullOrEmpty(namePrefix) ? "x": namePrefix ;
 				fields.Add(field);
 			}else {
 				PropertyInfo[] properties = t.GetProperties();

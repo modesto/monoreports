@@ -3,7 +3,7 @@ prefix=/opt
 prefix_set=false
 pkg_config_path=''
 pkg_config_path_set=false
-common_packages=" mono;2.8"
+common_packages=" mono;2.6"
 
 usage ()
 {

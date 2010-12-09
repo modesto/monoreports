@@ -1,19 +1,21 @@
 Installing Monoreports
-================
+======================
 
-Monoreports can be installed on Linux and Windows. 
+Monoreports can be installed on Linux and Windows 
+(and probably MacOs - i don't have Mac machine )
 
 
 Dependencies
 ------------
 
-To build MonoReports depends on three managed libraries
+To build MonoReports you need to have mono 2.6 or higher
 
-Mono.CSharp - comes with mono installation
-Newtonsoft.Json - can be found in src/lib directory
+Use binary version
+------------------
 
 
-Installing from source
+
+Building from source
 ----------------------
 
 1. install git
@@ -22,11 +24,12 @@ Installing from source
 
 git clone git://github.com/tomaszkubacki/monoreports.git
 
-3. enter direcor and prepare 
+3. enter cloned directory and run:
 
-	./configure --prefix=/opt/monoreports
+	./configure
 	make
-	make install
+
+
 
  
 
